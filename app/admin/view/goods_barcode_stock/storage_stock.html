@@ -1,0 +1,51 @@
+<div class="box-body table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>机构</th>
+            <th>条码</th>
+            <th>商品名称</th>
+            <th>规格</th>
+            <th>单位</th>
+            <th>总数量</th>
+            <th>寄存数量</th>
+            <th>实际数量</th>
+            <ob_price rule="cost_price">
+                <th>进价</th>
+                <th>金额</th>
+            </ob_price>
+            <th>售价</th>
+            <th>售价金额</th>
+
+        </tr>
+        </thead>
+
+        {notempty name='list'}
+        <tbody>
+        {volist name='list' id='vo'}
+        <tr data-id="{$vo['id']}">
+            <td>{$i}</td>
+            <td>{$vo.shop_name}</td>
+            <td>{$vo.barcode}</td>
+            <td>{$vo.goods_name}</td>
+            <td>{$vo.specification}</td>
+            <td>{$vo.unit}</td>
+            <td>{$vo.stock_actual+$vo.storage_num}</td>
+            <td>{$vo.storage_num+0}</td>
+            <td>{$vo.stock_actual}</td>
+            <ob_price rule="cost_price">
+                <td>{$vo.cost_price}</td>
+                <td>{$vo.stock_actual*$vo.cost_price}</td>
+            </ob_price>
+            <td>{$vo.retail_price}</td>
+            <td>{$vo.stock_actual*$vo.retail_price}</td>
+        </tr>
+        {/volist}
+
+        </tbody>
+        {/notempty}
+
+    </table>
+
+</div>

@@ -1,0 +1,206 @@
+<div class="box">
+    <div class="box-header ">
+        <a id="jump" style="display: none;" href="{:url()}?sid=">跳转</a>
+        <ob_link><a class="btn" url="{:url('structureAdd')}" id="add" data-toggle="modal" data-target="#myModal">添 加</a></ob_link>
+        <ob_link><a class="btn" url="{:url('structureEdit')}" id="edit" style="display: none;">编 辑</a></ob_link>
+
+        <!--<ob_link><a class="btn export" url="{:url('exportAdminList')}"><i class="fa fa-download"></i> 导 出</a></ob_link>-->
+        <!--<ob_link><a class="btn ladda-button" id="fastSetBtn"  url="{:url('fastset')}" >批量设置</a></ob_link>-->
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">删 除</a></ob_link>
+        <!--<ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_NORMAL}" href="{:url('setStatus')}">启 用</a></ob_link>-->
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DISABLE}" href="{:url('setStatus')}">停 用</a></ob_link>
+
+        <!--<div class="box-tools ">-->
+        <!--<div class="input-group search-form">-->
+        <!--<input name="search_data" class="pull-right search-input" value="{:input('search_data')}"-->
+        <!--placeholder="支持名字|编号|手机" type="text">-->
+        <!--<div class="input-group-btn">-->
+        <!--<button type="button" id="search" url="{:url('structurelist')}" class="btn btn-default"><i-->
+        <!--class="fa fa-search"></i></button>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--<br/>-->
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-2">
+            <!--左边岗位列表-->
+            <ul id="ztree" class="ztree"></ul>
+        </div>
+
+        <!--右边-->
+        <div class="col-xs-10">
+            <div>
+                <div id="container">
+                    <div class="box-body table-responsive">
+                        <table class="table table-bordered table-hover table-pointer">
+                            <thead>
+                            <tr>
+                                <th class="checkbox-select-all">
+                                    <label>
+                                        <input class="flat-grey js-checkbox-all" type="checkbox">
+                                    </label>
+                                </th>
+                                <th>序号</th>
+                                <th>创建时间</th>
+                                <th>机构</th>
+                                <th>岗位</th>
+                                <th>结构</th>
+                                <th>状态</th>
+
+
+                            </tr>
+                            </thead>
+
+                            {notempty name='list'}
+                            <tbody>
+                            {volist name='list' id='vo'}
+                            <tr data-id="{$vo['id']}">
+                                <td>
+                                    <label>
+                                        <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}"/>
+                                    </label>
+                                </td>
+                                <td>{$i}</td>
+
+                                <td>{$vo.create_time}</td>
+                                <td>{$vo.shop_name|default=''}</td>
+                                <td>{$vo.group_name}</td>
+                                <td>{$vo.salary_types_text}</td>
+                                <td>
+                                    <ob_link>
+                                        <a class="ajax-get" href="{:url('setStatus', array('ids' => $vo['id'],'group_id'=>$vo['group_id'], 'status' => (int)!$vo['status']))}">{$vo.status_text}</a>
+                                    </ob_link>
+                                </td>
+
+
+                            </tr>
+                            {/volist}
+                            </tbody>
+                            {else/}
+                            <tbody>
+                            <tr class="odd">
+                                <td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                            </tr>
+                            </tbody>
+                            {/notempty}
+                        </table>
+                    </div>
+                </div>
+                <div class="box-footer clearfix text-center">
+                    {$list->render()}
+                </div>
+            </div>
+
+
+            <div id="view-container" class="box2">
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- 增加修改Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" >
+</div>
+
+
+<script>
+
+    $(function () {
+
+
+        //新增
+        $('#add').on('click', function (e) {
+            e.preventDefault();
+            ajax({
+                url:$(this).attr('url'),
+                data:{sid:'{$Think.get.sid}'},
+                success:function (data) {
+                    $('#myModal').empty().append(data).modal('show');
+                }
+            })
+
+        });
+
+
+        //双击编辑
+        $("table.table-pointer tr").on("dblclick", function (e) {
+            e.preventDefault();
+            if (e.target.nodeName != 'TD') {
+                return false;
+            }
+            if ($('#edit').length === 0) {
+                obalert("您无权修改");
+                return false;
+            }
+            var id = $(this).attr("data-id");
+            // $.get($('#edit').attr("url"), {id: id}, function (data) {
+            //
+            //     $("#myModal").empty().append(data).modal("show");
+            // });
+
+            ajax({
+                url:$("#edit").attr('url'),
+                data:{id: id,sid:'{$Think.get.sid}'},
+                success:function (data) {
+                    $('#myModal').empty().append(data).modal('show');
+                }
+            })
+
+        });
+
+
+        //保存
+        $('#myModal').on('click', '#saveInfo', function () {
+            var $form = $('#myModal form');
+
+
+            $('select[name=\'admin_id\']').prop('disabled', false);
+            var postData = $form.serialize();
+            if ($form.find('#editId').val() > 0) {
+                $('select[name=\'admin_id\']').prop('disabled', true);
+            }
+
+            console.log(postData);
+
+            var url = $(this).attr('data-url');
+
+            $.post(url, postData, function (data) {
+                obalertp(data);
+                if (data.code == 1) {
+                    $form[0].reset();
+                    $('#myModal').modal('hide').empty();
+                }
+
+            }, 'json');
+
+            return false;
+        });
+
+        //生成树
+        treeObj = makeZTree({data: {$shopTree|json_encode}});
+
+        //加载页面后,选中制定节点
+        var node = treeObj.getNodeByTId("{:input('tid')}");
+        treeObj.cancelSelectedNode();//先取消所有的选中状态
+        treeObj.selectNode(node, true);//将指定ID的节点选中
+
+
+
+
+    });
+
+
+
+
+
+</script>

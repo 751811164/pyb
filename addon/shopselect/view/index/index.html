@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="__STATIC__/addon/shopselect/shop_style.css">
+<select name="shop_{$addons_data.name}" id="shop_{$addons_data.name}" class="form-control addon-form-shop-select">
+
+</select>
+
+
+<script>
+    $(function () {
+        var get_options_url = '{:addons_url("shopselect://Index/getOptions")}';
+        $.get(get_options_url, function (result) {
+            $("#shop_{$addons_data.name}").html(result.data);
+            ob.setValue("#shop_{$addons_data.name}", "{:input('shop_'.$addons_data.name)}");
+        });
+    })
+
+</script>

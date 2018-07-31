@@ -1,0 +1,426 @@
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">组合商品管理</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <input type="hidden" id="editId" name="id" data-clear value="{$info.id|default=''}">
+                <input type="hidden"  name="profile_id" data-clear value="{$info.profile_id|default=''}">
+                <input type="hidden"  name="price_id" data-clear value="{$info.price_id|default=''}">
+
+                <div id="vm" class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">条码</label>
+                            <div class="col-xs-10">
+                                <div class="row barcode">
+                                    {notempty name="info.goodsBarcodes"}
+                                    {volist name="info.goodsBarcodes" id="vo"}
+
+                                    <div class="clearfix">
+                                        <input type="hidden" name="barcode_id[]" value="{$vo.id}">
+                                        <div class="col-xs-6"><input type="text" class="form-control" name="barcode[]" value="{$vo.barcode}" data-clear></div>
+                                        <div class="col-xs-6">
+                                            <button type="button" class="btn btn-info create-code" data-kind="2">生成</button>
+                                            <button type="button" class="btn btn-info add" data-prefix="info">+</button>
+                                            <button type="button" class="btn btn-info plus">-</button>
+                                        </div>
+                                    </div>
+                                    {/volist}
+                                    {else/}
+                                    <div class="clearfix">
+                                        <input type="hidden" name="barcode_id[]" value="">
+                                        <div class="col-xs-6"><input type="text" class="form-control" name="barcode[]" value="" data-clear></div>
+                                        <div class="col-xs-6">
+                                            <button type="button" class="btn btn-info create-code" data-kind="2">生成</button>
+                                            <button type="button" class="btn btn-info add"  data-prefix="pack">+</button>
+                                            <button type="button" class="btn btn-info plus">-</button>
+                                        </div>
+                                    </div>
+                                    {/notempty}
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">组合名称</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" name="name" value="{$info.name|default=''}" data-clear>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">单位</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" name="unit" value="{$info.unit|default=''}">
+
+                            </div>
+
+                            <label class="col-xs-2 control-label">规格</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" name="specification" value="{$info.specification|default=''}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="col-xs-2 control-label">商品状态</label>
+                            <div class="col-xs-4">
+                                <select name="status" class="form-control">
+                                    <option value="1">在售</option>
+                                    <option value="0">停售</option>
+                                </select>
+                            </div>
+                            <label class="col-xs-2 control-label">是否联营</label>
+                            <div class="col-xs-2">
+                                <select name="is_joint_operation" class="form-control" v-model="info.is_joint_operation" >
+                                    <option value="0">否</option>
+                                    <option value="1">是</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <input type="text" class="form-control" name="operation_rate" value="{$info.operation_rate|default=''}" :disabled="info.is_joint_operation==0" data-clear placeholder="利润率">
+                            </div>
+
+
+                        </div>
+
+                        <div {notempty name="info.id"} style="display: block;" {/notempty}>
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">进货价</label>
+                            <div class="col-xs-4">
+                                {empty name="info.id"}
+                                <input type="number" class="form-control" name="cost_price" v-model="cost_price" readonly data-clear>
+                                {else/}
+                                <input type="text" class="form-control" disabled v-model="cost_price"  data-clear>
+                                {/empty}
+                            </div>
+
+                            <label class="col-xs-2 control-label">零售价</label>
+                            <div class="col-xs-4">
+                                {empty name="info.id"}
+                                <input type="number" class="form-control" name="retail_price" v-model="info.retail_price" data-clear>
+                                {else/}
+                                <input type="text" class="form-control" disabled v-model="info.retail_price"  data-clear>
+                                {/empty}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">批发价</label>
+                            <div class="col-xs-4">
+                                {empty name="info.id"}
+                                <input type="number" class="form-control" name="wholesale_price" v-model="info.wholesale_price"  data-clear>
+                                {else/}
+                                <input type="text" class="form-control" disabled v-model="info.wholesale_price"  data-clear>
+                                {/empty}
+                            </div>
+
+                            <label class="col-xs-2 control-label">配送价</label>
+                            <div class="col-xs-4">
+                                {empty name="info.id"}
+                                <input type="number" class="form-control" name="delivery_price" v-model="info.delivery_price" data-clear>
+                                {else/}
+                                <input type="text" class="form-control" disabled v-model="info.delivery_price"  data-clear>
+                                {/empty}
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            {volist name="memberGradeList" id="vo"}
+                            <div>
+                                <label class="col-xs-2 control-label">{$vo.name}</label>
+                                <div class="col-xs-4">
+                                    {empty name="info.id"}
+                                    <input type="hidden" class="form-control" name="member_grade_id[]" value="{$vo.id|default=''}">
+                                    <input type="number" class="form-control" name="member_price[]" data-clear data-member_grade_id
+                                            ="{$vo.id|default=''}">
+                                    {else/}
+                                    <input type="text" class="form-control" name="member_price[]" disabled data-clear data-member_grade_id
+                                            ="{$vo.id|default=''}">
+                                    {/empty}
+
+                                </div>
+                            </div>
+                            {/volist}
+
+                        </div>
+                    </div>
+
+                        <div class="form-group">
+
+                            <label class="col-xs-2 control-label">创建人</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" disabled  value="{$info.admin_add_name|default=''}">
+
+                            </div>
+
+                            <label class="col-xs-2 control-label">创建日期</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" disabled  value="{$info.create_time|default=''}">
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="col-xs-2 control-label">修改人</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control"  disabled value="{$info.admin_edit_name|default=''}">
+
+                            </div>
+
+                            <label class="col-xs-2 control-label">修改日期</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" disabled  value="{$info.update_time|default=''}">
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                {empty name="info.id"}
+                                <button type="button" class="btn btn-xs btn-info" @click="goodsAdd">添加商品</button>
+                                {/empty}
+                            </div>
+                            <table class="table table-condensed  table-bordered table-hover reference">
+                                <thead>
+                                <tr>
+
+                                    <th>序号</th>
+                                    <th>条码</th>
+                                    <th>名称</th>
+                                    <th>规格</th>
+                                    <th>单位</th>
+                                    <!--<th>进货价</th>-->
+                                    <ob_price rule="cost_price"><th>进货价</th></ob_price>
+                                    <ob_price rule="retail_price"><th>零售价</th></ob_price>
+                                    <ob_price rule="wholesale_price"><th>批发价</th></ob_price>
+                                    <ob_price rule="delivery_price"><th>配送价</th></ob_price>
+                                    <ob_price rule="member_price"><th>会员价1</th></ob_price>
+                                    <th>数量</th>
+                                    <th></th>
+
+                                </tr>
+                                </thead>
+
+
+                                <tr v-for="(item,index) in groupGoods" :key="item.id">
+                                    <td>{{index+1}}</td>
+                                    <td>{{item.barcode1}}</td>
+                                    <td>{{item.name}}</td>
+                                    <td>{{item.specification}}</td>
+
+                                    <td>{{item.unit}}</td>
+
+                                    <ob_price rule="cost_price"><td>{{item.cost_price}}</td></ob_price>
+                                    <ob_price rule="retail_price"><td>{{item.retail_price}}</td></ob_price>
+                                    <ob_price rule="wholesale_price"><td>{{item.wholesale_price}}</td></ob_price>
+                                    <ob_price rule="delivery_price"><td>{{item.delivery_price}}</td></ob_price>
+                                    <ob_price rule="member_price"><td>{{item.member_price1}}</td></ob_price>
+
+
+
+                                    <td>
+                                        <input type="hidden" name="group_id[]" v-model="item.id">
+                                        <input type="hidden" name="goods_id[]" v-model="item.goods_id">
+                                        <input type="number" class="form-control input-sm"  {empty name="info.id"} name="num[]" {else /}disabled {/empty}  v-model="item.num">
+                                    </td>
+                                    {empty name="info.id"}
+                                    <td><a href="javascript:;" class="btn btn-xs btn-info" @click="goodsDel" :data-index="index">删除</a></td>
+                                    {/empty}
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="addInfo" class="btn skin-blue-light" data-url="{:url('groupGoodsAdd')}">新增</button>
+            <!--<button type="button" id="copyInfo" class="btn skin-blue-light" data-url="{:url('groupGoodsAdd')}">复制新增</button>-->
+            <button type="button" id="prevInfo" class="btn skin-blue-light" data-url="{:url('groupGoodsEdit')}">上一条</button>
+            <button type="button" id="nextInfo" class="btn skin-blue-light" data-url="{:url('groupGoodsEdit')}">下一条</button>
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('groupGoodsEdit')}{else/}{:url('groupGoodsAdd')}{/notempty}">保存</button>
+            <!--<button type="button" class="btn skin-red">下一步</button>-->
+            <!--<button type="button" class="btn btn-default" hidden data-dixsiss="modal">关闭</button>-->
+        </div>
+    </div>
+</div>
+<script>
+    if ("{$info.id|default='0'}">0) {
+        currentId = "{$info.id|default='0'}";
+    }
+    var info = {$info|json_encode};
+    var groupGoods={$groupGoods|json_encode};
+
+
+    var vm = new Vue({
+        el:"#vm",
+        data:{
+            info:info,
+            groupGoods:groupGoods
+
+        },
+        mounted:function(){
+
+        },
+        methods:{
+            //添加
+            goodsAdd:function(e){
+
+                //iframe层-父子操作
+                var goodslayer = layer.open({
+                    btn: ['确定'],
+                    type: 2,
+                    area: ['900px', '500px'],
+                    fixed: true, //不固定
+                    maxmin: true,
+                    content: '{:url("groupGoodsChoose")}',
+                    yes: function (index, layero) {
+                        var ids= [];
+                        var iframeWin = window[layero.find('iframe')[0]['name']];//获取子窗口
+
+                        for (var i = 0; i < iframeWin.items.length; i++) {
+                            var item = iframeWin.items[i];
+                            var bool =false;
+                            for (var j = 0; j < groupGoods.length; j++) {
+                                var goods = groupGoods[j];
+                                if (goods["goods_id"] ==item["goods_id"]) {
+                                    bool=true;
+                                }
+                            }
+                            if (!bool) {
+                                item.num=1;
+                                groupGoods.push(item);
+                            }
+
+                        }
+                        // Array.prototype.push.apply(info.groupGoods,iframeWin.items);
+                        layer.close(index)
+                    }
+                })
+
+                //layer.full(goodslayer)
+
+
+            },
+
+            //删除
+            goodsDel:function(e){
+                var target = e.target;
+                var i = target.getAttribute("data-index");
+                var id = groupGoods[i]["id"];
+
+                if (id) {
+                    layer.confirm("此操作将已保存的记录同时删除，确定要执行吗？", function(index) {
+                            layer.close(index);
+                            //删除库记录
+                            $.post("{:url('groupGoodsDel')}", {id: id}, function (data) {
+                                obalertp(data);
+                                if (data.code == 1) {
+                                    groupGoods.splice(i, 1);
+                                }
+                            })
+                        },
+                        function(index){
+                            layer.close(index);
+                        }
+                    );
+
+                }
+                else {
+                    //页面删除
+                    groupGoods.splice(i,1);
+                }
+
+            }
+        },
+        computed :{
+            cost_price:function(){
+                var sum=0;
+                for (var i = 0; i < this.groupGoods.length; i++) {
+                    var goods = this.groupGoods[i];
+                    sum+= goods.num*goods.cost_price;
+                }
+
+                return sum;
+            }
+
+        }
+    })
+
+    $(function () {
+         ob.setValue("operation_rate", info.operation_rate);
+         ob.setValue("status", info.status);
+
+
+        if (info.member_price) {
+
+            //整装会员价
+            var member_prices = JSON.parse( info.member_price);
+            for (var i = 0; i < member_prices.length; i++) {
+                var item = member_prices[i];
+                $("[name='member_price[]'][data-member_grade_id='"+item['grade_id']+"']").val(item['price']);
+            }
+        }
+
+
+        //生成条形码
+       $(".barcode").on("click",'.create-code',function () {
+          var category_id =$("[name=category_id]").val();
+           var $this = $(this);
+           var kind =$this.attr("data-kind");
+           $.get("{:url('goods_barcode/createCode')}",{kind:kind},function(data){
+               $this.parents(".clearfix").find("input:text").val(data);
+           })
+       })
+        //添加
+       $(".barcode").on("click",".add",function () {
+           var prefix = $(this).attr('data-prefix');
+           var demo ="<div class='clearfix'>" +
+              ' <input type="hidden" name="single_barcode_id[]" value="">'+
+               " <div class='col-xs-6'><input type='text' class='form-control' name='barcode[]' value='' data-clear></div>" +
+               " <div class='col-xs-6'>" +
+               "     <button type='button' class='btn btn-info create-code' data-kind='2'>生成</button>" +
+               "     <button type='button' class='btn btn-info add' >+</button>" +
+               "     <button type='button' class='btn btn-info plus'>-</button>" +
+               " </div></div>";
+           $(this).parents(".barcode").append(demo);
+
+       })
+        //减少
+       $(".barcode").on("click",'.plus',function () {
+           var clearfix = $(this).parents(".barcode").find(".clearfix");
+           if (clearfix.length<=1) {
+               return false;
+           }
+           $(this).parents(".clearfix").remove();
+       })
+
+        //启动icheck
+        $("modal-dialog [type='checkbox'],table [type='radio'], .tab-pane [type='checkbox']").iCheck({
+            checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+        });
+
+
+
+    })//end
+
+
+</script>

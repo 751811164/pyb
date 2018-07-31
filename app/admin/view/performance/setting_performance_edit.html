@@ -1,0 +1,140 @@
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">业绩提成</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <input type="hidden" name="id" value="{$info.id|default=''}">
+                <input type="hidden" name="group_id" value="{$Think.get.gid}">
+                <input type="hidden" name="tb" value="{$Think.get.tb}">
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">启用时间</label>
+                            <div class="col-sm-10 form-inline">
+                                <input type="text" class="form-control date" readonly name="start_time" value="{$info.start_time|default=''}">
+                                至<input type="text" class="form-control date" readonly name="end_time" value="{$info.end_time|default=''}">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="col-sm-10">
+                                <label><input type="radio" name="type" value="0">个人销售额提成</label>
+                                <label><input type="radio" name="type" value="1">全店销售额提成</label>
+                                <label><input type="radio" name="type" value="2">全店毛利额额提成</label>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+
+
+                            <ul id="rules" class="list-group form-inline">
+                                {notempty name="info.rules" }
+                                {volist name="info.rules" id="vo"}
+
+
+                                <li class="list-group-item">
+                                    <span class="badge">×</span>
+                                    <div class="form-group">
+                                        销售目标: <input type="number" class="form-control"  name="target[]" value="{$vo.target|default='0'}" required>
+                                        提成:
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="brokerage[]" value="{$vo.brokerage|default='0'}" required max="100" style="width: 50px;">
+                                            <span class="input-group-addon">%</span>
+                                        </div>
+                                        超额部分提成:
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="over[]" value="{$vo.over|default='0'}" required max="100" style="width: 50px;">
+                                            <span class="input-group-addon">%</span>
+                                        </div>
+                                    </div>
+                                </li>
+                                {/volist}
+                                {/notempty}
+
+                            </ul>
+                            <div id="addRule" style="text-align: right">
+                                <input type="button" class="btn btn-default" value="+">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+
+
+            <ul id="demoRule" style="display: none;">
+
+                <li class="list-group-item">
+                    <span class="badge">×</span>
+                    <div class="form-group">
+                        销售目标: <input type="number" name="target[]" value="0" required class="form-control">
+                        提成:
+                        <div class="input-group">
+                            <input type="number" class="form-control"  name="brokerage[]" value="0" required max="100" style="width: 50px;">
+                            <span class="input-group-addon">%</span>
+                        </div>
+                        超额部分提成:
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="over[]" value="0" required max="100" style="width: 50px;">
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('settingEdit')}{else/}{:url('settingAdd')}{/notempty}">保存
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+  $(function() {
+
+    ob.setValue('type',"{$info.type|default='0'}");
+
+    //启动icheck
+    $("[type='radio']").iCheck({
+      checkboxClass: 'icheckbox_minimal-blue',
+      radioClass: 'iradio_minimal-blue',
+      increaseArea: '20%', // optional
+    });
+
+    //同时绑定多个时间控件
+    lay('.date').each(function () {
+      laydate.render({
+         min: 0, //7天前
+        elem: this,
+        type: 'datetime',
+        trigger: 'click',
+      })
+    })
+
+    // 添加行
+    $("#addRule :button").on("click", function() {
+      $("#demoRule").find("li").clone(true).appendTo($("#rules"));
+    });
+
+    //删除行
+    $(".modal-body .badge").on("click", function() {
+      $(this).parent("li").remove();
+    });
+
+  });
+
+
+</script>

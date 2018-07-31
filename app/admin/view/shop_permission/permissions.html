@@ -1,0 +1,510 @@
+
+<form class="permissionsForm" method="post">
+
+    <input type="hidden" name="shop_id" value="{:input('id')}">
+    <input type="hidden" name="id" value="{$info['id']|default=''}">
+    <div>
+        <ul id="myTab" class="nav nav-tabs">
+            <li class="active"><a href="#price" data-toggle="tab">价格设置</a></li>
+            <li><a href="#bills" data-toggle="tab">票据设置</a></li>
+            <li><a href="#category" data-toggle="tab">数据设置</a></li>
+        </ul>
+    </div>
+
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="price">
+
+
+
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品是否允许满减</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_reduce" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_reduce" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品议价后是否参与满减</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_bargain_reduce" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_bargain_reduce" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品打折后是否参与满减</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_discount_reduce" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_discount_reduce" value="0" checked>
+                </div>
+            </div>
+
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品是否允许满赠</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_presentation" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_presentation" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品议价后是否参与满赠</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_bargain_presentation" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_bargain_presentation" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品打折后是否参与满赠</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_discount_presentation" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_discount_presentation" value="0" checked>
+                </div>
+            </div>
+
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品是否允许加价换购</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_redemptionn" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_redemptionn" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品议价后是否参与加价换购</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_bargain_redemptionn" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_bargain_redemptionn" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品打折后是否参与加价换购</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_discount_redemptionn" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_discount_redemptionn" value="0" checked>
+                </div>
+            </div>
+
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品是否允许阶梯促销</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_promotion" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_promotion" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品议价后是否参与阶梯促销</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_bargain_promotion" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_bargain_promotion" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品打折后是否参与阶梯促销</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_discount_promotion" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_discount_promotion" value="0" checked>
+                </div>
+            </div>
+
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品是否允首单特价</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_special_offer" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_special_offer" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品议价后是否参与首单特价</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_bargain_special_offer" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_bargain_special_offer" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单品打折后是否参与首单特价</label></div>
+                <div class="col-sm-3">
+                    <span>允许</span>
+                    <input class="flat-grey" type="radio" name="goods_discount_special_offer" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许</span>
+                    <input class="flat-grey" type="radio" name="goods_discount_special_offer" value="0" checked>
+                </div>
+            </div>
+
+        </div> <!--end tab-->
+
+
+        <div class="tab-pane fade" id="bills">
+
+            <!--<div class="row bm-gray">-->
+                <!--<div class="col-sm-3"><label>允许分店查询总部库存</label></div>-->
+                <!--<div class="col-sm-3">-->
+                    <!--<span>启用</span>-->
+                    <!--<input class="flat-grey" type="radio" name="branch_head_view_inventory" value="1">-->
+                <!--</div>-->
+                <!--<div class="col-sm-3">-->
+                    <!--<span>不启用</span>-->
+                    <!--<input class="flat-grey" type="radio" name="branch_head_view_inventory" value="0" checked>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="row bm-gray">-->
+                <!--<div class="col-sm-3"><label>允许分店查询加盟店库存</label></div>-->
+                <!--<div class="col-sm-3">-->
+                    <!--<span>启用</span>-->
+                    <!--<input class="flat-grey" type="radio" name="branch_join_view_inventory" value="1">-->
+                <!--</div>-->
+                <!--<div class="col-sm-3">-->
+                    <!--<span>不启用</span>-->
+                    <!--<input class="flat-grey" type="radio" name="branch_join_view_inventory" value="0" checked>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="row bm-gray">-->
+                <!--<div class="col-sm-3"><label>允许加盟店查询总部库存</label></div>-->
+                <!--<div class="col-sm-3">-->
+                    <!--<span>启用</span>-->
+                    <!--<input class="flat-grey" type="radio" name="join_head_view_inventory" value="1">-->
+                <!--</div>-->
+                <!--<div class="col-sm-3">-->
+                    <!--<span>不启用</span>-->
+                    <!--<input class="flat-grey" type="radio" name="join_head_view_inventory" value="0" checked>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>录单保存后提示审核</label></div>
+                <div class="col-sm-3">
+                    <span>启用</span>
+                    <input class="flat-grey" type="radio" name="save_bills_check" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不启用</span>
+                    <input class="flat-grey" type="radio" name="save_bills_check" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单据保存后可以直接打印</label></div>
+                <div class="col-sm-3">
+                    <span>启用</span>
+                    <input class="flat-grey" type="radio" name="bills_print" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不启用</span>
+                    <input class="flat-grey" type="radio" name="bills_print" value="0" checked>
+                </div>
+            </div>
+
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>单据必须审核后才能打印</label></div>
+                <div class="col-sm-3">
+                    <span>启用</span>
+                    <input class="flat-grey" type="radio" name="bills_checkd_print" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不启用</span>
+                    <input class="flat-grey" type="radio" name="bills_checkd_print" value="0" checked>
+                </div>
+            </div>
+
+
+            <!--<div class="row bm-gray">-->
+                <!--<div class="col-sm-3"><label>分店要货申请单只可以应用一次</label></div>-->
+                <!--<div class="col-sm-3">-->
+                    <!--<span>启用</span>-->
+                    <!--<input class="flat-grey" type="radio" name="branch_require_bills_apply" value="1">-->
+                <!--</div>-->
+                <!--<div class="col-sm-3">-->
+                    <!--<span>不启用</span>-->
+                    <!--<input class="flat-grey" type="radio" name="branch_require_bills_apply" value="0" checked>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="row bm-gray">-->
+                <!--<div class="col-sm-3"><label>分店配送出库单只可以应用一次</label></div>-->
+                <!--<div class="col-sm-3">-->
+                    <!--<span>启用</span>-->
+                    <!--<input class="flat-grey" type="radio" name="branch_delivery_bills_apply" value="1">-->
+                <!--</div>-->
+                <!--<div class="col-sm-3">-->
+                    <!--<span>不启用</span>-->
+                    <!--<input class="flat-grey" type="radio" name="branch_delivery_bills_apply" value="0" checked>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>总部可以直接为分店完成出入库调货</label></div>
+                <div class="col-sm-3">
+                    <span>启用</span>
+                    <input class="flat-grey" type="radio" name="head_allocate_cargo" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不启用</span>
+                    <input class="flat-grey" type="radio" name="head_allocate_cargo" value="0" checked>
+                </div>
+            </div>
+
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>分店间调货,必须经过超级管理员审核</label></div>
+                <div class="col-sm-3">
+                    <span>启用</span>
+                    <input class="flat-grey" type="radio" name="branch_allocate_check_administrator" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不启用</span>
+                    <input class="flat-grey" type="radio" name="branch_allocate_check_administrator" value="0" checked>
+                </div>
+            </div>
+
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>分店间调货,必须经过区域经理审核</label></div>
+                <div class="col-sm-3">
+                    <span>启用</span>
+                    <input class="flat-grey" type="radio" name="branch_allocate_check_areamanager" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不启用</span>
+                    <input class="flat-grey" type="radio" name="branch_allocate_check_areamanager" value="0" checked>
+                </div>
+            </div>
+
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>商品入库时,无商品档案</label></div>
+                <div class="col-sm-3">
+                    <span>提示且弹出添加商品页面</span>
+                    <input class="flat-grey" type="radio" name="in_no_goods_alert" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不提示</span>
+                    <input class="flat-grey" type="radio" name="in_no_goods_alert" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>商品入库时,超过库存上限</label></div>
+                <div class="col-sm-3">
+                    <span>提示且允许审核</span>
+                    <input class="flat-grey" type="radio" name="in_over_inventory_check" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许审核</span>
+                    <input class="flat-grey" type="radio" name="in_over_inventory_check" value="0" checked>
+                </div>
+            </div>
+
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>商品出库时,无商品档案</label></div>
+                <div class="col-sm-3">
+                    <span>提示且允许审核</span>
+                    <input class="flat-grey" type="radio" name="out_no_goods_alert" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不提示</span>
+                    <input class="flat-grey" type="radio" name="out_no_goods_alert" value="0" checked>
+                </div>
+            </div>
+
+            <div class="row bm-gray">
+                <div class="col-sm-3"><label>商品出库时,库存低于下限</label></div>
+                <div class="col-sm-3">
+                    <span>提示且允许审核</span>
+                    <input class="flat-grey" type="radio" name="out_less_inventory_check" value="1">
+                </div>
+                <div class="col-sm-3">
+                    <span>不允许审核</span>
+                    <input class="flat-grey" type="radio" name="out_less_inventory_check" value="0" checked>
+                </div>
+            </div>
+
+
+        </div><!--end tab-->
+
+
+        <div class="tab-pane fade" id="category">
+            <div class="panel panel-info">
+                <div class="panel-heading">选择分类</div>
+                <div class="box-body table-responsive">
+                    <table class="table table-condensed  table-bordered table-hover reference">
+                        <thead>
+                        <tr>
+                            <th class="checkbox-select-all">
+                                <label>
+                                    <input class="flat-grey js-checkbox-all all" type="checkbox">
+                                </label>
+                            </th>
+                            <th>序号</th>
+                            <th>编号</th>
+                            <th>名称</th>
+
+                        </tr>
+                        </thead>
+
+                        {notempty name='categoryList'}
+                        <tbody>
+                        {volist name='categoryList' id='vo' key="i" }
+                        <tr data-id="{$vo['id']}">
+                            <td>
+                                <label>
+                                    <input class="flat-grey check" type="checkbox" name="category_ids[]" value="{$vo.id}">
+                                </label>
+                            </td>
+                            <td>{$i}</td>
+                            <td>{$vo.number}</td>
+                            <td>
+                                {$vo.name}
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                        {/notempty}
+                    </table>
+                </div>
+            </div>
+
+
+        </div><!--end tab-->
+    </div>
+</form>
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function() {
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_minimal-blue',
+            radioClass: 'iradio_minimal-blue',
+            increaseArea: '20%' // optional
+        });
+
+        var info = {$info|json_encode};
+
+
+        //radio标签选中
+        $('form :radio').each(function(i, e) {
+            var $this = $(this);
+            if ($this.val() == info[$this.attr('name')]) {
+                $this.iCheck('check');
+            }
+
+        });
+
+        // //checkbox标签选中
+        // $('form.permissionsForm :checkbox').each(function(i, e) {
+        //   try {
+        //     var $this = $(this);
+        //     var arr = info[$this.attr('name').replace('[]', '')] || [];
+        //
+        //     if (arr.indexOf($this.val()) !== -1) {
+        //       $this.iCheck('check');
+        //     }
+        //   } catch (e) {
+        //
+        //     console.warn('chechbox赋值出错');
+        //   }
+        // });
+        //checkbox标签选中
+        $('.tab-pane .check').each(function(i, e) {
+            try {
+                var $this = $(this);
+                var name = $this.attr('name');
+
+                if (name.indexOf('[]') > -1){
+
+                    name = name.replace('[]','');
+                    if (!(info instanceof Array)&&info[name].indexOf($this.val()) !== -1) {
+                        $this.iCheck('check');
+                    }
+
+                } else{
+                    if(info.hasOwnProperty(name)&&info[name]==$this.val()){
+                        $this.iCheck('check');
+                    }
+                }
+
+            } catch (e) {
+
+                console.warn('chechbox赋值出错');
+            }
+        });
+
+
+    });
+
+</script>

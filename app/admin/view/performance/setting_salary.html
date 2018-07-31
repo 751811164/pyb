@@ -1,0 +1,66 @@
+
+    <div class="box-body table-responsive">
+        <table class="table table-bordered table-hover table-pointer">
+            <thead>
+            <tr>
+                <th class="checkbox-select-all">
+                    <label>
+                        <input class="flat-grey js-checkbox-all" type="checkbox">
+                    </label>
+                </th>
+                <th>序号</th>
+                <th>机构</th>
+                <th>岗位</th>
+                <th>试用底薪(元)</th>
+                <th>试用期限(天)</th>
+                <th>转正底薪(元)</th>
+                <th>加薪周期(天)</th>
+                <th>加薪金额(元)</th>
+                <th>加薪次数</th>
+                <th>状态</th>
+
+
+            </tr>
+            </thead>
+
+            {notempty name='list'}
+            <tbody>
+            {volist name='list' id='vo'}
+            <tr data-id="{$vo['id']}">
+                <td>
+                    <label>
+                        <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}"/>
+                    </label>
+                </td>
+                <td>{$i}</td>
+                <td>{$vo.shop_name|default=''}</td>
+                <td>{$vo.group_name}</td>
+                <td>{$vo.trial_salary}</td>
+                <td>{$vo.trial_period}</td>
+                <td>{$vo.regular_salary}</td>
+                <td>{$vo.increase_period}</td>
+                <td>{$vo.increase_amount}</td>
+                <td>{$vo.increase_times}</td>
+                <td>
+                    <ob_link>
+                        <a class="ajax-get" href="{:url('setStatus', array('ids' => $vo['id'],'gid'=>$vo['group_id'],'tb'=>'setting_salary', 'status' => (int)!$vo['status']))}">{$vo.status_text}</a>
+                    </ob_link>
+                </td>
+
+
+            </tr>
+            {/volist}
+            </tbody>
+            {else/}
+            <tbody>
+            <tr class="odd">
+                <td colspan="11" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+            </tr>
+            </tbody>
+            {/notempty}
+        </table>
+    </div>
+
+<div class="box-footer clearfix text-center">
+    {$list->render()}
+</div>

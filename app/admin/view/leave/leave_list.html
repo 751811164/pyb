@@ -1,0 +1,192 @@
+<div class="box">
+    <div class="box-header ">
+        <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+        <ob_link><a class="btn" url="{:url('leaveAdd')}" id="add" data-toggle="modal" data-target="#myModal">新 增</a></ob_link>
+        <ob_link><a class="btn" url="{:url('leaveEdit')}" id="edit" style="display: none;">编 辑</a></ob_link>
+
+        <!--<ob_link><a class="btn export" url="{:url('exportLeaveList')}"><i class="fa fa-download"></i> 导 出</a></ob_link>-->
+        <!--<ob_link><a class="btn ladda-button" id="fastSetBtn"  url="{:url('fastset')}" >批量设置</a></ob_link>-->
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">删 除</a></ob_link>
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_YES}" href="{:url('setCheckStatus')}" data-field="check_status">审 核</a></ob_link>
+
+        <div class="box-tools ">
+            <div class="form-inline search-form">
+            <div class="input-group ">
+                <input name="search_data" class="pull-right search-input" value="{:input('search_data')}"
+                       placeholder="支持名字|编号" type="text">
+                <div class="input-group-btn">
+                    <button type="button" id="search" url="{:url('leavelist')}" class="btn btn-default"><i
+                            class="fa fa-search"></i></button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <br/>
+    </div>
+
+
+    <!--右边-->
+    <div id="container">
+        <div class="box-body table-responsive">
+            <table class="table table-bordered table-hover table-pointer">
+                <thead>
+                <tr>
+                    <th class="checkbox-select-all">
+                        <label>
+                            <input class="flat-grey js-checkbox-all" type="checkbox">
+                        </label>
+                    </th>
+                    <th>序号</th>
+                    <th>机构</th>
+                    <th>岗位</th>
+                    <th>[工号]姓名</th>
+                    <th>请假天数</th>
+                    <th>开始时间</th>
+                    <th>结束时间</th>
+                    <th>原因</th>
+                    <th>审核状态</th>
+
+
+                </tr>
+                </thead>
+
+                {notempty name='list'}
+                <tbody>
+                {volist name='list' id='vo'}
+                <tr data-id="{$vo['id']}" data-admin_id="{$vo['admin_id']}">
+                    <td>
+                        <label>
+                            <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}"/>
+
+                        </label>
+                    </td>
+                    <td>{$i}</td>
+                    <td>{$vo.shop_name|default=''}</td>
+                    <td>{$vo.group_name|default=''}</td>
+                    <td>[{$vo.number}]{$vo.username}</td>
+
+                    <td>
+                        {$vo.days}天
+                    </td>
+                    <td>
+                        {$vo.start_time}
+                    </td>
+                    <td>
+                        {$vo.end_time}
+                    </td>
+                    <td>
+                        {$vo.reason}
+                    </td>
+                    <td>{if condition="$vo.check_status == 1 "}
+                        {$vo.check_status_text}
+                        {else/}
+                        <ob_link>
+                            <a class="ajax-get" href="{:url('setCheckStatus', array('ids' => $vo['id'], 'check_status' => (int)!$vo['check_status']))}">{$vo.check_status_text}</a>
+                        </ob_link>
+                        {/if}
+
+
+                    </td>
+
+                </tr>
+                {/volist}
+                </tbody>
+                {else/}
+                <tbody>
+                <tr class="odd">
+                    <td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                </tr>
+                </tbody>
+                {/notempty}
+            </table>
+        </div>
+    </div>
+    <div class="box-footer clearfix text-center">
+        {$list->render()}
+    </div>
+
+
+</div>
+
+
+
+
+<!-- 增加修改Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" >
+</div>
+
+
+
+<script>
+
+  $(function() {
+    //快捷设置modal框
+    $('#fastSetBtn').on('click', function(e) {
+      $('#fastSetModal').modal('show').find('form')[0].reset();
+      e.preventDefault();
+    });
+
+    //新增
+    $('#add').on('click', function(e) {
+      e.preventDefault();
+      $.get($(this).attr('url'), function(data) {
+
+        $('#myModal').empty().append(data).modal('show');
+      });
+
+    });
+
+
+
+    //双击编辑
+    $('table.table-pointer tr').on('dblclick', function(e) {
+      e.preventDefault();
+      if (e.target.nodeName != 'TD') {
+        return false;
+      }
+
+      if ($('#edit').length === 0) {
+        alert('您无权修改');
+        return false;
+      }
+      var id = $(this).attr('data-id');
+      var admin_id = $(this).attr('data-admin_id');
+
+      if (id > 0) {
+        $.get($('#edit').attr('url'), {id:id,admin_id: admin_id}, function(data) {
+
+          $('#myModal').empty().append(data).modal('show');
+        });
+      }
+    });
+
+    //保存
+    $('#myModal').on('click', '#saveInfo', function () {
+      var $form = $('#myModal form');
+      $("select[name='admin_id']").prop('disabled', false);
+      var postData = $form.serialize();
+      if ($form.find('#editId').val() > 0) {
+        $("select[name='admin_id']").prop('disabled', true);
+      }
+      //console.log(postData);
+      var url = $(this).attr('data-url');
+
+      $.post(url, postData, function (data) {
+        obalertp(data);
+        if (data.code == 1) {
+          $form[0].reset();
+          $('#myModal').modal('hide').empty();
+        }
+      }, 'json');
+
+      return false;
+    });
+
+
+
+  });
+
+
+
+
+</script>

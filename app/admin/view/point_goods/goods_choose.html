@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择商品</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/select2/3.5.4/select2.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/iCheck/1.0.2/skins/all.css" rel="stylesheet">
+    <link href="__STATIC__/admin/css/onebase.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/select2/3.5.4/select2.min.js"></script>
+    <script src="https://cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+    <script src="__STATIC__/admin/js/goods_choose.js"></script>
+
+    <style>
+        .list-group-sm .list-group-item{
+            padding: 5px 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container-fluid box">
+
+
+    <!-- /.box-header -->
+    <div class="box-header">
+
+    </div>
+
+    <div class="col-sm-2">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">分类</div>
+            <!-- List group -->
+            <ul id="category" class="list-group  ">
+                {volist name="categoryList" id="vo"}
+                <a class="list-group-item"href="{:url('')}?barcodes={$Think.get.barcodes}&cid={$vo.id}" data-id="{$vo.id}">{$vo.name}</a>
+                {/volist}
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="col-sm-10">
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="box-tools">
+                    <div class="input-group search-form">
+                        <input name="search_data" class="form-control search-input" value="{:input('search_data')}"
+                               placeholder="商品名" type="text">
+                        <div class="input-group-btn">
+                            <button type="button" id="search" url="{:url('')}barcodes={$Think.get.barcodes}" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th class="checkbox-select-all">
+                        <label>
+                            <input class="flat-grey js-checkbox-all" type="checkbox">
+                        </label>
+                    </th>
+                    <th>序号</th>
+                    <th>分类</th>
+                    <th>条码</th>
+                    <th>名称</th>
+                    <!--<th>进价</th>-->
+                    <!--<th>售价</th>-->
+
+                    <ob_price rule="cost_price"><th>进货价</th></ob_price>
+                    <ob_price rule="retail_price"><th>零售价</th></ob_price>
+                    <ob_price rule="wholesale_price"><th>批发价</th></ob_price>
+                    <ob_price rule="delivery_price"><th>配送价</th></ob_price>
+                    <ob_price rule="member_price"><th>会员价1</th></ob_price>
+
+                    <th>规格</th>
+                    <th>单位</th>
+
+
+                </tr>
+                </thead>
+
+                {notempty name='list'}
+                <tbody>
+                {volist name='list' id='vo'}
+                <tr>
+                    <td>
+                        <label>
+                            <input class="flat-grey" type="checkbox" name="ids" data-item='{$vo|json_encode}' value="{$vo.goods_id}">
+                        </label>
+                    </td>
+                    <td>{$i}</td>
+                    <td>{$vo.category_name}</td>
+                    <td>{$vo.barcode1}</td>
+                    <td>{$vo.name}</td>
+                    <!--<td>{$vo.cost_price}</td>-->
+                    <!--<td>{$vo.retail_price}</td>-->
+
+                    <ob_price rule="cost_price"><td>{$vo.cost_price}</td></ob_price>
+                    <ob_price rule="retail_price"><td>{$vo.retail_price}</td></ob_price>
+                    <ob_price rule="wholesale_price"><td>{$vo.wholesale_price}</td></ob_price>
+                    <ob_price rule="delivery_price"><td>{$vo.delivery_price}</td></ob_price>
+                    <ob_price rule="member_price"><td>{$vo.member_price1}</td></ob_price>
+
+                    <td>{$vo.specification}</td>
+                    <td>{$vo.unit}</td>
+
+
+                </tr>
+                {/volist}
+                </tbody>
+                {else/}
+                <tbody>
+                <tr class="odd">
+                    <td colspan="1" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                </tr>
+                </tbody>
+                {/notempty}
+            </table>
+
+        </div>
+
+
+        <div class="box-footer clearfix text-center">
+            {$list->render()}
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+
+</script>
+
+
+</body>
+</html>

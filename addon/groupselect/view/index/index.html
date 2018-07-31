@@ -1,0 +1,41 @@
+<!--<link rel="stylesheet" href="__STATIC__/addon/region/region_style.css">-->
+<div>
+    <select id="type_{$addons_data.name}" class="form-control addon-form-group-select"></select>
+    <select id="shop_{$addons_data.name}" class="form-control addon-form-group-select"></select>
+    <select id="group_{$addons_data.name}" name="group_{$addons_data.name}"  class="form-control addon-form-group-select"></select>
+</div>
+
+<script type="text/javascript">
+
+$(function(){
+    
+    var type_id = "{$addons_data['type']}";
+    var shop_id = "{$addons_data['shop']}";
+    var group_id = "{$addons_data['group']}";
+
+    var get_options_url = '{:addons_url("GroupSelect://Index/getOptions")}';
+
+    function typeList (select_id = 0) {
+        $.get(get_options_url, {type: 'type', select_id: select_id}, function(result){ $("#type_{$addons_data.name}").html(result.data); });
+    }
+    function changeType(type_id = 0, select_id = 0)
+    {
+        $.get(get_options_url, {type: 'shop', upid: type_id, select_id: select_id}, function(result){ $("#shop_{$addons_data.name}").html(result.data); });
+    }
+    
+    function changeShop(shop_id = 0,select_id = 0)
+    {
+        $.get(get_options_url, {type: 'group', upid: shop_id, select_id: select_id}, function(result){ $("#group_{$addons_data.name}").html(result.data); });
+    }
+
+
+
+    typeList(type_id);
+    changeType(type_id,shop_id);
+    changeShop(shop_id,group_id);
+
+
+    $("#type_{$addons_data.name}").change(function(){ changeType($("#type_{$addons_data.name}").val());});
+    $("#shop_{$addons_data.name}").change(function(){ changeShop($("#shop_{$addons_data.name}").val());});
+});
+</script>

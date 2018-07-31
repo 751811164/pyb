@@ -1,0 +1,156 @@
+<div class="modal-dialog" role="document" style="width: 540px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">等级管理</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="row">
+                    <input type="hidden" name="id" value="{$info.id|default=''}">
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">会员卡类</label>
+                            <div class="col-sm-10">
+                                <select name="type_id" class="form-control">
+                                {notempty name='typeList'}
+                               {volist name='typeList' id='vo'}
+                                <option value="{$vo.id}" data-is_point="{$vo.is_point}">[{$vo.number}]{$vo.name}</option>
+                                {/volist}
+                                {/notempty}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">等级编号</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" value="{$info.number|default=''}" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">等级名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="name" value="{$info.name|default=''}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">积分值</label>
+                            <div class="col-sm-10 form-inline">
+                                <input type="text" class="form-control" name="point_rate" value="{$info.point_rate|default='1'}">
+                                元 积1分
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">会员生日</label>
+                            <div class="col-sm-10 form-inline">
+                                <input type="text" class="form-control" name="birthday_times" value="{$info.birthday_times|default=''}">
+                                倍积分
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">优惠方式</label>
+                            <div class="col-sm-10">
+                                <select name="grade_id" class="form-control">
+                                    <option value="0">原价</option>
+                                    {notempty name='memberGradeList'}
+                                    {volist name='memberGradeList' id='vo'}
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备注</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" name="remark"  cols="10" >{$info.remark|default=''}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">创建人</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" value="{$info.admin_add_name|default=''}" disabled>
+                            </div>
+
+                            <label class="col-sm-2 control-label">日期</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" value="{$info.create_time|default=''}" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">修改人</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" value="{$info.admin_edit_name|default=''}" disabled>
+                            </div>
+
+                            <label class="col-sm-2 control-label">日期</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" value="{$info.update_time|default=''}" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('cardEdit')}{else/}{:url('cardAdd')}{/notempty}">保存</button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+
+        // ob.setValue('is_postsave', '{$info.is_postsave|default=""}');
+        // ob.setValue('is_count', '{$info.is_count|default=""}');
+        $("[name='type_id']").on("change",function () {
+           var $select= $(this).children('option:selected');
+           $("[name='point_rate']").prop('disabled',!($select.attr('data-is_point')*1));
+
+        })
+        ob.setValue('type_id', '{$info.type_id|default=""}');
+        ob.setValue('grade_id', '{$info.grade_id|default=""}');
+
+        //启动icheck
+        $("[type='radio'],[type='checkbox']").iCheck({
+            checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+        });
+
+    })
+
+
+</script>

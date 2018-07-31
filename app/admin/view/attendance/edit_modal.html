@@ -1,0 +1,118 @@
+
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">添加申请</h4>
+        </div>
+        <div class="modal-body">
+            <form  class="form-horizontal">
+                <div class="row">
+                    <input type="hidden" id="editId" name="id" value="{$info.id|default=''}">
+                    <input type="hidden"  name="days" value="{$info.days|default='1'}">
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">选择机构</label>
+                            <div class="col-sm-2">
+                                <select id="shopSelect" class="form-control">
+                                    <option value="-1">请选择</option>
+                                    {notempty name="shopList"}
+                                    {volist name="shopList" id="vo"}
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">选择员工</label>
+                            <div class="col-sm-2">
+                                <select name="admin_id" class="form-control">
+                                    <option value="-1">请选择</option>
+                                    {notempty name="adminList"}
+                                    {volist name="adminList" id="vo"}
+                                    <option value="{$vo.id}" data-shop_id="{$vo.shop_id}" style="display: none">{$vo.username}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">选择时间</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control date" readonly name="start_time" value="{$info.start_time|default=''}">
+                            </div>
+
+                            <div style="float: left;">至</div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control date" readonly name="end_time" value="{$info.end_time|default=''}">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <label class="col-sm-2 control-label">请假原因:</label>
+                        <textarea name="reason" class="form-control" cols="30" rows="10">{$info.reason|default=''}</textarea>
+
+                    </div>
+
+                </div>
+
+
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('leaveEdit')}{else/}{:url('leaveAdd')}{/notempty}">保存</button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+  $(function () {
+
+    //同时绑定多个时间控件
+    lay('.date').each(function () {
+      laydate.render({
+        elem: this,
+        type: 'datetime',
+        trigger: 'click',
+      })
+    })
+
+    var admin_id = '{$info.admin_id|default=-1}'
+    if (admin_id > -1) {
+      $('select').prop('disabled', true)
+    }
+    ob.setValue('admin_id', admin_id)
+
+    $('#shopSelect').on('change', function (e) {
+      var shop_id = $(this).val()
+      $('select[name=\'admin_id\']').children('option[data-shop_id]').each(function () {
+        $(this).hide()
+        if ($(this).attr('data-shop_id') == shop_id) {
+          $(this).show()
+        }
+      })
+
+    })
+
+  })
+
+
+
+
+</script>

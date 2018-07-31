@@ -1,0 +1,39 @@
+<div class="box-body table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>分类</th>
+            <th>库存数量</th>
+            <th>库存金额</th>
+            <th>售价金额</th>
+
+        </tr>
+        </thead>
+
+        {notempty name='list'}
+        <tbody>
+        {volist name='list' id='vo'}
+        <tr>
+            <td>{$i}</td>
+            <td>{$vo.category_name}</td>
+
+            <td>{$vo.stock_actual}</td>
+            <ob_price rule="cost_price">
+                <td>{$vo.cost_price}</td>
+            </ob_price>
+            <ob_price rule="cost_price">
+                <td>{$vo.retail_price}</td>
+            </ob_price>
+        </tr>
+        {/volist}
+
+        </tbody>
+        {/notempty}
+
+    </table>
+
+</div>
+
+
+

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择商品</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/select2/3.5.4/select2.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/iCheck/1.0.2/skins/all.css" rel="stylesheet">
+    <link href="__STATIC__/admin/css/onebase.css" rel="stylesheet">
+    <link href="__STATIC__/admin/css/pretty.min.css" rel="stylesheet">
+
+
+    <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/select2/3.5.4/select2.min.js"></script>
+    <script src="https://cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+
+    <style>
+        .list-group-sm .list-group-item {
+            padding: 5px 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container-fluid box">
+
+
+    <!-- /.box-header -->
+    <div class="box-header">
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="box-tools">
+                <div class="input-group search-form">
+                    <input name="search_data" type="text" class="form-control search-input" value="{:input('search_data')}" placeholder="供应商名">
+                    <div class="input-group-btn">
+                        <button type="button" id="search" url="{:url('')}" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="box-body table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+
+                <th></th>
+                <th>序号</th>
+                <!--<th>启用时间</th>-->
+                <th>编号</th>
+                <th>供应商名称</th>
+                <th>法人</th>
+                <th>供应商地址</th>
+                <th>手机号</th>
+                <th>座机</th>
+                <th>微信</th>
+                <th>QQ</th>
+                <th>邮箱</th>
+
+
+            </tr>
+            </thead>
+
+            {notempty name='list'}
+            <tbody>
+            {volist name='list' id='vo'}
+            <tr data-id="{$vo['id']}">
+                <td>
+                    <!--<label>-->
+                        <!--<input class="flat-grey" type="radio" name="ids" value="{$vo.id}"/>-->
+
+                    <!--</label>-->
+
+                    <div class="pretty circle primary">
+                        <input type="radio" name="ids" value="{$vo.id}" data-name="{$vo.name}">
+                        <label><i class="default"></i> </label>
+                    </div>
+
+                </td>
+                <td>{$i}</td>
+                <!--<td>{$vo.check_time|default=''}</td>-->
+                <td>{$vo.number|default=''}</td>
+                <td>{$vo.name|default=''}</td>
+                <td>{$vo.legalname}</td>
+                <td>{$vo.address|default=''}</td>
+                <td>{$vo.mobile}</td>
+                <td>{$vo.tel}</td>
+                <td>{$vo.wechat}</td>
+                <td>{$vo.qq}</td>
+                <td>{$vo.email}</td>
+
+
+            </tr>
+            {/volist}
+            </tbody>
+            {else/}
+            <tbody>
+            <tr class="odd">
+                <td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+            </tr>
+            </tbody>
+            {/notempty}
+        </table>
+
+    </div>
+
+
+    <div class="box-footer clearfix text-center">
+        {$list->render()}
+    </div>
+</div>
+
+</div>
+
+
+<script>
+
+
+</script>
+
+
+</body>
+</html>

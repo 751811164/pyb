@@ -1,0 +1,117 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?type_id=">跳转</a>
+
+
+        <div class="box-tools">
+            <div class="form-inline search-form">
+
+                <label class="control-label" >日期</label>
+                <input type="text" name="start_time" class="form-control date" readonly value="{:input('start_time')}" style="width: 90px;">
+                <label class="control-label">至</label>
+                <input type="text" name="end_time" class="form-control date" readonly value="{:input('end_time')}" style="width: 90px;">
+                <div class="form-group">
+                    <label class="control-label" >机构</label>
+
+                    {:hook('ShopSelect', array('name'=>'id' ))}
+
+                </div>
+                <div class="input-group ">
+                    <input  type="text" name="search_data" class="pull-right search-input" value="{:input('search_data')}" placeholder="寄存流水号/会员编号/会员名">
+                    <div class="input-group-btn">
+                        <button type="button" id="search" url="{:url('storagelist')}" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br/>
+    </div>
+    <div class="box-body table-responsive">
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+
+                    <th>序号</th>
+                    <th>寄存流水号</th>
+                    <th>会员编号</th>
+                    <th>会员名</th>
+                    <th>商品条码</th>
+                    <th>商品名称</th>
+                    <th>寄存数量</th>
+                    <th>已取</th>
+                    <th>剩余</th>
+                    <th>寄存时间</th>
+                    <th>寄存门店</th>
+                    <th>取货记录</th>
+
+                </tr>
+                </thead>
+
+                {notempty name='list'}
+                <tbody>
+                {volist name='list' id='vo'}
+                <tr>
+
+                    <td>{$i}</td>
+                    <td>{$vo.sn}</td>
+                    <td>{$vo.member_number}</td>
+                    <td>{$vo.member_name}</td>
+                    <td>{$vo.barcode}</td>
+                    <td>{$vo.goods_name}</td>
+                    <td>{$vo.storage_num}</td>
+                    <td>{$vo.take_num}</td>
+                    <td>{$vo.storage_num-$vo.take_num}</td>
+                    <td>{$vo.create_time}</td>
+                    <td>{$vo.shop_name}</td>
+                    <td>
+                        <ob_link>
+                            <a class="btn btn-info take-log" url="{:url('takeLogList',array('storage_id'=>$vo.id))}">查看</a>
+                        </ob_link>
+                    </td>
+
+
+                </tr>
+                {/volist}
+                </tbody>
+                {else/}
+                <tbody>
+                <tr class="odd">
+                    <td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                </tr>
+                </tbody>
+                {/notempty}
+            </table>
+
+    </div>
+    <div class="box-footer clearfix text-center">
+        {$list->render()}
+    </div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="takeLogModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+
+</div>
+
+
+<script>
+
+    //查看寄存取货记录
+    $(function () {
+        ob.setValue("shop_id","{input('shop_id')}");
+
+        $(".take-log").on('click',function(e){
+            e.preventDefault();
+
+            ajax({
+                url: $(this).attr('url'), success: function (data) {
+                    $('#takeLogModal').empty().append(data).modal('show');
+                },
+            })
+
+        })
+    })
+
+</script>

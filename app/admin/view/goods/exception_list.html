@@ -1,0 +1,257 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?cid=">跳转</a>
+        <ob_link><a class="btn" url="{:url('')}" id="search" >查 询</a></ob_link>
+        <ob_link><a class="btn" url="{:url('goodsEdit')}" id="edit" style="display: none;">编 辑</a></ob_link>
+        <ob_link><a class="btn ladda-button batch-edit" data-target="batchSingleEdit" url="{:url('batchSingleEdit')}" >批量修改</a></ob_link>
+        <!--<ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">导 出</a></ob_link>-->
+
+
+        <div class="box-tools form-block">
+            <div class="form-inline search-form">
+                <div class="form-group">
+                    <label class="control-label">日&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;期</label>
+                    <input  type="text" name="start_time" class="form-control date" readonly value="{:input('start_time')}" style="min-width: 200px;">
+                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                    <input  type="text" name="end_time" class="form-control date" readonly value="{:input('end_time')}"  style="min-width: 200px;">
+                    <label class="control-label">名称条码</label>
+                    <input type="text" name="search_data" class="form-control" value="{:input('search_data')}"  style="min-width: 200px;" placeholder="名称/条码">
+
+                </div>
+                <br>
+                <div class="form-group">
+
+                    <label class="control-label">查询类型</label>
+                    <select name="goods_type" class="form-control"  style="min-width: 200px;">
+                        <option value>全部</option>
+                        {notempty name="typeList" }
+                        {volist name="typeList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+
+                    <label class="control-label">商品类别</label>
+                    <select name="category_id" class="form-control"  style="min-width: 200px;">
+                        <option value>全部</option>
+                        {notempty name="categoryList" }
+                        {volist name="categoryList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+
+
+
+                    <label class="control-label">商品品牌</label>
+                    <select name="brand_id" class="form-control"  style="min-width: 200px;">
+                        <option value>全部</option>
+                        {notempty name="brandList" }
+                        {volist name="brandList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+
+
+                </div>
+                <br>
+                <div class="form_group">
+                    <label class="control-label">查询机构</label>
+                    <select name="shop_id" class="form-control"  style="min-width: 200px;">
+                        <option value>全部</option>
+                        {notempty name="shopList" }
+                        {volist name="shopList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+                    <label class="control-label">查询项目</label>
+                    <select id="selectItem" name="search_item[]" hidden multiple >
+                    {notempty name="searchItem"}
+                    {volist name="searchItem" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/eq}
+                        {/volist}
+
+                    {/volist}
+                    {/notempty}
+                    </select>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="box-body table-responsive">
+        <table class="table table-bordered table-hover table-pointer" style="min-width: 1600px;">
+                    <thead>
+                    <tr>
+                        <th class="checkbox-select-all">
+                            <label>
+                                <input class="flat-grey js-checkbox-all" type="checkbox">
+                            </label>
+                        </th>
+                        <th>类型</th>
+                        <th>分类</th>
+                        <th>条形码</th>
+                        <th>名称</th>
+                        <th>单位</th>
+                        <th>规格</th>
+
+
+                        <ob_price rule="cost_price"><th>进货价</th></ob_price>
+                        <ob_price rule="retail_price"><th>零售价</th></ob_price>
+                        <ob_price rule="wholesale_price"><th>批发价</th></ob_price>
+                        <ob_price rule="delivery_price"><th>配送价</th></ob_price>
+                        <ob_price rule="member_price"><th>会员价1</th></ob_price>
+
+                        <th>有效期(天)</th>
+                        <th>供应商</th>
+                        <th>前台打折</th>
+                        <th>前台议价</th>
+                        <th>前台赠送</th>
+                        <th>项目储值</th>
+                        <th>商品积分</th>
+                        <th>管理库存</th>
+
+                        <th class="status-th">状态</th>
+
+                    </tr>
+                    </thead>
+
+                    {notempty name='list'}
+                    <tbody>
+                    {volist name='list' id='vo'}
+                    <tr data-id="{$vo.id}">
+                        <td>
+                            <label>
+                                <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}">
+                            </label>
+                        </td>
+                        <td>{$vo.type_name}</td>
+                        <td>{$vo.category_name}</td>
+                        <td>{$vo.barcode1}</td>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.unit}</td>
+                        <td>{$vo.specification}</td>
+
+
+                        <ob_price rule="cost_price"><td>{$vo.cost_price}</td></ob_price>
+                        <ob_price rule="retail_price"><td>{$vo.retail_price}</td></ob_price>
+                        <ob_price rule="wholesale_price"><td>{$vo.wholesale_price}</td></ob_price>
+                        <ob_price rule="delivery_price"><td>{$vo.delivery_price}</td></ob_price>
+                        <ob_price rule="member_price"><td>{$vo.member_price1}</td></ob_price>
+
+                        <td>{$vo.expiry_day}</td>
+                        <td>{$vo.supplier_name}
+                            <!--<oblink><a href="javascript:;" data-classid url="{:url('supplier_price/pricelist')}" data-id="{$vo.id}" class="btn btn-xs btn-info">选择供应商</a></oblink>-->
+                        </td>
+                        <td>{$vo.discount_text}</td>
+                        <td>{$vo.bargain_text}</td>
+                        <td>{$vo.presentation_text}</td>
+                        <td>{$vo.stored_text}</td>
+                        <td>{$vo.point_text}</td>
+                        <td>{$vo.control_stock_text}</td>
+                        <td>
+                            <ob_link><a class="ajax-get" href="{:url('setStatus', array('ids' => $vo['id'], 'status' => (int)!$vo['status']))}">{$vo.status_text}</a></ob_link>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                    {else/}
+                    <tbody>
+                    <tr class="odd">
+                        <td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                    </tr>
+                    </tbody>
+                    {/notempty}
+                </table>
+        <div class=" clearfix text-center">
+            {$list->render()}
+        </div>
+    </div>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"></div>
+<!-- 单个批量模态框（Modal） -->
+<div class="modal fade" id="batchSingleEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" ></div><!-- /.modal -->
+</div>
+
+
+
+<link rel="stylesheet" href="__STATIC__/admin/js/multiple_select/multiple_select.css">
+<script type="text/javascript" src="__STATIC__/admin/js/multiple_select/multiple_select.js"></script>
+<script>
+    ob.setValue('goods_type','{:input("goods_type")}');
+    ob.setValue('category_id','{:input("category_id")}');
+    ob.setValue('brand_id','{:input("brand_id")}');
+    ob.setValue('shop_id','{:input("shop_id")}');
+
+
+    $(function(){
+
+        $('#selectItem').multipleSelect({
+            width: '100%'
+        });
+        $('#selectItem').multipleSelect('setSelects', {$search_item|json_encode});
+
+
+        //双击编辑
+        $('table.table-pointer tr').on('dblclick', function(e) {
+            e.preventDefault();
+            if (e.target.nodeName != 'TD') {
+                return false;
+            }
+
+            if ($('#edit').length === 0) {
+                alert('您无权修改');
+                return false;
+            }
+            var id = $(this).attr('data-id');
+
+            $.get($('#edit').attr('url'), {id:id,condition:"eq"}, function(data) {
+
+                $('#myModal').empty().append(data).modal('show');
+            });
+        });
+
+        //批量修改modal框
+        $(".batch-edit").on('click', function(e) {
+
+            var ids= "";
+            $("table :checked").each(function() {
+                if(!isNaN(parseInt($(this).val())) ){
+                    ids+= $(this).val()+',';
+                }
+            })
+            ids = ids.substring(0,ids.length-1);
+
+            if($.trim(ids)==""){
+
+                obalert({'code':0,'msg':"请选择商品"})
+                return false
+            }
+
+            var target = this;
+            $.get($(this).attr('url'), function (data) {
+                $("#"+$(target).attr('data-target')).empty().append(data).modal('show');
+            });
+
+            e.preventDefault();
+        });
+
+        $('.modal').on('hidden.bs.modal', function () {
+
+            $(this).empty()
+        })
+
+
+    })
+
+
+
+
+
+</script>

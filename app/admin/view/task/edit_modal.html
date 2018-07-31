@@ -1,0 +1,137 @@
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">任务编辑</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <input type="hidden" name="interval">
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        {notempty name="Think.get.index"}
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">任务序号</label>
+                            <div class="col-sm-10 ">
+                                <input type="text" class="form-control" name="index" value="{:input('index')}">
+                            </div>
+                        </div>
+                        {/notempty}
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">任务名称</label>
+                            <div class="col-sm-10 ">
+                                <input type="text" class="form-control" name="name" value="{$info.name|default=''}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">类型</label>
+                            <div class="col-sm-10">
+                                <select name="type" class="form-control">
+                                    <option value="2">循环执行</option>
+                                    <option value="1">执行一次</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group run-type-2">
+                            <label class="col-sm-2 control-label">时间间隔</label>
+                            <div class="col-sm-10 ">
+                                <div class="input-group">
+                                    <input type="number" class="form-control" placeholder="周期" name="task-time" value="1">
+                                    <span class="input-group-btn" style="width: 140px;">
+                                            <select class="bs-select form-control" onchange="" name="task-time-unit">
+                                                <option value="second">秒（second）</option>
+                                                <option value="minute">分（minute）</option>
+                                                <option value="hour">小时（hour）</option>
+                                                <option value="day">日（day）</option>
+                                                <option value="month">月（month）</option>
+                                                <option value="year">年（year）</option>
+                                            </select>
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">开始时间</label>
+                            <div class="col-sm-10 ">
+                                <input type="text" class="form-control date" name="begin_time" value="{$info.begin_time|default=''}">
+                            </div>
+                        </div>
+
+                        <div class="form-group run-type-2">
+                            <label class="col-sm-2 control-label">截止时间</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control date" name="end_time" value="{$info.end_time|default=''}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">执行任务</label>
+                            <div class="col-sm-10 ">
+                                <input type="text" class="form-control" name="action" value="{$info.action|default=''}" placeholder="/crontab/index/test">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">状态</label>
+                            <div class="col-sm-10">
+                                <select name="status" class="form-control">
+                                    <option value="1">启用</option>
+                                    <option value="0">停用</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{empty name="Think.get.index"}{:url('taskAdd')}{else/}{:url('taskEdit')}{/empty}">保存</button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+
+
+        $("[name='type']").on("change", function () {
+            
+            var type = $(this).val();
+            if (type == 1) {
+                $(".run-type-2").hide();
+            }
+            else {
+                $(".run-type-2").show();
+            }
+
+        })
+
+         ob.setValue('type', '{$info.type|default=""}');
+         ob.setValue('status', '{$info.status|default=""}');
+        if ('{$info.type|default=""}'==1) {
+            $(".run-type-2").hide();
+        }
+        else {
+            $(".run-type-2").show();
+        }
+        if ("{$info.interval}") {
+            var arr ="{$info.interval}".split(" ");
+            ob.setValue('task-time', arr[0]);
+            ob.setValue('task-time-unit', arr[1]);
+        }
+        
+    })
+
+
+</script>

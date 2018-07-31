@@ -1,0 +1,130 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+        <ob_link><a class="btn" url="{:url('brandAdd')}" id="add" data-toggle="modal" data-target="#myModal">新 增</a></ob_link>
+        <ob_link><a class="btn" url="{:url('brandEdit')}" id="edit" style="display: none;" >编 辑</a></ob_link>
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">删 除</a></ob_link>
+
+        <div class="box-tools">
+            <div class="form-inline search-form">
+            <div class="input-group ">
+                <input name="search_data" class="pull-right search-input" value="{:input('search_data')}" placeholder="品牌名称" type="text">
+                <div class="input-group-btn">
+                    <button type="button" id="search" url="{:url('brandlist')}" class="btn btn-default"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <br/>
+    </div>
+    <div class="box-body table-responsive">
+        <table class="table table-bordered table-hover table-pointer">
+            <thead>
+            <tr>
+                <th class="checkbox-select-all">
+                    <label>
+                        <input class="flat-grey js-checkbox-all" type="checkbox">
+                    </label>
+                </th>
+                <th>序号</th>
+                <th>编号</th>
+                <th>名称</th>
+
+            </tr>
+            </thead>
+
+            {notempty name='list'}
+            <tbody>
+            {volist name='list' id='vo'}
+            <tr  data-id="{$vo['id']}">
+                <td>
+                    <label>
+                        <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}">
+                    </label>
+                </td>
+                <td>{$vo.id}</td>
+                <td>{$vo.number}</td>
+                <td>{$vo.name}</td>
+
+            </tr>
+            {/volist}
+            </tbody>
+            {else/}
+            <tbody>
+            <tr class="odd">
+                <td colspan="4" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+            </tr>
+            </tbody>
+            {/notempty}
+        </table>
+
+    </div>
+    <div class="box-footer clearfix text-center">
+        {$list->render()}
+    </div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
+
+</div>
+
+
+<script>
+    //新增
+    $('#add').on('click', function(e) {
+        e.preventDefault();
+        $.get($(this).attr('url'), function(data) {
+
+            $('#myModal').empty().append(data).modal('show');
+        });
+
+    });
+
+
+    //双击编辑
+    $('table.table-pointer tr').on('dblclick', function(e) {
+        e.preventDefault();
+        if (e.target.nodeName != 'TD') {
+            return false;
+        }
+
+        if ($('#edit').length === 0) {
+            alert('您无权修改');
+            return false;
+        }
+        var id = $(this).attr('data-id');
+
+            $.get($('#edit').attr('url'), {id:id}, function(data) {
+
+                $('#myModal').empty().append(data).modal('show');
+            });
+    });
+
+    //保存
+    $('#myModal').on('click', '#saveInfo', function () {
+        var $form = $('#myModal form');
+
+        var postData = $form.serialize();
+
+        var url = $(this).attr('data-url');
+
+        ajax({
+            method:"POST",
+            url:url,
+            data:postData,
+            success:function (data) {
+                obalertp(data);
+            }
+        })
+
+        //
+        // $.post(url, postData, function (data) {
+        //     obalertp(data);
+        //
+        // }, 'json');
+
+        return false;
+    });
+</script>

@@ -1,0 +1,234 @@
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">其他奖励</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <input type="hidden" name="id" value="{$info.id|default=''}">
+                <input type="hidden" name="group_id" value="{$Think.get.gid}">
+                <input type="hidden" name="tb" value="{$Think.get.tb}">
+                <input type="hidden" name="award_ids">
+                <div class="row">
+
+                    <div id="container" class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">启用时间</label>
+                            <div class="col-sm-10 form-inline">
+                                <input type="text" class="form-control date" readonly name="start_time" value="{$info.start_time|default=''}">
+                                至<input type="text" class="form-control date" readonly name="end_time" value="{$info.end_time|default=''}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">选择员工</label>
+                            <div class="col-sm-10 form-inline">
+                                <select name="admin_id" class="form-control" {notempty name="info.admin_id"}disabled{/notempty}>
+                                    <option value="-1">请选择</option>
+                                    {notempty name="adminList"}
+                                    {volist name="adminList" id="vo"}
+                                    <option value="{$vo.id}">{$vo.username}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-info">
+                            <div class="panel-heading">发放规则</div>
+                            <div class="box-body table-responsive">
+                                <table class="table table-condensed  table-bordered table-hover  reference">
+                                    <thead>
+                                    <tr>
+                                        <th class="checkbox-select-all">
+                                            <label>
+                                                <input class="flat-grey js-checkbox-all" type="checkbox">
+                                            </label>
+                                        </th>
+                                        <th>序号</th>
+                                        <th>奖项名称</th>
+                                        <th>金额</th>
+                                        <!--<th>有效期</th>-->
+
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                    <tr v-for="(item,index) in list" :data-id="item.id">
+                                        <td>
+                                            <label>
+                                                <input class="flat-grey" type="checkbox" name="award_id[]" :value="item.id" >
+                                            </label>
+                                        </td>
+                                        <td>{{index}}</td>
+                                        <td>
+                                            {{item.name}}
+                                        </td>
+                                        <td>
+                                            <input type="number" name="award[]" class="form-control" :data-award_id="item.id"/>
+                                        </td>
+
+
+                                    </tr>
+
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+
+                        <div >
+                            <input type="button" class="btn btn-info btn-sm" @click="showAddAward" value="添加奖项名称">
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </form>
+
+        </div>
+
+
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('settingEdit')}{else/}{:url('settingAdd')}{/notempty}">保存
+            </button>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="awardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"> 添加奖项名称</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control" name="name">
+                注:此处添加的名称其他员工也共享
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="addAward()" class="btn btn-primary">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+
+<script>
+  $(function() {
+
+
+
+    $('#awardModal').on('hidden.bs.modal', function () {
+      $("#myModal").modal('show');
+      // 执行一些动作...
+    })
+  });
+
+
+  var vm = new Vue({
+        el: ".modal-dialog",
+        data: {
+          info: $.parseJSON('{$info|json_encode}'),
+          list: $.parseJSON('{$list|json_encode}'),
+        },
+        mounted:function(){
+          ob.setValue('admin_id',"{$info.admin_id|default='-1'}");
+
+            //同时绑定多个时间控件
+            lay('.date').each(function() {
+                laydate.render({
+                    min: 0, //当天
+                    elem: this,
+                    type: 'datetime',
+                    trigger: 'click',
+                });
+            });
+
+
+            //启动icheck
+          $("[type='radio'],[type='checkbox']").iCheck({
+            checkboxClass: 'icheckbox_minimal-blue',
+            radioClass: 'iradio_minimal-blue',
+            increaseArea: '20%', // optional
+          });
+          iCheckAll();
+
+          var awards = "{$info.award_ids|default=''}".split(',');
+
+          var rules = {$info.rules|default='[]'|json_encode}||[];
+
+          for (var i = 0; i < rules.length; i++) {
+            var rule = rules[i];
+            $('form').find('tbody').find(":checkbox[value='" + rule['award_id'] + "']").iCheck('check');
+            $("[name='award[]'][data-award_id='" + rule['award_id'] + "']").val(rule["award"]);
+            ;
+          }
+        },
+
+        updated:function(){
+          //启动icheck
+          $("[type='radio'],[type='checkbox']").iCheck({
+            checkboxClass: 'icheckbox_minimal-blue',
+            radioClass: 'iradio_minimal-blue',
+            increaseArea: '20%', // optional
+          });
+          iCheckAll();
+        },
+        methods: {
+          showAddAward:function(){
+            $("#awardModal").modal('show');
+          }
+
+        },
+      });
+
+
+  
+  function addAward() {
+    $("#awardModal").find("[name='name']").val();
+    $.post("{:url('OtherAward/awardAdd')}",{name:$("#awardModal").find("[name='name']").val()},function(res){
+      if (res.code) {
+        vm.list.push($.parseJSON( res.data));
+      }
+      else {
+        obalert({msg:"添加失败,请稍后再试~"});
+      }
+      $("#awardModal").modal('hide');
+     })
+  }
+
+  //提交前
+  function beforeSubmit() {
+
+    $('form tbody').find(":checkbox:not(:checked)").parents("tr").find(":text").prop("disabled", true);
+    $('form').find("[name='admin_id']").prop("disabled",false);
+    //组合id
+    var arr = [];
+    $('form tbody').find(":checked").each(function() {
+      arr.push($(this).val());
+    });
+    $(':hidden[name="award_ids"]').val(arr.join());
+
+  }
+
+  function afterSubmit() {
+
+    $('form tbody').find("input").prop("disabled", false);
+  }
+  
+
+</script>

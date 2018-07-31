@@ -1,0 +1,230 @@
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">选择供应商</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <input type="hidden" id="" name="goods_id" data-clear value="{$Think.get.id|default=''}">
+
+                <div class="row">
+
+                    <div class="col-xs-12">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <button type="button" class="btn btn-xs btn-info add">添加供应商</button>
+                                <button type="button" class="btn btn-xs btn-info set">启用</button>
+                                <!--<button type="button" class="btn btn-xs btn-info del">删除</button>-->
+                            </div>
+                            <div style="width: 720px;overflow-x: scroll;">
+                                <table class="table table-condensed  table-bordered tapackble-hover" style="min-width: 1300px">
+                                    <thead>
+                                    <!--<tr>-->
+                                        <!--{assign name="num" value="0" /}-->
+                                        <!--<th colspan="2"></th>-->
+                                        <!--<th colspan="{$num+4+count($memberGradeList)}">单品</th>-->
+                                        <!--<th colspan="{$num+3+count($memberGradeList)}">多包装</th>-->
+                                    <!--</tr>-->
+                                    <tr>
+                                        <th></th>
+                                        <th>供应商</th>
+                                        <!--<th>进货价</th>-->
+                                        <!--<th>零售价</th>-->
+                                        <!--<th>批发价</th>-->
+                                        <!--<th>配送价</th>-->
+                                        <ob_price rule="cost_price"><th>进货价</th></ob_price>
+                                        <ob_price rule="retail_price"><th>零售价</th></ob_price>
+                                        <ob_price rule="wholesale_price"><th>批发价</th></ob_price>
+                                        <ob_price rule="delivery_price"><th>配送价</th></ob_price>
+                                        <ob_price rule="member_price">
+                                        {volist name='memberGradeList' id="vo"}
+                                        <th>{$vo.name}</th>
+                                        {/volist}
+                                        </ob_price>
+                                        <!--多包装-->
+                                        <!--<th>零售价</th>-->
+                                        <!--<th>批发价</th>-->
+                                        <!--<th>配送价</th>-->
+                                        <ob_price rule="retail_price"><th>零售价(多)</th></ob_price>
+                                        <ob_price rule="wholesale_price"><th>批发价(多)</th></ob_price>
+                                        <ob_price rule="delivery_price"><th>配送价(多)</th></ob_price>
+
+                                        <ob_price rule="member_price">
+                                            {volist name='memberGradeList' id="vo"}
+                                            <th>{$vo.name}(多包装)</th>
+                                            {/volist}
+                                        </ob_price>
+                                        <th>操作</th>
+
+                                    </tr>
+                                    </thead>
+
+                                    {notempty name='list'}
+                                    <tbody>
+                                    {volist name='list' id='vo' key="i" }
+                                    <tr data-id="{$vo['id']}">
+                                        <td>
+                                            <label>
+                                                <input class="flat-grey" type="radio" name="id" value="{$vo.id}" {eq name="vo.checked" value="1" }checked{/eq} >
+                                            </label>
+                                        </td>
+
+                                        <td>{$vo.name}</td>
+
+                                         <ob_price rule="cost_price"><td>{$vo.single_cost_price}</td></ob_price>
+                                         <ob_price rule="retail_price"><td>{$vo.single_retail_price}</td></ob_price>
+                                         <ob_price rule="wholesale_price"><td>{$vo.single_wholesale_price}</td></ob_price>
+                                         <ob_price rule="delivery_price"><td>{$vo.single_delivery_price}</td></ob_price>
+
+                                        <ob_price rule="member_price">
+                                        {volist name='memberGradeList' id='v'}
+                                        <td>
+                                            <span data-single_id="{$v.id}"></span>
+                                            {volist name='vo.single_member_price' id="sp"}
+                                            {eq name="v.id" value="$sp.grade_id"}{$sp.price}{/eq}
+                                            {/volist}
+                                        </td>
+                                        {/volist}
+                                        </ob_price>
+
+                                        <!--多包装-->
+                                        <ob_price rule="retail_price"> <td>{$vo.pack_retail_price}</td></ob_price>
+                                        <ob_price rule="wholesale_price"><td>{$vo.pack_wholesale_price}</td></ob_price>
+                                        <ob_price rule="delivery_price"><td>{$vo.pack_delivery_price}</td></ob_price>
+                                        <ob_price rule="member_price">
+                                        {volist name='memberGradeList' id="v"}
+                                        <td>
+                                            <span data-single_id="{$v.id}"></span>
+                                            {volist name='vo.pack_member_price' id="sp"}
+                                            {eq name="v.id" value="$sp.grade_id"}{$sp.price}{/eq}
+                                            {/volist}
+                                        </td>
+                                        {/volist}
+                                        </ob_price>
+                                        <td><a href="javascript:;" class="btn btn-info btn-xs del">删除</a></td>
+
+                                    </tr>
+                                    {/volist}
+                                    </tbody>
+                                    {/notempty}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--</div>-->
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<template id="demo">
+    <tr>
+        <td>
+            <label>
+                <input class="flat-grey" type="radio" name="id" value="">
+            </label>
+        </td>
+
+        <td><select class="form-control input-sm" name="supplier_id" style="width: auto;">
+            {volist id="vo" name="supplierList"}
+            <option value="{$vo.id}">{$vo.name}</option>
+            {/volist}
+        </select></td>
+        <td><input type="text" class="form-control input-sm" name="single_cost_price"></td>
+        <td><input type="text" class="form-control input-sm" name="single_retail_price"></td>
+        <td><input type="text" class="form-control input-sm" name="single_wholesale_price"></td>
+        <td><input type="text" class="form-control input-sm" name="single_delivery_price"></td>
+
+        {volist name='memberGradeList' id='v'}
+        <td>
+            <input type="hidden" class="form-control input-sm" name="single_member_grade_id[]" value="{$v.id}">
+            <input type="text" class="form-control input-sm" name="single_member_price[]">
+        </td>
+        {/volist}
+        <td><input type="text" class="form-control input-sm" name="pack_retail_price"></td>
+        <td><input type="text" class="form-control input-sm" name="pack_wholesale_price"></td>
+        <td><input type="text" class="form-control input-sm" name="pack_delivery_price"></td>
+        {volist name='memberGradeList' id="v"}
+        <td>
+            <input type="hidden" class="form-control input-sm" name="pack_member_grade_id[]" value="{$v.id}">
+            <input type="text" class="form-control input-sm" name="pack_member_price[]">
+        </td>
+        {/volist}
+        <td><a href="javascript:;" class="btn btn-info btn-xs del">删除</a></td>
+    </tr>
+
+</template>
+
+<!--<script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>-->
+<script>
+
+    $(function () {
+        //启动icheck
+        $("table [type='checkbox'],table [type='radio']").iCheck({
+            checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+        });
+
+        $(".panel")
+            //添加
+            .on("click", ".add", function () {
+
+                $(".panel table tbody").append($("#demo").html());
+                //启动icheck
+                $(".panel table [type='radio']").iCheck({
+                    checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+                });
+                // iCheckAll();
+            })
+            //删除
+            .on("click", ".del", function () {
+            var that = this;
+            var id = $(this).parents("tr").attr("data-id");
+            if (id > 0) {
+                layer.confirm("此操作将已保存的记录同时删除，确定要执行吗？", function(index) {
+                        layer.close(index);
+                        //删除库记录
+                        $.post("{:url('priceDel')}", {id: id}, function (data) {
+                            obalertp(data);
+                            if (data.code == 1) {
+                                $(that).parents("tr").remove();
+                            }
+                        })
+                    },
+                    function(index){
+                        layer.close(index);
+                    }
+                );
+
+            }
+            else {
+                $(this).parents("tr").remove();
+            }
+        })
+            //设置
+            .on("click", ".set", function () {
+                var that = this;
+                var $radio=  $(this).parents(".panel").find("table").find(":radio:checked");
+                $(".panel table tr").not($radio.parents('tr')).find("input").prop("disabled",true);
+
+               var postData = $("form").serialize();
+                console.log(postData);
+                $.post("{:url('priceEdit')}",postData , function (data) {
+                    obalertp(data);
+                    if (data.code == 1) {
+                        $(that).parents("tr").remove();
+                    }
+                })
+
+
+                $(".panel table tr").not($radio.parents('tr')).find("input").prop("disabled",false);
+            })
+
+    })
+
+</script>

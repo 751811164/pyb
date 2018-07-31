@@ -1,0 +1,133 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?sid=">跳转</a>
+        <a class="btn"  href="javascript:history.go(-1)">返回上一步</a>
+        <ob_link><a class="btn" id="saveInfo">生成采购订单</a></ob_link>
+
+        <!--<ob_link><a class="btn" id="del" data-url="{:url('stockDel')}">删 除</a></ob_link>-->
+        <!--<ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">导 出</a></ob_link>-->
+
+    </div>
+
+
+    <div class="box-body table-responsive">
+        <form action="{:url('PurchaseBillLog/loglist')}" method="post">
+            <input  type="hidden" name="supplier_id" value="{$Request.post.supplier_id}">
+            <input  type="hidden" name="shop_id" value="{$Request.post.shop_id}">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <!--<th class="checkbox-select-all">-->
+                        <!--<label>-->
+                            <!--<input class="flat-grey js-checkbox-all" type="checkbox">-->
+                        <!--</label>-->
+                    <!--</th>-->
+                    <th>序号</th>
+                    <th>类型</th>
+                    <th>分类</th>
+                    <th>条形码</th>
+                    <th>名称</th>
+                    <th>单位</th>
+                    <th>规格</th>
+
+                    <th>库存上限</th>
+                    <th>库存下限</th>
+                    <th>实际库存</th>
+                    {eq name="Request.param.purchase_type" value="1"}
+                    <th>销售时间</th>
+                    <th>销售数量</th>
+                    {/eq}
+                    <th>采购数量</th>
+                    <th>供应商</th>
+                </tr>
+                </thead>
+
+
+                <tbody>
+                {notempty name="list"}
+                {volist name="list" id="vo"}
+                <tr>
+                    <!--<td>-->
+                        <!--<label>-->
+                            <!--<input class="flat-grey" type="checkbox" name="ids" value="item.id" >-->
+                        <!--</label>-->
+                    <!--</td>-->
+                    <td>{$i}</td>
+                    <td>{$vo.type_name|default=''}</td>
+                    <td>{$vo.category_name|default=''}</td>
+                    <td>{$vo.barcode1|default=''}</td>
+                    <td>{$vo.name|default=''}</td>
+                    <td>{$vo.unit|default=''}</td>
+                    <td>{$vo.specification|default=''}</td>
+                    <td>
+                        <input type="hidden" name="goods_id[]" value="{$vo.goods_id|default=''}">
+                        <input type="hidden" name="total_stock_ceil[]" value="{$vo.total_stock_ceil|default=''}">
+                        <input type="hidden" name="total_stock_floor[]" value="{$vo.total_stock_floor|default=''}">
+                        <input type="hidden" name="total_stock_actual[]" value="{$vo.total_stock_actual|default=''}">
+                        <input type="hidden" name="sale_num[]" value="{$vo.sale_num|default=''}">
+                        {$vo.total_stock_ceil|default='0'}
+                    </td>
+                    <td>
+
+                        {$vo.total_stock_floor|default='0'}
+                    </td>
+                    <td>
+                        {$vo.total_stock_actual|default='0'}
+
+                    </td>
+                    {eq name="Request.param.purchase_type" value="1"}
+                    <td>{$Request.param.start_time|default=''}  -- {$Request.param.end_time|default=''} </td>
+                    <td>{$vo.sale_num|default=''}</td>
+                    {/eq}
+                    <td>
+                        <input type="number" class="form-control input-sm" name="num[]" value="{$vo.total_stock_ceil-$vo.total_stock_actual}">
+                    </td>
+
+                    <td>{$vo.supplier_name|default=''}</td>
+
+                </tr>
+                {/volist}
+                {/notempty}
+
+                </tbody>
+
+
+            </table>
+        </form>
+
+
+    </div>
+</div>
+
+
+<script>
+
+
+    $(function () {
+
+        //保存
+        $('.box').on('click', '#saveInfo', function () {
+            $("form").submit();
+        })
+
+        // //保存
+        // $('.box').on('click', '#saveInfo', function () {
+        //     var $form = $('.box form');
+        //     var postData = $form.serialize();
+        //
+        //     var url = $(this).attr('data-url');
+        //
+        //     ajax({
+        //         method: "POST", url: url, data: postData, success: function (data) {
+        //             obalert(data);
+        //         },
+        //     })
+        //
+        //     return false;
+        // });
+
+
+    })
+
+
+</script>

@@ -1,0 +1,83 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+
+        <!--<ob_link><a class="btn" data-url="{:url('exportPointGoodsList')}">导出</a></ob_link>-->
+
+        <div class="box-tools">
+            <div class="form-inline search-form">
+
+                <label class="control-label">日期</label>
+                <input type="text" name="start_time" class="form-control date date-sm" readonly value="{:input('start_time')}" >
+                <label class="control-label">至</label>
+                <input type="text" name="end_time" class="form-control date date-sm" readonly value="{:input('end_time')}" >
+
+
+                <div class="input-group ">
+                    <input name="search_data" class="pull-right search-input" value="{:input('search_data')}" placeholder="会员名称/编号" type="text">
+                    <div class="input-group-btn">
+                        <button type="button" id="search" url="{:url('')}" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br/>
+    </div>
+    <div class="box-body table-responsive">
+            <table class="table table-bordered table-hover table-pointer">
+                <thead>
+                <tr>
+
+                    <th>序号</th>
+                    <th>会员编号</th>
+                    <th>会员名</th>
+                    <th>条码</th>
+                    <th>商品名</th>
+                    <th>兑换积分</th>
+                    <th>兑换日期</th>
+
+                </tr>
+                </thead>
+
+                    {notempty name='list'}
+                    <tbody>
+                    {volist name='list' id='vo'}
+                    <tr data-id="{$vo['id']}">
+
+                        <td>{$i}</td>
+                        <td>{$vo.number}</td>
+                        <td>{$vo.member_name}</td>
+                        <td>{$vo.barcode}</td>
+                        <td>{$vo.goods_name}</td>
+                        <td>{$vo.point_num}</td>
+                        <td>{$vo.create_time}</td>
+
+                    </tr>
+                    {/volist}
+                    </tbody>
+                    {else/}
+                    <tbody>
+                    <tr class="odd">
+                        <td colspan="11" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                    </tr>
+                    </tbody>
+                    {/notempty}
+            </table>
+    </div>
+    <div class="box-footer clearfix text-center">
+        {$list->render()}
+    </div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+
+</div>
+
+
+<script>
+
+
+
+</script>

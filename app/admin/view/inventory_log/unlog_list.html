@@ -1,0 +1,198 @@
+<div class="box">
+    <form>
+        <input type="hidden" name="inventory_id" value="{$info.id|default=''}">
+        <div class="box-header">
+            <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+            <!--<ob_link><a class="btn" data-url="{:url('logEdit')}" id="saveInfo" >保 存</a></ob_link>-->
+            <ob_link><a class="btn" data-url="{:url('rechecking')}" id="recheck" >审 核</a></ob_link>
+
+            <div class="box-tools form-block">
+                <div class="form-inline search-form">
+                    <div class="form-group">
+                        <label class="control-label" style="width:60px">制单人员</label>
+                        <input type="text" class="form-control " disabled value="{$Think.session.admin_info.username}" style="width: 200px">
+                        <label class="control-label" style="width:60px">制单日期</label>
+                        <input type="text" class="form-control " disabled style="width: 200px">
+                    </div>
+                    <br>
+                    <div class="form-group">
+
+                        <label class="control-label" style="width:60px">审核人员</label>
+                        <input type="text" class="form-control " disabled value="" style="width: 200px">
+                        <label class="control-label" style="width:60px">审核日期</label>
+                        <input type="text" class="form-control " disabled value="" style="width: 200px">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label class="control-label" style="width:60px">盘点机构</label>
+                        <select id="" class="form-control" name="shop_id" style="width: 200px;" disabled>
+                        {notempty name="shopList"}
+                        {volist name="shopList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                        </select>
+                        <label class="control-label" style="width:60px">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注</label>
+                        <input type="text" class="form-control" name="remark"  style="width: 200px;">
+
+
+                    </div>
+
+
+                </div>
+            </div>
+
+
+        </div>
+        <div class="box-body table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+
+                <tr>
+                    <th class="checkbox-select-all">
+                        <label>
+                            <input class="flat-grey js-checkbox-all" type="checkbox">
+                        </label>
+                    </th>
+                    <th>序号</th>
+                    <th>条码</th>
+                    <th>商品名称</th>
+                    <th>单位</th>
+                    <th>规格</th>
+                    <th>库存数量</th>
+                    <th>实盘数量</th>
+                    <th>售价</th>
+                    <th>售价金额</th>
+                    <th>花色</th>
+                    <th>尺码</th>
+
+                </tr>
+                </thead>
+
+
+                <tbody>
+                <tr v-for="(item,index) in list">
+                    <td>
+                        <label>
+                            <input class="flat-grey" type="checkbox" name="ids" :value="item.id" :data-index="index">
+                            <input  type="hidden" name="id[]" :value="item.id">
+                            <input  type="hidden" name="goods_id[]" :value="item.goods_id">
+                            <input  type="hidden" name="barcode_id[]" :value="item.barcode_id">
+                        </label>
+                    </td>
+                    <td>{{index+1}}</td>
+                    <!--<td><input type="text" class="form-control" name="barcode[]" :data-gid="item.goods_id" v-model="item.barcode"></td>-->
+                    <td>
+                        {{item.barcode}}
+                        <input type="hidden" name="barcode[]" v-model="item.barcode">
+                    </td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.unit}}</td>
+                    <td>{{item.specification}}</td>
+                    <td>{{item.stock_actual}}
+                        <input type="hidden"  name="stock_actual[]" v-model="item.stock_actual">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="num[]" v-model="item.num">
+                    </td>
+
+                    <ob_price rule="retail_price">
+                        <td>
+                            {{item.retail_price}}
+                            <input type="hidden" class="form-control" name="retail_price[]" v-model="item.retail_price">
+                        </td>
+                        <td>{{item.num*item.retail_price}}</td>
+                    </ob_price>
+                    <td>{{item.color}}</td>
+                    <td>{{item.size}}</td>
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </form>
+</div>
+
+
+</div>
+
+
+<script>
+
+
+    ob.setValue("shop_id","{:input('shop_id')}");
+    //region 未审核可编辑
+
+    var list = {$list|json_encode}
+    ;var vm = new Vue({
+        el: '.box-body', data: {
+            list: list,
+        }, mounted: function () {
+        }, updated: function () {
+            //同时绑定多个时间控件
+            lay('.date').each(function () {
+                laydate.render({
+                    elem: this, type: 'date', trigger: 'click',
+                })
+            })
+
+            $("table [type='checkbox'], [type='radio']").iCheck({
+                checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+            });
+            iCheckAll();
+        }, methods: {},
+    });
+
+    //endregion
+
+    $(function () {
+
+        //保存并审核
+        $("#recheck").on('click', function () {
+            var that = this;
+            if ($(this).attr('disabled')) {
+                return false;
+            }
+            $('[name="shop_id"]').prop("disabled", false);
+            var $form = $('.box form');
+            var isEmpty = false;
+            $form.find("table").find("[type='number']").each(function (i, e) {
+                if (!~~$.trim($(this).val())) {
+                    isEmpty = true;
+                }
+            })
+
+            //询问框
+            layer.confirm('尚且有为0的数据，确定要执行吗？', {
+                btn: ['确定', '取消'], //按钮
+            }, function () {
+                var postData = $form.serialize();
+
+                var url = $(that).attr('data-url');
+
+                ajax({
+                    method:"POST",
+                    data:postData,
+                    url:url,
+                    success:function (data) {
+                        obalertp(data);
+                    }
+                })
+
+
+            }, function () {
+
+            });
+
+            return false;
+
+
+        });
+
+
+
+    })
+
+
+</script>

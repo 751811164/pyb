@@ -1,0 +1,204 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?cid=">跳转</a>
+        <!--<ob_link><a class="btn" url="{:url('goodsAdd')}" id="add">新 增</a></ob_link>-->
+        <!--<ob_link><a class="btn" url="{:url('goodsEdit')}" id="edit" style="display: none;">编 辑</a></ob_link>-->
+        <!--<ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">删 除</a></ob_link>-->
+        <!--<ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DISABLE}" href="{:url('setStatus')}">停 售</a></ob_link>-->
+        <!--<ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_NORMAL}" href="{:url('setStatus')}">在 售</a></ob_link>-->
+        <!--<ob_link><a class="btn ladda-button batch-edit" data-target="batchSingleEdit" url="{:url('batchSingleEdit')}" >批量修改</a></ob_link>-->
+        <ob_link><a class="btn ladda-button batch-edit" data-target="batchPackEdit" url="{:url('batchPackEdit')}" >批量修改</a></ob_link>
+        <!--<ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">导 出</a></ob_link>-->
+        <div class="box-tools ">
+            <div class="form-inline search-form"  style="max-width: none">
+
+                <!--<div class="form-group">-->
+                    <!--<select  name="status" class="form-control">-->
+                        <!--<option value>全部</option>-->
+                        <!--<option value="0">停售</option>-->
+                        <!--<option value="1">在售</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+
+                <div class="input-group search-form">
+                    <input name="search_data" class="form-control pull-right search-input" value="{:input('search_data')}" placeholder="商品名/条码/类别/品牌" type="text">
+                    <div class="input-group-btn">
+                        <button type="button" id="search" url="{:url('')}" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="box-body table-responsive">
+        <div class="row">
+            <div class="col-sm-2">
+                <!--左边店铺列表-->
+                <ul id="ztree" class="ztree"></ul>
+            </div>
+
+            <!--右边-->
+            <div class="col-sm-10">
+                <table class="table table-bordered table-hover " style="min-width: 1600px;">
+                    <thead>
+                    <tr>
+                        <th class="checkbox-select-all">
+                            <label>
+                                <input class="flat-grey js-checkbox-all" type="checkbox">
+                            </label>
+                        </th>
+                        <th>类型</th>
+                        <th>分类</th>
+                        <th>条形码</th>
+                        <th>名称</th>
+                        <th>单位</th>
+                        <th>规格</th>
+
+                        <ob_price rule="cost_price"><th>进货价</th></ob_price>
+                        <ob_price rule="retail_price"><th>零售价</th></ob_price>
+                        <ob_price rule="wholesale_price"><th>批发价</th></ob_price>
+                        <ob_price rule="delivery_price"><th>配送价</th></ob_price>
+                        <ob_price rule="member_price"><th>会员价1</th></ob_price>
+
+                        <th>有效期(天)</th>
+                        <th>供应商</th>
+                        <th>前台打折</th>
+                        <th>前台议价</th>
+                        <th>前台赠送</th>
+                        <th>项目储值</th>
+                        <th>商品积分</th>
+                        <th>管理库存</th>
+
+                        <!--<th class="status-th">状态</th>-->
+
+                    </tr>
+                    </thead>
+
+                    {notempty name='list'}
+                    <tbody>
+                    {volist name='list' id='vo'}
+                    <tr data-id="{$vo.id}">
+                        <td>
+                            <label>
+                                <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}">
+                            </label>
+                        </td>
+                        <td>{$vo.type_name}</td>
+                        <td>{$vo.category_name}</td>
+                        <td>{$vo.barcode1}</td>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.unit}</td>
+                        <td>{$vo.specification}</td>
+
+
+                        <ob_price rule="cost_price"><td>{$vo.cost_price}</td></ob_price>
+                        <ob_price rule="retail_price"><td>{$vo.retail_price}</td></ob_price>
+                        <ob_price rule="wholesale_price"><td>{$vo.wholesale_price}</td></ob_price>
+                        <ob_price rule="delivery_price"><td>{$vo.delivery_price}</td></ob_price>
+                        <ob_price rule="member_price"><td>{$vo.member_price1}</td></ob_price>
+
+
+
+                        <td>{$vo.expiry_day}</td>
+                        <td>{$vo.supplier_name}</td>
+                        <td>{$vo.discount_text}</td>
+                        <td>{$vo.bargain_text}</td>
+                        <td>{$vo.presentation_text}</td>
+                        <td>{$vo.stored_text}</td>
+                        <td>{$vo.point_text}</td>
+                        <td>{$vo.control_stock_text}</td>
+
+                    </tr>
+                    {/volist}
+                    </tbody>
+                    {else/}
+                    <tbody>
+                    <tr class="odd">
+                        <td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                    </tr>
+                    </tbody>
+                    {/notempty}
+                </table>
+            </div>
+
+        </div>
+
+        <div class=" clearfix text-center">
+            {$list->render()}
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+<!-- 模态框（Modal） -->
+<!--<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"></div>-->
+
+<!-- 单个批量模态框（Modal） -->
+<!--<div class="modal fade" id="batchSingleEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" ></div>&lt;!&ndash; /.modal &ndash;&gt;-->
+<div class="modal fade" id="batchPackEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" ></div><!-- /.modal -->
+
+
+
+<!--<script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>-->
+
+<script>
+    // ob.setValue('status','{$Think.get.status}');
+    var currentId=0;
+
+    $(function(){
+        treeObj=makeZTree({data:{$categoryList|json_encode}});
+
+        //加载页面后,选中制定节点
+        var node = treeObj.getNodeByTId("{:input('tid')}");
+        treeObj.cancelSelectedNode();//先取消所有的选中状态
+        treeObj.selectNode(node,true);//将指定ID的节点选中
+
+
+
+
+
+
+        //批量设置modal框
+        $(".batch-edit").on('click', function(e) {
+
+            var ids= "";
+            $("table :checked").each(function() {
+                if(!isNaN(parseInt($(this).val())) ){
+                    ids+= $(this).val()+',';
+                }
+            })
+            ids = ids.substring(0,ids.length-1);
+
+            if($.trim(ids)==""){
+
+                obalert({'code':0,'msg':"请选择商品"})
+                return false
+            }
+
+            var target = this;
+            $.get($(this).attr('url'), function (data) {
+                $("#"+$(target).attr('data-target')).empty().append(data).modal('show');
+            });
+
+            e.preventDefault();
+        });
+
+        $('.modal').on('hidden.bs.modal', function () {
+
+            $(this).empty()
+        })
+
+    })
+
+
+
+
+
+
+
+</script>

@@ -1,0 +1,349 @@
+<div class="box">
+    <div class="box-header ">
+        <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+        <!--<ob_link><a class="btn" url="{:url('settingAdd')}" id="add" data-toggle="modal" data-target="#myModal">添 加</a></ob_link>-->
+        <!--<ob_link><a class="btn" url="{:url('settingEdit')}" id="edit" style="display: none;">编 辑</a></ob_link>-->
+        <ob_link><a class="btn" url="{:url('recordAdd')}" id="add" data-toggle="modal" data-target="#myModal">增 加</a></ob_link>
+
+        <!--<ob_link><a class="btn export" url="{:url('exportAdminList')}"><i class="fa fa-download"></i> 导 出</a></ob_link>-->
+        <!--<ob_link><a class="btn ladda-button" id="fastSetBtn"  url="{:url('fastset')}" >批量设置</a></ob_link>-->
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">删 除</a></ob_link>
+        <!--<ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_NORMAL}" href="{:url('setStatus')}">启 用</a></ob_link>-->
+        <!--<ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DISABLE}" href="{:url('setStatus')}">停 用</a></ob_link>-->
+
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-2">
+            <!--左边岗位列表-->
+            <ul id="ztree" class="ztree"></ul>
+        </div>
+
+        <!--右边-->
+        <div class="col-xs-10">
+            {empty name='typeList'}
+            <p style="text-align: center">
+                请先配置该员工所在岗位的薪资结构
+            </p>
+            {else/}
+
+            <ul id="myTab" class="nav nav-tabs">
+
+
+                {volist name="typeList" id="vo"}
+                {notempty name='Think.get.tid'}
+                <li class="">
+                    <a href="#setting" data-type_id="{$vo.id}" data-table="{$vo.table}" date-for_admin="{$vo.for_admin}">{$vo.name}</a>
+                </li>
+                {else/}
+                <li class="disabled">
+                    <a href="javascript:;">{$vo.name}</a>
+                </li>
+                {/notempty}
+                {/volist}
+
+
+            </ul>
+            {/empty}
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade in active" id="setting">
+
+
+                </div>
+
+
+            </div><!--ene tab-->
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- 增加修改Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" >
+    <div class="modal-dialog" role="document" style="width: 768px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">添加记录</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">选择时间范围</label>
+                            <div class="col-sm-10 form-inline">
+                                <input type="text" class="form-control date" readonly name="start_time" value="{$info.start_time|default=''}">
+                                至<input type="text" class="form-control date" readonly name="end_time" value="{$info.end_time|default=''}">
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-12">
+                            <!--<div class="form-group">-->
+                                <!--<label class="col-sm-2 control-label">试用底薪</label>-->
+                                <!--<div class="col-sm-10">-->
+                                    <!--<input type="text" class="form-control" name="trial_salary" value="{$info.trial_salary|default=''}">-->
+                                <!--</div>-->
+                            <!--</div>-->
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">选择员工</label>
+                                <div class="col-sm-10 form-inline">
+                                    <select name="admin_id" class="form-control" >
+                                    <option value="-1">请选择</option>
+                                    {notempty name="adminList"}
+                                    {volist name="adminList" id="vo"}
+                                    <option value="{$vo.id}">{$vo.username}</option>
+                                    {/volist}
+                                    {/notempty}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">选择绩效类型</label>
+                                <div class="col-sm-10 form-inline">
+                                    <select name="type_id" class="form-control">
+                                    <option value="-1">请选择</option>
+                                    {notempty name="salaryTypeList"}
+                                    {volist name="salaryTypeList" id="vo"}
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                    {/notempty}
+                                    </select>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{:url('recordAdd')}">确定
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--<script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>-->
+<script>
+
+  $(function() {
+    var $tab = $('#myTab li:not(.disabled) a');
+    //切换tab
+    $tab.click(function(e) {
+      e.preventDefault();
+      var $this = $(this);
+
+      if ($this.parent('li').hasClass('active')) {
+        return false;
+      }
+
+      var paramData = {
+        gid: '{$Think.get.gid}',
+        type_id: $(this).attr('data-type_id'), // tb: $(this).attr('data-table'),
+        for_admin: $(this).attr('data-for_admin'),
+      };
+
+      $.get('{:url()}', paramData, function(data) {
+        $('.box-header ob_link a').attr('data-tb', $this.attr('data-table'));
+        $('#setting').html(data);
+        $this.tab('show');
+        settingLoad();//加载一些初始化信息 :icheck
+        if ('pushState' in history) {
+          history.pushState({}, '', changeURLArg(location.href, "tab", $tab.index($this)));
+        }
+
+      });
+
+    });
+
+    //默认选择第一个
+    if ('{$Think.get.tab}') {
+      $('#myTab li:not(.disabled) a').eq('{$Think.get.tab}').trigger('click');
+    }
+    else {
+      $('#myTab li:not(.disabled) a:first').trigger('click');
+    }
+
+    // //新增
+    // $('#add').on('click', function(e) {
+    //   var gid = '{$Think.get.gid}';
+    //   var tid = '{$Think.get.tid}';
+    //   var tb = $('#myTab li.active a').attr('data-table');
+    //   if (!gid) {
+    //     obalert({msg: "请选择岗位"});
+    //     return false;
+    //   }
+    //
+    //   if (!tb) {
+    //     obalert({msg: "请先配置薪资结构"});
+    //     return false;
+    //   }
+    //
+    //   e.preventDefault();
+    //   $.get($(this).attr('url'), {
+    //     gid: gid, // tid:tid,
+    //     tb: tb,
+    //   }, function(data) {
+    //
+    //     $('#myModal').html(data).modal('show');
+    //   });
+    //
+    // });
+    //
+    // //双击编辑
+    // $("#setting ").on("dblclick", 'table.table-pointer tr', function(e) {
+    //   e.preventDefault();
+    //   if (e.target.nodeName != 'TD') {
+    //     return false;
+    //   }
+    //   if ($('#edit').length === 0) {
+    //     alert("您无权修改");
+    //     return false;
+    //   }
+    //   var id = $(this).attr("data-id");
+    //   var gid = '{$Think.get.gid}';
+    //   var tid = '{$Think.get.tid}';
+    //   var tb = $('#myTab li.active a').attr('data-table');
+    //
+    //   $.get($('#edit').attr("url"), {
+    //     id: id,
+    //     gid: gid, // tid:tid,
+    //     tb: tb,
+    //   }, function(data) {
+    //
+    //     $("#myModal").html(data).modal("show");
+    //   });
+    //
+    // });
+    //
+    //保存
+    $('#myModal').on('click', '#saveInfo', function() {
+      if (window.beforeSubmit && typeof beforeSubmit == 'function') {
+        beforeSubmit();
+      }
+      var $form = $('#myModal form');
+      var postData = $form.serialize();
+
+      console.log(postData);
+      // return false;
+      var url = $(this).attr('data-url');
+
+      $.post(url, postData, function(data) {
+        obalertp(data);
+
+      }, 'json');
+
+      if (window.afterSubmit && typeof afterSubmit == 'function') {
+        afterSubmit();
+      }
+      return false;
+    });
+
+
+
+    /**
+     * 加载js配置
+     */
+    function settingLoad() {
+
+      $("#setting").pjax('a[target!=_blank]', '#setting');
+
+      //启动icheck
+      $("[type='checkbox']").iCheck({
+        checkboxClass: 'icheckbox_minimal-blue',
+        radioClass: 'iradio_minimal-blue',
+        increaseArea: '20%', // optional
+      });
+      //一键全选
+      iCheckAll();
+
+      //ajax get请求
+      $('#setting .ajax-get').click (function() {
+        var target;
+        if ($(this).hasClass('confirm')) {
+          if (!confirm('确认要执行该操作吗?')) {
+            return false;
+          }
+        }
+
+        if ((target = $(this).attr('href')) || (target = $(this).attr('url'))) {
+
+          if ($(this).attr('is-jump') == 'true') {
+
+            location.href = target;
+
+          }
+          else {
+            $.get(target).success(function(data) {
+
+              obalert(data);
+            });
+          }
+        }
+
+        return false;
+      });
+    }
+
+
+
+
+
+    //同时绑定多个时间控件
+    lay('.date').each(function() {
+      laydate.render({
+        // min: 0, //当天
+        elem: this,
+        type: 'datetime',
+        trigger: 'click',
+      });
+    });
+
+    //生成树
+    treeObj = makeZTree({data: {$info['typeList'] | json_encode}});
+
+    //加载页面后,选中制定节点
+    var node = treeObj.getNodeByTId('{:input(\'tid\')}');
+    treeObj.cancelSelectedNode();//先取消所有的选中状态
+    treeObj.selectNode(node, true);//将指定ID的节点选中
+
+  });
+
+
+  function changeURLArg(url, arg, arg_val) {
+    var pattern = arg + '=([^&]*)';
+    var replaceText = arg + '=' + arg_val;
+    if (url.match(pattern)) {
+      var tmp = '/(' + arg + '=)([^&]*)/gi';
+      tmp = url.replace(eval(tmp), replaceText);
+      return tmp;
+    }
+    else {
+      if (url.match('[\?]')) {
+        return url + '&' + replaceText;
+      }
+      else {
+        return url + '?' + replaceText;
+      }
+    }
+  }
+
+</script>

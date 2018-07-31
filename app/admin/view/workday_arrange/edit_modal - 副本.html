@@ -1,0 +1,254 @@
+
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">添加班次</h4>
+        </div>
+        <div class="modal-body">
+            <form  class="form-horizontal">
+                <div class="row">
+                    <input type="hidden" id="editId" name="id" value="{$info.id|default=''}">
+                    <!--<input type="hidden" name="year">-->
+                    <!--<input type="hidden" name="month">-->
+                    <input type="hidden" name="a_days">
+                    <input type="hidden" name="b_days">
+                    <input type="hidden" name="c_days">
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-inline">
+                        <div class="form-group">
+
+                                {:hook('AdminSelect', ['name' => 'id', 'shop' => 0,'group'=>0,'admin'=>0 ])}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <ul id="myTab" class="nav nav-tabs">
+                    <li class="active"><a href="#a-arrange" data-toggle="tab">A组班次</a></li>
+                    <li><a href="#b-arrange" data-toggle="tab">B组班次</a></li>
+                    <li><a href="#c-arrange" data-toggle="tab">C组班次</a></li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+
+                    <div class="tab-pane fade in active" id="a-arrange">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">上班设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control time-item" name="a_on" value="{$info.a_on|default=''}">
+                                    </div>
+                                    <label class="col-sm-2 control-label">下班设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control time-item" name="a_off" value="{$info.a_off|default=''}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">迟到设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control " name="a_late" value="{$info.a_late|default=''}">
+                                    </div>
+                                    <label class="col-sm-2 control-label">早退设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control " name="a_leave" value="{$info.a_leave|default=''}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+
+                                <div id='a-calendar'>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--end tab-->
+
+                    <div class="tab-pane fade" id="b-arrange">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">上班设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control time-item" name="b_on" value="{$info.b_on|default=''}">
+                                    </div>
+                                    <label class="col-sm-2 control-label">下班设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control time-item" name="b_off" value="{$info.b_off|default=''}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">迟到设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control " name="b_late" value="{$info.b_late|default=''}">
+                                    </div>
+                                    <label class="col-sm-2 control-label">早退设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control " name="b_leave" value="{$info.b_leave|default=''}">
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-sm-12">
+
+                                <div id='b-calendar'>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--end tab-->
+
+                    <div class="tab-pane fade" id="c-arrange">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">上班设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control time-item" name="c_on" value="{$info.c_on|default=''}">
+                                    </div>
+                                    <label class="col-sm-2 control-label">下班设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control time-item" name="c_off" value="{$info.c_off|default=''}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">迟到设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control " name="c_late" value="{$info.c_late|default=''}">
+                                    </div>
+                                    <label class="col-sm-2 control-label">早退设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control " name="c_leave" value="{$info.c_leave|default=''}">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-12">
+
+                                <div id='c-calendar'>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--end tab-->
+
+
+                </div>
+
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('arrangeEdit')}{else/}{:url('arrangeAdd')}{/notempty}">保存</button>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function(){
+
+      //同时绑定多个时间控件
+      lay('.time-item').each(function(){
+        laydate.render({
+          elem: this,
+          type: 'time',
+          trigger: 'click'
+        });
+      });
+
+      var admin_id="{$info.admin_id|default=-1}";
+      admin_id>-1&&$("select[name='admin_id']").prop("disabled",true);
+      ob.setValue("admin_id",admin_id );
+      //
+
+
+
+        //日历设置
+      var options = {
+        language: 'CH', //语言
+        showLunarCalendar: true, //阴历
+        showHoliday: true, //休假
+        showFestival: true, //节日
+        showLunarFestival: true, //农历节日
+        showSolarTerm: false, //节气
+        showMark: false, //标记
+        //获取点击的日期
+        onSelect: function(day){
+          // debugger;
+          console.log(day);
+        },
+        afterChange:dateAfterChange,
+        timeRange: {
+          startYear: 2000,
+          endYear: 2049
+        }
+      }
+        var aCalendar = new SimpleCalendar('#a-calendar', options);
+        var bCalendar = new SimpleCalendar('#b-calendar', options);
+        var cCalendar = new SimpleCalendar('#c-calendar', options);
+
+        $(".sc-select-year").attr("name", "year");
+        $(".sc-select-month").attr("name", "month");
+
+
+      var data = {$days|json_encode};
+
+      setSelected(data,"a");
+      setSelected(data,"b");
+      setSelected(data,"c");
+
+      //设置某月日期选中
+      function setSelected(data,type) {
+
+        if (data&&data.hasOwnProperty(type+'_days')) {
+          var days = data[type+'_days'].split(',');
+          for (var i = 0; i < days.length; i++) {
+            $("#"+type+"-calendar").find('.sc-item[data-day="' + days[i] + '"]:not(.sc-othermenth)').addClass('sc-selected')
+          }
+        }
+        ;
+      }
+
+      //日期更新后回调
+      function dateAfterChange(event,calendar,year,month) {
+        var admin_id="{$info.admin_id|default=-1}";
+        $.get("{:url('arrangeDate/dateInfo')}",{year:year,month:month,admin_id:admin_id},function(data) {
+          var tabId=  $('#myTabContent>.tab-pane.active').attr("id");
+          setSelected(data,tabId.substring(0,1));
+        })
+      }
+
+
+    })
+
+
+
+
+</script>

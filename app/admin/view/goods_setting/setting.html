@@ -1,0 +1,156 @@
+
+<div class="box">
+    <div class="box-header">
+        <form class="permissionsForm" >
+            <div class="form-group">
+
+                <button  type="submit" class="btn ladda-button ajax-post" data-style="slide-up" target-form="permissionsForm">
+                    <span class="ladda-label">保 存</span>
+                </button>
+            </div>
+
+
+            <input type="hidden" name="id" value="{$info.id}">
+            <div >
+                <div class="row bm-gray">
+                    <div class="col-sm-3"><label>供应商名称是否启用重复</label></div>
+                    <div class="col-sm-3">
+                        <input class="flat-grey" type="radio" name="repeat_supplier_name" value="1">
+                        <span>启用</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <input class="flat-grey" type="radio" name="repeat_supplier_name" value="0" >
+                        <span>不启用</span>
+                    </div>
+                </div>
+
+
+                <div class="row bm-gray">
+                    <div class="col-sm-3"><label>商品名称是否启用重复</label></div>
+                    <div class="col-sm-3">
+                        <input class="flat-grey" type="radio" name="repeat_goods_name" value="1">
+                        <span>启用</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <input class="flat-grey" type="radio" name="repeat_goods_name" value="0" >
+                        <span>不启用</span>
+                    </div>
+                </div>
+
+                <div class="row bm-gray">
+                    <div class="col-sm-3"><label>总部集中调整</label></div>
+                    <div class="col-sm-3">
+                        <input class="flat-grey" type="radio" name="centralize_adjust_price" value="1">
+                        <span>启用</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <input class="flat-grey" type="radio" name="centralize_adjust_price" value="0" >
+                        <span>不启用</span>
+                    </div>
+                </div>
+
+
+
+
+
+                {if condition="0 > 1"}
+                <!--暂时无用-->
+                <div class="row bm-gray">
+                    <div class="col-sm-3"><label>商品零售价必须大于等于进价</label></div>
+                    <div class="col-sm-3">
+                        <input class="flat-grey" type="radio" name="sale_egt_cost" value="1">
+                        <span>启用</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <input class="flat-grey" type="radio" name="sale_egt_cost" value="0" >
+                        <span>不启用</span>
+                    </div>
+                </div>
+
+                <div class="row bm-gray">
+                    <div class="col-sm-3"><label>调价单默认调价类型</label></div>
+                    <div class="col-sm-3">
+                        <input class="flat-grey" type="checkbox" name="price_adjust_type[]" value="1">
+                        <span>进货价</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>零售价</span>
+                        <input class="flat-grey" type="checkbox" name="price_adjust_type[]" value="2" >
+                    </div>
+                    <div class="col-sm-3">
+                        <span>会员价</span>
+                        <input class="flat-grey" type="checkbox" name="price_adjust_type[]" value="3" >
+                    </div>
+                    <div class="col-sm-3">
+                        <span>配送价</span>
+                        <input class="flat-grey" type="checkbox" name="price_adjust_type[]" value="4" >
+                    </div>
+                    <div class="col-sm-3">
+                        <span>批发价</span>
+                        <input class="flat-grey" type="checkbox" name="price_adjust_type[]" value="5" >
+                    </div>
+                </div>
+            {/if}
+
+            </div>
+
+
+        </form>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+
+  $(document).ready(function() {
+      $(':checkbox,:radio').iCheck({
+      checkboxClass: 'icheckbox_minimal-blue',
+      radioClass: 'iradio_minimal-blue',
+      increaseArea: '20%' // optional
+    });
+
+    var info = {$info|default='[]'};
+      // ob.setValue(name,value);
+
+    //radio标签选中
+    $('form :radio').each(function(i, e) {
+      var $this = $(this);
+      if ($this.val() == info[$this.attr('name')]) {
+        $this.iCheck('check');
+      }
+
+    });
+
+    //checkbox标签选中
+    $('form.permissionsForm :checkbox').each(function(i, e) {
+      try {
+        var $this = $(this);
+        var arr = info[$this.attr('name').replace('[]', '')] || [];
+
+        if (arr.indexOf($this.val()) !== -1) {
+          $this.iCheck('check');
+        }
+      } catch (e) {
+
+        console.warn('chechbox赋值出错');
+      }
+    });
+
+
+
+  });
+
+</script>

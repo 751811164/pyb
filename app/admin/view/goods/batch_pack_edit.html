@@ -1,0 +1,159 @@
+<div class="modal-dialog"  style="width: 768px;">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+                    aria-hidden="true">×
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+                批量修改
+            </h4>
+        </div>
+        <div class="modal-body">
+            <form  class="multiEditForm form-horizontal" action="{:url('batchPackEdit')}">
+                <input type="hidden" name="ids">
+
+
+                <div class="row">
+                    <div class="col-xs-12">
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="unit">整箱单位</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" name="unit" >
+
+                            </div>
+
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="specification">规格</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" name="specification">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="num">内装数</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" name="num" >
+
+                            </div>
+
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="is_joint_operation">是否联营</label>
+                            <div class="col-xs-2">
+                                <select name="is_joint_operation" class="form-control" v-model="pack.is_joint_operation" >
+                                    <option value="0">否</option>
+                                    <option value="1">是</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <input type="text" class="form-control" name="operation_rate"  :disabled="pack.is_joint_operation==0" data-clear placeholder="利润率">
+                            </div>
+
+
+                        </div>
+
+
+
+
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+        <div class="modal-footer">
+
+            <button  type="submit" class="btn ladda-button ajax-post" data-style="slide-up" data-fn="beforeMultiPackSubmit" target-form="multiEditForm">提交</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+<script>
+
+    var vm = new Vue({
+        el:".modal-body",
+        data:{
+            pack:{is_joint_operation:0},
+
+        },
+        mounted:function(){
+
+        },
+        methods:{
+        },
+        computed :{
+
+        }
+    })
+
+
+    $(function(){
+        //启动icheck
+        $(".modal-dialog [type='checkbox'],.modal-dialog  [type='radio']").iCheck({
+            checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+        });
+
+        //初始设置disable状态
+        $("form :checkbox").each(function(){
+            var $input = $("[name='"+$(this).attr("data-name")+"']");
+
+            if ($input[0].type=="radio") {
+                $input.iCheck('disable');
+            }
+            else {
+
+                $input.prop("disabled",true);
+            }
+
+        })
+
+
+
+        $("form :checkbox").on("ifChanged",function(e){
+            var target = e.target;
+            var $input = $("[name='"+$(target).attr("data-name")+"']");
+
+            if (target.checked) {
+                if ($input[0].type=="radio") {
+                    $("[name='"+$(target).attr("data-name")+"']").iCheck('enable');
+                }
+                else {
+
+                    $("[name='"+$(target).attr("data-name")+"']").prop("disabled",false);
+                }
+
+            }
+            else {
+                if ($input[0].type=="radio") {
+                    $("[name='"+$(target).attr("data-name")+"']").iCheck('disable');
+                }
+                else {
+                    $("[name='"+$(target).attr("data-name")+"']").prop("disabled",true);
+
+                }
+            }
+        })
+    })
+
+
+
+
+    //整装批量设置
+    function beforeMultiPackSubmit () {
+        var ids= "";
+        $("table :checked").each(function() {
+            if(!isNaN(parseInt($(this).val())) ){
+                ids+= $(this).val()+',';
+            }
+        })
+        ids = ids.substring(0,ids.length-1);
+
+        if($.trim(ids)!=""){
+            $(".multiEditForm").find("[name='ids']").val(ids);
+            return true
+        }else{
+            obalert({'code':0,'msg':"请选择商品"})
+            return false
+        }
+    }
+
+
+</script>

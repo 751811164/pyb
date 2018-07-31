@@ -1,0 +1,103 @@
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">添加薪资结构</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                    <input type="hidden" id="editId" name="id" value="{$info.id|default=''}">
+                <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-inline">
+                        <div id="groupselect">
+
+                            {assign name='type_id' value="$info.type_id|default='0'"/}
+                            {assign name='shop_id' value="$info.shop_id|default='0'" /}
+                            {assign name='group_id' value="$info.group_id|default='0'"/}
+                            {:hook('GroupSelect', ['name' => 'id', 'shop' => $shop_id,'group'=>$group_id,'type'=>$type_id ])}
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">薪资结构</label>
+
+                            <div class="col-sm-10">
+
+                                <div>
+                                    <label>必选项:</label>
+                                    {notempty name="salaryList"}
+                                    {volist name="salaryList" id="vo" }
+
+                                    {if condition="$vo.need == 1" }
+
+                                    {if condition="$vo.symbol == 1" }+{else/}-{/if}
+
+                                    <input type="hidden" name="salary_types[]" value="{$vo.id}">{$vo.name}
+                                    {/if}
+
+
+                                    {/volist}
+                                    {/notempty}
+
+                                </div>
+
+
+                                <div>
+                                    <label>可选项:</label>
+                                    {notempty name="salaryList"}
+                                    {volist name="salaryList" id="vo" }
+
+                                    {if condition="$vo.need == 0" }
+                                    {if condition="$vo.symbol == 1" }+{else/}-{/if}
+                                    <input type="checkbox" name="salary_types[]" value="{$vo.id}">{$vo.name}
+                                    {/if}
+
+
+                                    {/volist}
+                                    {/notempty}
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('structureEdit')}{else/}{:url('structureAdd')}{/notempty}">保存
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        //启动icheck
+        $("[type='checkbox']").iCheck({
+            checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+        });
+
+        if ("{$info.salary_types|default=''}") {
+            var ids = "{$info.salary_types|default=''}".split(',');
+            for (var i = 0; i < ids.length; i++) {
+                var id = ids[i];
+                $('[name="salary_types[]"][value="'+id+'"]').iCheck('check')
+            }
+        }
+
+    });
+
+
+</script>

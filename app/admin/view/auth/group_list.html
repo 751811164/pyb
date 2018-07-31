@@ -1,0 +1,232 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?id=">跳转</a>
+        <div class="lockscreen-footer">
+            <!--<ob_link><a class="btn" hhref="{:url('shopAdd')}"  data-toggle="modal" data-target="#myModal">添 加</a></ob_link>-->
+            <ob_link><a class="btn ladda-button" id="add" data-toggle="modal" data-target="#addModal" url="{:url('groupadd')}">新增岗位</a></ob_link>
+            <ob_link><a class="btn ladda-button" id="fastSetBtn" url="{:url('fastset')}">快捷设置</a></ob_link>
+            <ob_link><a class="btn ladda-button  ajax-post" target-form="form_single" url="{:url('menuAuth')}">保存</a></ob_link>
+
+
+        </div>
+
+    </div>
+    <div class="box-body table-responsive">
+        <div class="row">
+            <div class="col-xs-2">
+                <!--左边门店岗位列表-->
+                <ul id="ztree" class="ztree"></ul>
+            </div>
+
+            <!--右边-->
+            <div class="col-xs-10">
+                <div id="container">
+                    <form action="{:url('menuAuth')}" method="post" class="form_single">
+                        <input type="hidden" name="id" value="{:input('id')}" />
+                    {notempty name='list'}
+                    {$list}
+                    {/notempty}
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- 添加模态框（Modal） -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form_add" action="{:url('groupAdd')}">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" >新增岗位</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <!--<div class="col-sm-6">-->
+                            <!--<div class="form-group">-->
+                                <!--<label>编号</label>-->
+                                <!--<span>（岗位编号）</span>-->
+                                <!--<div class="input-group">-->
+                                    <!--<input type="text" class="form-control" name="number" placeholder="岗位编号" value="{$info['number']|default=''}" readonly>-->
+                                    <!--<span class="input-group-btn"><button id="createCode" class="btn btn-info create-code" type="button">生成</button></span>-->
+                                <!--</div>&lt;!&ndash; /input-group &ndash;&gt;-->
+
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>名称</label>
+                                <span>（岗位名称）</span>
+                                <input class="form-control" name="name" placeholder="请输入岗位名称"
+                                       value="{$info['name']|default=''}" type="text">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>机构</label>
+                                <span>（所属机构）</span>
+                                <select name="shop_id" class="form-control">
+                                    {volist name="info.shopList" id="vo"}
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn ladda-button ajax-post" data-style="slide-up" target-form="form_add">
+                        提交
+                    </button>
+
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 快捷设置模态框（Modal） -->
+<div class="modal fade" id="fastSetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="fastSetForm" action="{:url('fastSet')}">
+                <input type="hidden" name="id" value="{:input('id')}">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title">
+                    快捷设置
+                </h4>
+            </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>选择参考的岗位</label>
+                        <select class="form-control" name="refer_id">
+                            <option value="0">请选择岗位</option>
+                            {notempty name='info.groupList'}
+                            {volist name="info.groupList" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                            {/notempty}
+                        </select>
+
+                    </div>
+                </div>
+            <div class="modal-footer">
+                <button type="submit" id="fastSetSave" class="btn ladda-button ajax-post" data-style="slide-up" target-form="fastSetForm">
+                    提交
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script>
+  $(function() {
+
+
+      //新增
+      $('#addModal').on('show.bs.modal', function (e) {
+         $(".form_add")[0].reset();
+      })
+
+    //显示快速设置框
+    $('#fastSetBtn').on('click', function(e) {
+      //隐藏列表中自己
+      var id = "{:input('id')}";
+      $('#fastSetForm option').each(function() {
+        $(this).show();
+        if ($(this).val() == id) {
+          $(this).hide();
+        }
+      });
+      $('#fastSetModal').modal('show');
+      e.preventDefault();
+    });
+
+    // //快速设置保存
+    // $("#fastSetSave").on("click",function(){
+    //   var id = "{:input('id')}";
+    //   var refer_id = $("select[name='refer_id']").val();
+    //   $.post("{:url('fastSet')}",{id:id,refer_id:refer_id},function(data){
+    //     $('#fastSetModal').modal('hide');
+         //obalertp(data);
+    //   })
+    // })
+    //生成树
+    treeObj= makeZTree({data:{$info['typeList']|json_encode}});
+
+
+    //加载页面后,选中制定节点
+    var node = treeObj.getNodeByTId("{:input('tid')}");
+    treeObj.cancelSelectedNode();//先取消所有的选中状态
+    treeObj.selectNode(node,true);//将指定ID的节点选中
+
+    // //获取编号
+    // $(".create-code").on('click',function(){
+    //   var $this = $(this);
+    //   $.get("{:url('createCode')}",function(data){
+    //     $this.parent().prev("input").val(data);
+    //   })
+    //
+    // })
+
+
+
+  });
+
+
+
+</script>
+
+<script type="text/javascript" charset="utf-8">
+
+  +function($){
+
+    //全选节点
+    $('.rules_all').on('change',function(){
+
+      $(this).parent().parent().parent().parent().closest('div').find('input').prop('checked',this.checked);
+    });
+
+    //当前节点选中后触发选中所有父级
+    $('input').on('click',function(){ selectParentElement(this); });
+
+  }(jQuery);
+
+
+  function selectParentElement(obj)
+  {
+
+    var tag = false;
+
+    var rules_all = $(obj).parent().parent().parent().parent().parent().prev();
+    var rules = $(obj).parent().parent().prev();
+
+    if (typeof (rules_all.html()) !== "undefined") { obj = rules_all; tag = true; }
+
+    if (typeof (rules.html()) !== "undefined") { obj = rules; tag = true; }
+
+    if (false === tag) {  return false; }
+
+    selectParentElement(obj);
+
+    obj.find("input").prop("checked", 'checked');
+  }
+
+</script>

@@ -1,0 +1,162 @@
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">礼券提成</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <input type="hidden" name="id" value="{$info.id|default=''}">
+                <input type="hidden" name="group_id" value="{$Think.get.gid}">
+                <input type="hidden" name="tb" value="{$Think.get.tb}">
+                <input type="hidden" name="coupon_ids">
+                <div class="row">
+
+                    <div id="container" class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">启用时间</label>
+                            <div class="col-sm-10 form-inline">
+                                <input type="text" class="form-control date" readonly name="start_time" value="{$info.start_time|default=''}">
+                                至<input type="text" class="form-control date" readonly name="end_time" value="{$info.end_time|default=''}">
+                            </div>
+                        </div>
+
+
+                        <div class="panel panel-info">
+                            <div class="panel-heading">选择礼券</div>
+                            <div class="box-body table-responsive">
+                                <table class="table table-condensed  table-bordered table-hover reference">
+                                    <thead>
+                                        <tr>
+                                            <th class="checkbox-select-all">
+                                                <label>
+                                                    <input class="flat-grey js-checkbox-all" type="checkbox">
+                                                </label>
+                                            </th>
+                                            <th>序号</th>
+                                            <th>礼券类型</th>
+                                            <th>面额</th>
+                                            <th>提成金额</th>
+                                            <th>有效期</th>
+
+                                        </tr>
+                                    </thead>
+
+                                    {notempty name='list'}
+                                    <tbody>
+                                        {volist name='list' id='vo' key="i" }
+                         
+                                        <tr data-id="{$vo['id']}">
+                                            <td>
+                                                <label>
+                                                    <input class="flat-grey" type="checkbox" name="coupon_id[]" value="{$vo.id}">
+                                                </label>
+                                            </td>
+                                            <td>{$i}</td>
+                                            <td>{$vo.type_name}</td>
+                                            <td>{$vo.amount}</td>
+
+                                            <td><div class="input-group input-group-sm">
+                                                <input type="number" name="award[]" class="form-control" data-coupon_id="{$vo.id}"/>
+                                                <span class="input-group-addon">元/张</span>
+                                            </div>
+                                            </td>
+                                            
+                                            
+                                            <!--<td><input type="text" name="award[]" data-coupon_id="{$vo.id}"/></td>-->
+                                            <td>{$vo.start_time} —— {$vo.end_time}</td>
+
+
+                                        </tr>
+                              
+                                        {/volist}
+                                    </tbody>
+                                    {/notempty}
+                                </table>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+
+            </form>
+
+
+        </div>
+        <div class="modal-footer" >
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('settingEdit')}{else/}{:url('settingAdd')}{/notempty}">保存
+            </button>
+
+        </div>
+        <div id="temp" ></div>
+    </div>
+</div>
+
+<script>
+  $(function() {
+    //region 初始化
+    //启动icheck
+    $("[type='radio'],[type='checkbox']").iCheck({
+      checkboxClass: 'icheckbox_minimal-blue',
+      radioClass: 'iradio_minimal-blue',
+      increaseArea: '20%', // optional
+    });
+    iCheckAll();
+
+    //同时绑定多个时间控件
+    lay('.date').each(function() {
+      laydate.render({
+        min: 0, //当天
+        elem: this,
+        type: 'datetime',
+        trigger: 'click',
+      });
+    });
+
+    //endregion
+
+
+
+      var coupons="{$info.coupon_ids|default=''}".split(',');
+      // for(var i=0;i<coupons.length;i++) {
+      //     $('form').find('tbody').find(":checkbox[value='"+coupons[i]+"']").iCheck('check');
+      //
+      // }
+
+    var rules={$info.rules|default=[]|json_encode};
+    for (var i = 0; i < rules.length; i++) {
+      var rule = rules[i];
+      $('form').find('tbody').find(":checkbox[value='"+rule['coupon_id']+"']").iCheck('check');
+      $("[name='award[]'][data-coupon_id='"+rule['coupon_id']+"']").val(rule["award"]);
+      ;
+    }
+
+
+  });
+
+  //提交前
+  function beforeSubmit() {
+
+      $('form tbody').find(":checkbox:not(:checked)").parents("tr").find(":text").prop("disabled",true);
+      
+    //组合id
+    var arr=[];
+    $('form tbody').find(":checked").each(function(){
+      arr.push($(this).val());
+    })
+    $(':hidden[name="coupon_ids"]').val(arr.join());
+
+
+
+  }
+
+  function afterSubmit() {
+      $('form tbody').find("input").prop("disabled",false);
+      //$(".none:hidden").appendTo("#container");
+  }
+
+</script>

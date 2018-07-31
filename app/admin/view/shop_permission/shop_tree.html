@@ -1,0 +1,176 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url('')}?id="></a>
+        <div class="lockscreen-footer">
+
+            <ob_link><a class="btn ladda-button  ajax-post" target-form="permissionsForm" href="{:url('shopTree')}?id={$Request.get.id}&tid={$Request.get.tid}" >保存</a></ob_link>
+            <ob_link><a class="btn ladda-button" id="fastSetBtn"  url="{:url('fastset')}" >快捷设置</a></ob_link>
+
+
+
+        </div>
+
+    </div>
+    <div class="box-body table-responsive">
+        <div class="row">
+            <div class="col-sm-2">
+                <!--左边店铺列表-->
+                <ul id="ztree" class="ztree"></ul>
+            </div>
+
+            <!--右边-->
+            <div class="col-sm-10">
+                <div id="container">
+                    {notempty name='Request.get.id'}
+
+
+                    {include file="shop_permission/permissions" /}
+
+                    {/notempty}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="fastSetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    快捷设置
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="fastSetForm" class="fastSetForm" action="{:url('fastSet')}">
+                    <div class="form-group">
+                        <label >选择参考的机构</label>
+                        <select class="form-control" name="refer_id">
+                            <option value="0">请选择参考机构</option>
+                            {notempty name='shopList'}
+                            {volist name="shopList" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                            {/notempty}
+                        </select>
+
+                    </div>
+
+
+                    <div class="panel panel-info">
+                        <div class="panel-heading">选择覆盖机构</div>
+                        <div class="box-body table-responsive">
+                            <table class="table table-bordered table-hover reference">
+                                <thead>
+                                <tr>
+                                    <th class="checkbox-select-all">
+                                        <label>
+                                            <input class="flat-grey js-checkbox-all" type="checkbox">
+                                        </label>
+                                    </th>
+                                    <th>序号</th>
+                                    <th>编号</th>
+                                    <th>机构名称</th>
+
+                                </tr>
+                                </thead>
+
+                                {notempty name='shopList'}
+                                <tbody>
+                                {volist name='shopList' id='vo' key="i" }
+                                <tr data-id="{$vo['id']}">
+                                    <td>
+                                        <label>
+                                            <input class="flat-grey" type="checkbox" name="shop_ids[]" value="{$vo.id}">
+                                        </label>
+                                    </td>
+                                    <td>{$i}</td>
+                                    <td>{$vo.number}</td>
+                                    <td>{$vo.name}</td>
+                                </tr>
+                                {/volist}
+                                </tbody>
+                                {/notempty}
+                            </table>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!--<button type="button" id="fastSetSave" class="btn ladda-button" data-style="slide-up" >-->
+                    <!--提交-->
+                <!--</button>-->
+
+                <button  type="submit" class="btn ladda-button ajax-post" data-style="slide-up" target-form="fastSetForm">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script>
+  $(function() {
+    //快捷设置modal框
+    $('#fastSetBtn').on('click', function(e) {
+      //隐藏当前店铺(不参照自己)
+      // var shop_id = $('.permissionsForm [name="shop_id"]').val();
+      // $('#fastSetForm option').each(function() {
+      //   $(this).show();
+      //   if ($(this).val() == shop_id) {
+      //     $(this).hide();
+      //   }
+      // });
+      $('#fastSetModal').modal('show');
+      e.preventDefault();
+    });
+
+    // //快速保存
+    // $("#fastSetSave").on("click",function(){
+    //   var shop_id = $('.permissionsForm [name="shop_id"]').val();
+    //   var refer_id = $("select[name='refer_id']").val();
+    //   $.post("{:url('fastSet')}",{shop_id:shop_id,refer_id:refer_id},function(data){
+    //     $('#fastSetModal').modal('hide');
+    //     obalertp(data);
+    //   })
+    //
+    // })
+
+    //参考对象选择
+    $("select[name='refer_id']").on('change',function(){
+      var id = $(this).val();
+      $("table.reference tr").each(function(i,e){
+        $(e).show().find("input").prop("disabled",false);
+        if( $(e).attr("data-id") == id){
+          $(e).hide().find("input").prop("disabled",true);
+        }
+      })
+    })
+
+
+
+
+    treeObj=makeZTree({data:{$list|json_encode}});
+    //加载页面后,选中制定节点
+    var node = treeObj.getNodeByTId("{:input('tid')}");
+    treeObj.cancelSelectedNode();//先取消所有的选中状态
+    treeObj.selectNode(node,true);//将指定ID的节点选中
+
+  });
+
+
+</script>
+
+

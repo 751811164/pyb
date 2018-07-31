@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择商品</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/select2/3.5.4/select2.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/iCheck/1.0.2/skins/all.css" rel="stylesheet">
+    <link href="__STATIC__/ext/adminlte/dist/css/AdminLTE.min.css" rel="stylesheet">
+
+
+    <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/select2/3.5.4/select2.min.js"></script>
+    <script src="https://cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+    <!--<script src="__STATIC__/admin/js/goods_choose.js"></script>-->
+
+</head>
+
+<body>
+
+<div class="container-fluid box">
+
+
+    <!-- /.box-header -->
+    <div class="box-header">
+
+    </div>
+
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="box-tools">
+                    <div class="input-group search-form">
+                        <input name="search_data" class="form-control search-input" value="{:input('search_data')}"
+                               placeholder="订单号" type="text">
+                        <div class="input-group-btn">
+                            <button type="button" id="search" url="{:url('')}" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th class="checkbox-select-all">
+                        <!--<label>-->
+                            <!--<input class="flat-grey js-checkbox-all" type="checkbox">-->
+                        <!--</label>-->
+                    </th>
+                    <th>序号</th>
+                    <th>单据编号</th>
+                    <th>审核状态</th>
+
+                    <th>机构名称</th>
+                    <th>供应商</th>
+                    <th>单据金额</th>
+                    <th>单据状态</th>
+                    <th>备注</th>
+                </tr>
+                </thead>
+
+                {notempty name='list'}
+                <tbody>
+                {volist name='list' id='vo'}
+                <tr  data-id="{$vo['id']}">
+                    <td>
+                        <label>
+                            <input class="flat-grey" type="radio" name="ids" data-item='{$vo|json_encode}'  value="{$vo.id}">
+                        </label>
+                    </td>
+                    <td>{$i}</td>
+                    <td>{$vo.sn}</td>
+                    <td>{$vo.status_text}</td>
+
+                    <td>{$vo.shop_name}</td>
+                    <td>{$vo.supplier_name}</td>
+                    <td>{$vo.amount}</td>
+                    <td>{$vo.use_status_text}</td>
+                    <td>{$vo.bill_remark}</td>
+                </tr>
+                {/volist}
+                </tbody>
+                {else/}
+                <tbody>
+                <tr class="odd">
+                    <td colspan="1" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                </tr>
+                </tbody>
+                {/notempty}
+            </table>
+
+        </div>
+
+
+        <div class="box-footer clearfix text-center">
+            {$list->render()}
+        </div>
+
+
+</div>
+
+
+<script>
+
+    $(function(){
+
+       var $radio = $("tbody").find("[type='radio']").not("[disabled]")
+    //启动icheck
+    $((".table [type='radio']")).iCheck({
+        radioClass: 'iradio_minimal-blue',
+    });
+
+    //
+    //
+    //     $radio.on('ifClicked', function (event) {
+    //     if (event.target.checked) {
+    //         ids.splice(ids.indexOf(event.target.value), 1);
+    //         items.splice(ids.indexOf(event.target.value), 1);
+    //         i--
+    //     }
+    //     else {
+    //         i++;
+    //         ids.push(event.target.value);
+    //         var item=$.parseJSON(event.target.dataset.item);
+    //         item.id=null;
+    //         items.push(item);
+    //
+    //     }
+    //     if (i == length) {
+    //         $checkboxAll.iCheck('check');
+    //     }
+    //     else {
+    //         $checkboxAll.iCheck('uncheck');
+    //     }
+    // });
+
+
+
+    //搜索功能
+    $("#search").click(function () {
+        window.location.href = searchFormUrl(this);
+    });
+
+    //设置空列表时,td的列数
+    $("tr.odd td[valign='top']").attr("colspan", $("tr.odd").parents("table").eq(0).find("th").length);
+
+
+    /**
+     * 搜索表单url
+     */
+    var searchFormUrl = function (obj) {
+        var url = $(obj).attr('url');
+        var query = $('.search-form').find('input').serialize();
+        var str = $('.search-form').find('select').serialize();
+        query += '&' + str.replace(/=-\d*/g, '=');
+
+        query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
+        query = query.replace(/^&/g, '');
+        if (url.indexOf('?') > 0) {
+            url += '&' + query;
+        }
+        else {
+            url += '?' + query;
+        }
+
+        return url;
+    };
+
+    function getQueryString (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+
+    })
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!--<link rel="stylesheet" href="__STATIC__/addon/region/region_style.css">-->
+<div>
+    <select id="firstcate_{$addons_data.name}" class="form-control addon-form-group-select"></select>
+    <select id="secondcate_{$addons_data.name}" class="form-control addon-form-group-select"></select>
+    <select name="category_{$addons_data.name}" id="category_{$addons_data.name}" class="form-control addon-form-group-select"></select>
+</div>
+
+<script type="text/javascript">
+
+$(function(){
+    var firstcate_id = "{$addons_data['firstcate']}";
+    var secondcate_id = "{$addons_data['secondcate']}";
+    var category_id = "{$addons_data['category']}";
+    
+    var get_options_url = '{:addons_url("categoryselect://Index/getOptions")}';
+
+    function changeFirstcate(firstcate_id = 0, select_id = 0)
+    {
+        $.get(get_options_url, {pid: firstcate_id, select_id: select_id, level : 0}, function(result){ $("#firstcate_{$addons_data.name}").html(result.data); });
+    }
+
+    function changeSecondcate(secondcate_id = 0, select_id = 0)
+    {
+        $.get(get_options_url, {pid: secondcate_id, select_id: select_id, level : 1}, function(result){ $("#secondcate_{$addons_data.name}").html(result.data); });
+    }
+
+    function changeCategory(category_id = 0, select_id = 0)
+    {
+        $.get(get_options_url, {pid: category_id, select_id: select_id, level : 2}, function(result){ $("#category_{$addons_data.name}").html(result.data); });
+    }
+    
+    changeFirstcate(0, firstcate_id);
+    changeSecondcate(firstcate_id, secondcate_id);
+    changeCategory(secondcate_id, category_id);
+
+    $("#firstcate_{$addons_data.name}").change(function(){debugger; changeSecondcate($("#firstcate_{$addons_data.name}").val());});
+    $("#secondcate_{$addons_data.name}").change(function(){ changeCategory($("#secondcate_{$addons_data.name}").val());});
+});
+</script>

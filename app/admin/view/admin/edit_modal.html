@@ -1,0 +1,532 @@
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">添加员工</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal" action="{:url('adminAdd')}">
+                <input type="hidden" id="editId" name="id" value="{$info.id|default=''}">
+                <input type="hidden"  name="admin_id" value="{$info.id|default=''}">
+                <ul id="myTab" class="nav nav-tabs">
+                    <li class="active"><a href="#admin" data-toggle="tab">基本信息</a></li>
+                    {if condition=" ($Think.get.id != $Think.const.SYS_ADMINISTRATOR_ID) "}
+                    <li><a href="#pos" data-toggle="tab">POS权限</a></li>
+                    <li><a href="#price" data-toggle="tab">价格权限</a></li>
+                    <li><a href="#check" data-toggle="tab" disabled>后台权限</a></li>
+                    {/if}
+                </ul>
+                <div id="myTabContent" class="tab-content">
+
+                    <div class="tab-pane fade in active" id="admin">
+                        <!--基本信息-->
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" style="width: 12.5%;">岗位</label>
+                                    <div class="form-inline col-sm-10" style="width: 87.5%;">
+                                        {assign name='type_id' value="$info.type_id|default='0'"/}
+                                        {assign name='shop_id' value="$info.shop_id|default='0'" /}
+                                        {assign name='group_id' value="$info.group_id|default='0'"/}
+                                        {:hook('GroupSelect', ['name' => 'id', 'shop' => $shop_id,'group'=>$group_id,'type'=>$type_id ])}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">姓名</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" name="username" value="{$info.username|default=''}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">性别</label>
+                                    <div class="col-sm-9">
+                                        <select name="gender"  class="form-control">
+                                            <option value="-1">未知</option>
+                                            <option value="0" >女</option>
+                                            <option value="1" >男</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">生日</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" name="birthday" class="form-control pull-right date" readonly value="{$info['birthday']|default=''|format_strtime=###,'Y-m-d'}">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">身份证</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" name="identity" value="{$info.identity|default=''}">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>头像</label>
+                                    <span class="">（请上传单张封面图片）</span>
+                                    <br/>
+                                    {assign name="portrait_id" value="$info.portrait_id|default='0'" /}
+                                    {:hook('File', ['name' => 'portrait_id', 'value' => $portrait_id, 'type'=>'img'])}
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" style="width: 12.5%;">住址</label>
+                                    <div class="col-sm-10"  style="width: 87.5%;">
+                                        <input type="text" class="form-control" name="address" value="{$info.address|default=''}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 clearfix">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">工号</label>
+                                <div class="col-sm-9">
+
+                                        <input type="text" class="form-control"  value="{$info['number']|default=''}" disabled>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">入职时间</label>
+                                <div class="col-sm-9">
+                                    <div class="input-group ">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="entry_time" class="form-control pull-right date" readonly id="enterTime" value="{$info['entry_time']|default=''|format_strtime=###,'Y-m-d'}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">手机号</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" name="mobile" value="{$info['mobile']|default=''}" oninput="if(value.length>11)value=value.slice(0,11)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">密码</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" name="password">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">验证码</label>
+                                    <div class="col-sm-9">
+
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="verify"
+                                                   aria-describedby="basic-addon2">
+
+                                            <span class="input-group-addon" style="padding: 0;">
+                                                    <img src="{:captcha_src()}" alt="captcha" class="captcha_change"
+                                                         id="captcha_img" style="width: 120px; height: 26px;"/>
+                                                </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">重复密码</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" name="password_confirm">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="tab-pane fade" id="pos">
+                        <input type="hidden" class="switch" name="pos_check" value="">
+                        <!--pos权限-->
+                        <div class="row bm-gray">
+                            <div class="col-sm-12">
+                                <input class="flat-grey all" type="checkbox">
+                                <span>全选</span>
+                            </div>
+                        </div>
+
+                        <div class="row bm-gray">
+                        <div class="col-sm-3">
+                            <input class="flat-grey check" type="checkbox" name="pc_cashier" value="1">
+                            <span>PC端收银</span>
+                        </div>
+
+
+                        <div class="col-sm-3">
+                            <input class="flat-grey check" type="checkbox" name="mob_cashier" value="1">
+                            <span>手机端端收银</span>
+                        </div>
+
+
+                        <div class="col-sm-3">
+                            <input class="flat-grey check" type="checkbox" name="take_stock" value="1" >
+                            <span>是否允许盘点</span>
+                        </div>
+                        </div>
+
+                        <div class="row bm-gray">
+
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="oncredit" value="1">
+                                <span>赊账</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="credit_collection" value="1">
+                                <span>赊账回款</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="auto_open_cashbox" value="1">
+                                <span>出票自动开钱箱</span>
+                            </div>
+                        </div>
+
+                        <div class="row bm-gray">
+
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="deposit" value="1">
+                                <span>寄存</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="deposit_take" value="1">
+                                <span>寄存取货</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="minus_sale" value="1">
+                                <span>负库存销售</span>
+                            </div>
+                        </div>
+
+                        <!--<div class="row bm-gray">-->
+
+                            <!--<div class="col-sm-3">-->
+                                <!--<input class="flat-grey check" type="checkbox" name="goods_presentation" value="1">-->
+                                <!--<span>单品赠送</span>-->
+                            <!--</div>-->
+
+                            <!--<div class="col-sm-3">-->
+                                <!--<input class="flat-grey check" type="checkbox" name="goods_discount" value="1">-->
+                                <!--<span>单品改价/打折</span>-->
+                            <!--</div>-->
+
+                            <!--<div class="col-sm-3">-->
+                            <!--<input class="flat-grey check" type="checkbox" name="order_discount" value="1">-->
+                            <!--<span>整单改价/打折</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+
+                        <div class="row bm-gray">
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="goods_redemption" value="1">
+                                <span>单品退换货</span>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="order_redemption" value="1">
+                                <span>整单退换货</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="pending_order" value="1">
+                                <span>挂单</span>
+                            </div>
+                        </div>
+
+                        <div class="row bm-gray">
+
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="goods_query" value="1">
+                                <span>本店商品查询</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="giveaway_query" value="1">
+                                <span>本店赠品查询</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="other_inventory_query" value="1">
+                                <span>跨店库存查询</span>
+                            </div>
+                        </div>
+
+                        <div class="row bm-gray">
+
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="register_membercard" value="1">
+                                <span>办理会员卡</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="membercard_upgrade" value="1">
+                                <span>会员卡升级</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="timecard_deduction" value="1">
+                                <span>次卡冲减</span>
+                            </div>
+                        </div>
+
+
+                        <div class="row bm-gray">
+
+                            <!--<div class="col-sm-3">-->
+                                <!--<input class="flat-grey check" type="checkbox" name="xx" value="1">-->
+                                <!--<span>办理会员卡</span>-->
+                            <!--</div>-->
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="member_deduction_point" value="1">
+                                <span>会员冲减积分</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="point_exchange_query" value="1">
+                                <span>积分兑换查询</span>
+                            </div>
+                        </div>
+
+
+                        <div class="row bm-gray">
+
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="petcard_charge" value="1">
+                                <span>储值卡充值</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="petcard_query" value="1">
+                                <span>储值卡查询</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="petcard_return_query" value="1">
+                                <span>储值返现查询</span>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="tab-pane fade" id="price">
+                        <input type="hidden" class="switch" name="price_check">
+                        <!--价格权限-->
+                        <div class="row bm-gray">
+                            <div class="col-sm-12">
+                            <input class="flat-grey all" type="checkbox">
+                            <span>全选</span>
+                            </div>
+                        </div>
+                        <div class="row bm-gray">
+
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="price[]" value="cost_price">
+                                <span>进货价</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="price[]" value="retail_price">
+                                <span>零售价</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="price[]" value="wholesale_price">
+                                <span>批发价</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="price[]" value="delivery_price">
+                                <span>配送价</span>
+                            </div>
+                        </div>
+
+                        <div class="row bm-gray">
+                            <div class="col-sm-3">
+                                <input class="flat-grey check" type="checkbox" name="price[]" value="member_price">
+                                <span>会员价</span>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="tab-pane fade" id="check">
+                        <!--数据权限-->
+
+                        <input type="hidden" class="switch" name="data_check" value="">
+
+
+
+                        <!--<div class="row bm-gray">-->
+                            <!--<div class="col-sm-12">-->
+                                <!--<input class="flat-grey all" type="checkbox">-->
+                                <!--<span>全选</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <div class="row bm-gray">
+
+                            <div class="col-sm-3">
+                                <input class="flat-grey" type="checkbox" name="purchase_all" value="1">
+                                <span>全店采购</span>
+                            </div>
+
+                        </div>
+
+
+
+                        <!--<h3>暂无</h3>-->
+
+
+
+
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('adminEdit')}{else/}{:url('adminAdd')}{/notempty}">保存</button>
+            <!--<button type="button" class="btn skin-red">下一步</button>-->
+            <!--<button type="button" class="btn btn-default" hidden data-dismiss="modal">关闭</button>-->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+
+      ob.setValue("pc_cashier", {$info.pc_cashier|default=0});
+      ob.setValue("mob_cashier", {$info.mob_cashier|default=-1});
+      ob.setValue("take_stock", {$info.take_stock|default=-1});
+      ob.setValue("gender", {$info.gender|default=-1});
+      ob.setValue("group_id", {$info.group_id|default=-1});
+
+      //启动icheck
+      $(".tab-pane [type='checkbox']").iCheck({
+        checkboxClass: 'icheckbox_minimal-blue',
+        radioClass: 'iradio_minimal-blue',
+        increaseArea: '20%' // optional
+      });
+
+        //同时绑定多个时间控件
+        lay('.date').each(function () {
+            laydate.render({
+                elem: this,
+                type: 'date',
+                trigger: 'click',
+            })
+        })
+
+
+      var $checkAll =$('input.all');  //全选的input
+      var $checkboxs =$('input.check'); //所有单选的input
+
+      $checkAll.on('ifChecked ifUnchecked',function(event){
+        var children =$(this).parents('.tab-pane').find('input.check'); //所有单选的input
+        if(event.type == 'ifChecked'){
+          children.iCheck('check');
+        }else{
+          children.iCheck('uncheck');
+        }
+      });
+      $checkboxs.on('ifChanged',function(event){
+        var $pane = $(this).parents('.tab-pane');
+
+        if($pane.length>0){
+          var $all = $pane.find('input.all');
+          var children =$pane.find('input.check'); //所有单选的input
+          if(children.filter(':checked').length == children.length){
+            $all.prop('checked',true);
+          }else{
+            $all.prop('checked',false);
+          }
+          $all.iCheck('update');
+         if( children.filter(':checked').length>0){
+           $pane.find(".switch:hidden").val(1)
+         }else{
+           $pane.find(".switch:hidden").val(0)
+         }
+        }
+      });
+
+      var info = {$info|json_encode};
+
+      //checkbox标签选中
+      $('.tab-pane .check').each(function(i, e) {
+        try {
+          var $this = $(this);
+          var name = $this.attr('name');
+          if (name.indexOf('[]') > -1){
+
+            name = name.replace('[]','');
+
+            if (!(info instanceof Array)&&info[name].indexOf($this.val()) !== -1) {
+              $this.iCheck('check');
+            }
+
+          } else{
+            if(info.hasOwnProperty(name)&&info[name]==$this.val()){
+              $this.iCheck('check');
+            }
+          }
+
+
+          //var arr = info[$this.attr('name').replace('[]', '')] || [];
+
+
+        } catch (e) {
+
+          console.warn('chechbox赋值出错');
+        }
+      });
+
+
+      //获取编号
+      $(".create-code").on('click',function(){
+        var $this = $(this);
+        $.get("{:url('createCode')}",function(data){
+          $this.parent().prev("input").val(data);
+        })
+
+      })
+
+    })
+
+
+</script>

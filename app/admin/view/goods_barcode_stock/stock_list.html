@@ -1,0 +1,83 @@
+<div class="box">
+
+
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}">跳转</a>
+        <ob_link><a class="btn" url="{:url('')}" id="search">查 询</a></ob_link>
+        <!--<ob_link><a class="btn export" url="{:url('exportLogList')}">导 出</a></ob_link>-->
+
+        <div class="box-tools form-block">
+            <div class="form-inline search-form">
+
+                <div class="form-group">
+                    <label class="control-label" style="width:60px">机构</label>
+
+                    {:hook('ShopSelect', array('name'=>'id' ))}
+
+                </div>
+                <div class="form-group">
+                    <label class="control-label" style="width:60px">类别</label>
+                    <select class="form-control" name="category_id" style="width: 200px;">
+                        <option value>全部</option>
+                        {notempty name="categoryList"}
+                        {volist name="categoryList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" style="width:60px">供应商</label>
+                    <select class="form-control" name="supplier_id" style="width: 200px;">
+                        <option value>全部</option>
+                        {notempty name="supplierList" }
+                        {volist name="supplierList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+                </div>
+
+                <br>
+                <div class="form-group">
+                    <label class="control-label" style="width:60px">品名/条码</label>
+                    <input type="text" class="form-control" name="search_data" value="{:input('search_data')}" style="width: 200px">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label"><input type="checkbox" name="valid_stock" value="1" >只查询有效库存(库存数量>0)</label>
+
+                    {volist name="searchTypeList" id="vo"}
+                    <label class="control-label"><input type="radio" name="search_type" value="{$key}" checked>{$vo}</label>
+                    {/volist}
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    {include file="$filePath" /}
+    <div class=" clearfix text-center">
+        {notempty name="list" } {$list->render()}{/notempty}
+    </div>
+</div>
+
+
+</div>
+
+
+<script>
+
+    $(function () {
+        ob.setValue("shop_id", "{:input('shop_id')}");
+        ob.setValue("category_id", "{:input('category_id')}");
+        ob.setValue("supplier_id", "{:input('supplier_id')}");
+        ob.setValue("valid_stock", "{:input('valid_stock')}");
+        ob.setValue("search_type", "{$searchType}")
+    })
+
+
+</script>

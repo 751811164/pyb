@@ -1,0 +1,316 @@
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">类别提成</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <input type="hidden" name="id" value="{$info.id|default=''}">
+                <input type="hidden" name="group_id" value="{$Think.get.gid}">
+                <input type="hidden" name="tb" value="{$Think.get.tb}">
+                <input type="hidden" name="category_ids" >
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">启用时间</label>
+                            <div class="col-sm-10 form-inline">
+                                <input type="text" class="form-control date" readonly name="start_time" value="{$info.start_time|default=''}">
+                                至<input type="text" class="form-control date" readonly name="end_time" value="{$info.end_time|default=''}">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="col-sm-10">
+                                <label><input type="radio" name="type" value="0">类别提成</label>
+                                <label><input type="radio" name="type" value="1">类别毛利提成</label>
+                            </div>
+                        </div>
+
+
+                        <ul id="categoryTab" class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#catePane" data-toggle="tab">
+                                    选择类别</a>
+                            </li>
+                            <li>
+                                <a href="#reachPane" data-toggle="tab">
+                                    <input type="radio" name="mode" value="0">
+                                    达成率计算
+                                </a>
+                            </li>
+                            <li><a href="#fixPane" data-toggle="tab">
+                                <input type="radio" name="mode" value="1">
+                                固定值计提
+                            </a>
+                            </li>
+
+                        </ul>
+                        <div id="categoryTabContent" class="tab-content">
+                            <div class="tab-pane fade in active" id="catePane">
+
+
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">选择分类</div>
+                                    <div class="box-body table-responsive">
+                                        <table class="table table-condensed  table-bordered table-hover reference">
+                                            <thead>
+                                            <tr>
+                                                <th class="checkbox-select-all">
+                                                    <label>
+                                                        <input class="flat-grey js-checkbox-all" type="checkbox">
+                                                    </label>
+                                                </th>
+                                                <th>序号</th>
+                                                <th>编号</th>
+                                                <th>名称</th>
+
+                                            </tr>
+                                            </thead>
+
+                                            {notempty name='categoryList'}
+                                            <tbody>
+                                            {volist name='categoryList' id='vo' key="i" }
+                                            <tr data-id="{$vo['id']}">
+                                                <td>
+                                                    <label>
+                                                        <input class="flat-grey" type="checkbox" value="{$vo.id}">
+                                                    </label>
+                                                </td>
+                                                <td>{$i}</td>
+                                                <td>{$vo.number}</td>
+                                                <td>
+                                                    {$vo.name}
+                                                </td>
+                                            </tr>
+                                            {/volist}
+                                            </tbody>
+                                            {/notempty}
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="tab-pane fade" id="reachPane">
+                                <div class="col-sm-12">
+                                    <ul id="reachRules" class="list-group form-inline">
+                                        {notempty name="info.rules" }
+                                        {if condition="$info.mode ==0"}
+                                        {volist name="info.rules" id="vo"}
+                                        <li class="list-group-item">
+                                            <span class="badge">×</span>
+                                            <div class="form-group">
+                                                销售目标: <input type="number" class="form-control" name="target[]" value="{$vo.target|default='0'}" required>
+                                                提成:
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="brokerage[]" value="{$vo.brokerage|default='0'}" required max="100"
+                                                           style="width: 50px;">
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                                超额部分提成:
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="over[]" value="{$vo.over|default='0'}" required max="100"
+                                                           style="width: 50px;">
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {/volist}
+                                        {/if}
+                                        {/notempty}
+                                    </ul>
+                                    <div class="add-rule" style="text-align: right">
+                                        <input type="button" class="btn btn-default" data-pane="reach" value="+">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="fixPane">
+
+
+                                <div class="col-sm-12">
+                                    <ul id="fixRules" class="list-group form-inline">
+                                        {notempty name="info.rules" }
+                                        {if condition="$info.mode ==1"}
+                                        {volist name="info.rules" id="vo"}
+                                        <li class="list-group-item">
+                                            <span class="badge">×</span>
+                                            <div class="form-group">
+                                                销售目标: <input type="number" class="form-control" name="target[]" value="{$vo.target|default='0'}" required>
+                                                奖励:<input type="number" class="form-control" name="award[]" value="{$vo.award|default='0'}" required
+                                                          style="width: 100px;">
+
+                                                超额:
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="over[]" value="{$vo.over|default='0'}" required max="100"
+                                                           style="width: 50px;">
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+
+                                                再奖励:<input type="number" class="form-control" name="reward[]" value="{$vo.reward|default='0'}" required
+                                                           style="width: 100px;">
+                                            </div>
+                                        </li>
+                                        {/volist}
+                                        {/if}
+                                        {/notempty}
+
+                                    </ul>
+                                    <div>
+                                        <label> <input type="checkbox" name="multiply" value="1">超额部分提成是否叠加</label>
+                                    </div>
+                                    <div class="add-rule" style="text-align: right">
+                                        <input type="button" class="btn btn-default" data-pane="fix" value="+">
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+            </form>
+
+
+            <ul id="reachDemo" style="display: none;">
+
+                <li class="list-group-item">
+                    <span class="badge">×</span>
+                    <div class="form-group">
+                        销售目标: <input type="number" name="target[]" value="0" required class="form-control">
+                        提成:
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="brokerage[]" value="0" required max="100" style="width: 50px;">
+                            <span class="input-group-addon">%</span>
+                        </div>
+                        超额部分提成:
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="over[]" value="0" required max="100" style="width: 50px;">
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+
+            <ul id="fixDemo" style="display: none;">
+
+                <li class="list-group-item">
+                    <span class="badge">×</span>
+                    <div class="form-group">
+                        销售目标: <input type="number" class="form-control" name="target[]" value="0" required>
+                        奖励:<input type="number" class="form-control" name="award[]" value="0" required
+                                  style="width: 100px;">
+
+                        超额:
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="over[]" value="0" required max="100"
+                                   style="width: 50px;">
+                            <span class="input-group-addon">%</span>
+                        </div>
+
+                        再奖励:<input type="number" class="form-control" name="reward[]" value="0" required
+                                   style="width: 100px;">
+                    </div>
+                </li>
+
+            </ul>
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('settingEdit')}{else/}{:url('settingAdd')}{/notempty}">保存
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+  $(function() {
+    //region 初始化
+
+    ob.setValue('type', "{$info.type|default='0'}");
+    ob.setValue('mode', "{$info.mode|default='0'}");
+    ob.setValue('multiply', "{$info.multiply|default='0'}");
+
+    var categorys = "{$info.category_ids|default=''}".split(',');
+    for (var i = 0; i < categorys.length; i++) {
+     $('form').find('tbody').find(":checkbox[value='"+categorys[i]+"']").iCheck('check');
+      ;
+    }
+
+    //启动icheck
+    $("[type='radio'],[type='checkbox']").iCheck({
+      checkboxClass: 'icheckbox_minimal-blue',
+      radioClass: 'iradio_minimal-blue',
+      increaseArea: '20%', // optional
+    });
+    iCheckAll();
+
+    //同时绑定多个时间控件
+    lay('.date').each(function() {
+      laydate.render({
+        min: 0, //7天前
+        elem: this,
+        type: 'datetime',
+        trigger: 'click',
+      });
+    });
+    //endregion
+
+    //tab切换
+    $(".nav-tabs li input").on("ifChecked",function(){
+      $(this).parents("a").trigger('click');
+    })
+
+    $(".nav-tabs li a").on('show.bs.tab', function (e) {
+      var $radio = $(this).find(":radio");
+      if (!$radio.prop("checked")) {
+        $radio.iCheck('check');
+      }
+    })
+
+    // 添加行
+    $(".add-rule :button").on("click", function() {
+      var pane = $(this).attr("data-pane");
+      $("#" + pane + "Demo").find("li").clone(true).appendTo($("#" + pane + "Rules"));
+    });
+
+    //删除行
+    $(".modal-body .badge").on("click", function() {
+      $(this).parent("li").remove();
+    });
+
+  });
+
+  //提交前
+  function beforeSubmit() {
+    //清空没被选中的计算模式
+    var target = $('[name="mode"]:not(:checked)').parents('a').attr("href");
+    $(target).find("ul").empty();
+    //组合分类id
+    var arr=[];
+    $('form tbody').find(":checked").each(function(){
+      arr.push($(this).val());
+    })
+    $(':hidden[name="category_ids"]').val(arr.join());
+  }
+
+  function afterSubmit() {
+    ;
+  }
+
+</script>

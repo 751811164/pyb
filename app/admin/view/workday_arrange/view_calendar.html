@@ -1,0 +1,119 @@
+<div class="">
+    <div class="col-sm-3">
+
+        <div id='va-calendar' style="height: 300px;">
+
+        </div>
+
+    </div>
+
+    <div class="col-sm-3">
+
+        <div id='vb-calendar'  style="height: 300px;">
+
+        </div>
+
+    </div>
+
+    <div class="col-sm-3">
+
+        <div id='vc-calendar'  style="height: 300px;">
+
+        </div>
+
+    </div>
+</div>
+
+<style>
+    container{
+        overflow-y: scroll;
+    }
+    @media (max-height: 768px) {
+        #container {
+            height: 350px
+        }
+    }
+
+    @media (min-height: 768px) {
+        #container {
+            height: 450px
+        }
+    }
+
+    #view-container .sc-actions {
+        width: 50%
+    }
+
+    #view-container .sc-actions:nth-child(n+3) {
+        display: none;
+    }
+
+    #view-container .sc-item .day {
+        font-size: inherit;
+    }
+
+    #view-container .item-nolunar {
+        padding-top: 5px;
+    }
+
+</style>
+
+<script>
+
+  $(function() {
+    //日历设置
+    var options = {
+      language: 'CH', //语言
+      showLunarCalendar: false, //阴历
+      showHoliday: false, //休假
+      showFestival: false, //节日
+      showLunarFestival: true, //农历节日
+      showSolarTerm: false, //节气
+      showMark: false, //标记
+      //获取点击的日期
+      onSelect: (day) =>  {
+        // debugger;
+        console.log(day);
+      },
+      afterChange:dateAfterChange,
+      timeRange: {
+        startYear: 2000,
+        endYear: 2049
+      }
+    }
+    var vaCalendar = new SimpleCalendar('#va-calendar', options);
+    var vbCalendar = new SimpleCalendar('#vb-calendar', options);
+    var vcCalendar = new SimpleCalendar('#vc-calendar', options);
+
+    var data = {$days|json_encode};
+    setSelected(data,"a");
+    setSelected(data,"b");
+    setSelected(data,"c");
+
+
+    //设置某月日期选中
+    function setSelected(data,type) {
+      if (data&&data.hasOwnProperty(type+'_days')) {
+        var days = data[type+'_days'].split(',');
+        for (var i = 0; i < days.length; i++) {
+          $("#v"+type+"-calendar").find('.sc-item[data-day="' + days[i] + '"]:not(.sc-othermenth)').addClass('sc-selected')
+        }
+      }
+
+    }
+
+
+
+
+    //日期更新后回调
+    function dateAfterChange(event,calendar,year,month) {
+      var admin_id="{$days.admin_id|default=-1}";
+      var currentCalendar = calendar.container;
+      $.get("{:url('arrangeDate/dateInfo')}",{year:year,month:month,admin_id:admin_id},function(data) {
+        var id=  $(currentCalendar).attr("id");
+        setSelected(data,id.substring(1,2));
+      })
+    }
+
+    })
+</script>

@@ -1,0 +1,63 @@
+
+    <div class="box-body table-responsive">
+        <table class="table table-bordered table-hover table-pointer">
+            <thead>
+            <tr>
+                <th class="checkbox-select-all">
+                    <label>
+                        <input class="flat-grey js-checkbox-all" type="checkbox">
+                    </label>
+                </th>
+                <th>序号</th>
+                <th>机构</th>
+                <th>岗位</th>
+                <th>开始时间</th>
+                <th>截止时间</th>
+                <th>提成类别</th>
+                <th>提成方式</th>
+                <th>状态</th>
+
+
+            </tr>
+            </thead>
+
+            {notempty name='list'}
+            <tbody>
+            {volist name='list' id='vo'}
+            <tr data-id="{$vo['id']}">
+                <td>
+                    <label>
+                        <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}"/>
+                    </label>
+                </td>
+                <td>{$i}</td>
+                <td>{$vo.shop_name|default=''}</td>
+                <td>{$vo.group_name}</td>
+                <td>{$vo.start_time}</td>
+                <td>{$vo.end_time}</td>
+                <td>{$vo.type_text}</td>
+                <td>{$vo.mode_text}</td>
+
+                <td>
+                    <ob_link>
+                        <a class="ajax-get" href="{:url('setStatus', array('ids' => $vo['id'],'gid'=>$vo['group_id'],'tb'=>'setting_category', 'status' => (int)!$vo['status']))}">{$vo.status_text}</a>
+                    </ob_link>
+                </td>
+
+
+            </tr>
+            {/volist}
+            </tbody>
+            {else/}
+            <tbody>
+            <tr class="odd">
+                <td colspan="9" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+            </tr>
+            </tbody>
+            {/notempty}
+        </table>
+    </div>
+
+<div class="box-footer clearfix text-center">
+    {$list->render()}
+</div>

@@ -1,0 +1,217 @@
+<div class="box">
+    <div class="box-header ">
+        <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+
+        <!--<ob_link><a class="btn export" url="{:url('exportAttendanceList')}"><i class="fa fa-download"></i> 导 出</a></ob_link>-->
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">删 除</a></ob_link>
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_YES}" href="{:url('setCheckStatus')}" data-field="check_status">审 核</a></ob_link>
+
+        <div class="box-tools ">
+            <div class="form-inline search-form" style="max-width: none">
+                <div class="form-group">
+                    <input type="text" class="form-control date"  name="start_time" value="{:input('start_time')}" readonly placeholder="开始时间">
+                    <input type="text" class="form-control date"  name="end_time" value="{:input('end_time')}" readonly placeholder="结束时间">
+
+                    <select id="shopSelect" name="shop_id" class="form-control">
+                        <option value="-1">选择机构</option>
+                        {notempty name="shopList"}
+                        {volist name="shopList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+
+                    <select id="adminSelect" name="admin_id" class="form-control">
+                        <option value="-1">选择员工</option>
+                        {notempty name="adminList"}
+                        {volist name="adminList" id="vo"}
+                        <option value="{$vo.id}" data-shop_id="{$vo.shop_id}">{$vo.username}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+
+
+                    <div class="input-group">
+                        <input name="search_data" class="pull-right search-input" value="{:input('search_data')}" placeholder="支持名字|编号" type="text">
+                        <div class="input-group-btn">
+                            <button type="button" id="search" url="{:url('attendancelist')}" class="btn btn-default"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+    </div>
+    <br/>
+</div>
+
+
+    <!--右边-->
+    <div id="container">
+        <div class="box-body table-responsive">
+            <table class="table table-bordered table-hover table-pointer">
+                <thead>
+                <tr>
+                    <th class="checkbox-select-all">
+                        <label>
+                            <input class="flat-grey js-checkbox-all" type="checkbox">
+                        </label>
+                    </th>
+                    <th>序号</th>
+                    <th>日期</th>
+                    <th>机构</th>
+                    <th>岗位</th>
+                    <th>[工号]姓名</th>
+                    <th colspan="2">A组班次</th>
+                    <th colspan="2">B组班次</th>
+                    <th colspan="2">C组班次</th>
+
+                    <th>请假申请(天)</th>
+                    <th>审核状态</th>
+
+
+                </tr>
+                </thead>
+
+                {notempty name='list'}
+                <tbody>
+                {volist name='list' id='vo'}
+                <tr data-id="{$vo['id']}" data-admin_id="{$vo['admin_id']}">
+                    <td>
+                        <label>
+                            <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}"/>
+
+                        </label>
+                    </td>
+                    <td>{$i}</td>
+                    <td>{$vo.create_time}</td>
+                    <td>{$vo.shop_name|default=''}</td>
+                    <td>{$vo.group_name|default=''}</td>
+                    <td>[{$vo.number}]{$vo.username}</td>
+
+
+                    <td>
+                        <p>
+                            {$vo.a_on_time}
+                            {$vo.a_on_text}
+                            <img class="head-ico" src="{$vo.a_on_img|default='0'|get_picture_url}">
+                        </p>
+
+                    </td>
+                    <td>
+
+                        <p>
+                            {$vo.a_off_time}
+                            {$vo.a_off_text}
+                            <img class="head-ico" src="{$vo.a_off_img|default='0'|get_picture_url}">
+                        </p>
+
+                    </td>
+                    <td>
+
+                        <p>
+                            {$vo.b_on_time}
+                            {$vo.b_on_text}
+                            <img class="head-ico" src="{$vo.b_on_img|default='0'|get_picture_url}">
+                        </p>
+
+                    </td>
+                    <td>
+
+                        <p>
+                            {$vo.b_off_time}
+                            {$vo.b_off_text}
+                            <img class="head-ico" src="{$vo.a_off_img|default='0'|get_picture_url}">
+                        </p>
+
+                    </td>
+                    <td>
+
+                        <p>
+                            {$vo.c_on_time}
+                            {$vo.c_on_text}
+                            <img class="head-ico" src="{$vo.c_on_img|default='0'|get_picture_url}">
+                        </p>
+
+                    </td>
+                    <td>
+
+                        <p>
+                            {$vo.c_off_time}
+                            {$vo.c_off_text}
+                            <img class="head-ico" src="{$vo.c_on_img|default='0'|get_picture_url}">
+                        </p>
+
+                    </td>
+
+
+                    <td>{$vo.leave_days|default='无'}</td>
+
+                    <td>
+                        {if condition="$vo.check_status == 1 "}
+                        {$vo.check_status_text}
+                        {else/}
+                        <ob_link>
+                            <a class="ajax-get" href="{:url('setCheckStatus', array('ids' => $vo['id'], 'check_status' => (int)!$vo['check_status']))}">{$vo.check_status_text}</a>
+                        </ob_link>
+                        {/if}
+                    </td>
+
+                </tr>
+                {/volist}
+                </tbody>
+                {else/}
+                <tbody>
+                <tr class="odd">
+                    <td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                </tr>
+                </tbody>
+                {/notempty}
+            </table>
+        </div>
+    </div>
+    <div class="box-footer clearfix text-center">
+        {$list->render()}
+    </div>
+
+
+</div>
+
+
+<!-- 增加修改Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" >
+</div>
+
+
+<script>
+
+    $(function () {
+
+        //同时绑定多个时间控件
+        lay('.date').each(function () {
+            laydate.render({
+                elem: this,
+                type: 'date',
+                trigger: 'click',
+            })
+        })
+
+
+        $('#shopSelect').on('change', function (e) {
+            var shop_id = $(this).val()
+            $("#adminSelect").children('option:first').prop("selected",true);
+            $('select#adminSelect').children('option[data-shop_id]').each(function () {
+                $(this).hide()
+                if ($(this).attr('data-shop_id') == shop_id) {
+                    $(this).show()
+                }
+            })
+
+        })
+
+
+
+    });
+
+
+</script>

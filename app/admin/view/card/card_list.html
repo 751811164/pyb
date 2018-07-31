@@ -1,0 +1,158 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?type_id=">跳转</a>
+        <ob_link><a class="btn" url="{:url('cardAdd')}" id="add" data-toggle="modal" data-target="#myModal">新 增</a></ob_link>
+        <ob_link><a class="btn" url="{:url('cardEdit')}" id="edit" style="display: none;">编 辑</a></ob_link>
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">删 除</a></ob_link>
+
+        <div class="box-tools">
+            <div class="form-inline search-form">
+
+                <label class="control-label" >日期</label>
+                <input type="text" name="start_time" class="form-control date date-sm" readonly value="{:input('start_time')}">
+                <label class="control-label">至</label>
+                <input type="text" name="end_time" class="form-control date date-sm" readonly value="{:input('end_time')}" >
+
+                <div class="input-group ">
+                    <input name="search_data" class="pull-right search-input" value="{:input('search_data')}" placeholder="等级名称" type="text">
+                    <div class="input-group-btn">
+                        <button type="button" id="search" url="{:url('cardlist')}" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br/>
+    </div>
+    <div class="box-body table-responsive">
+        <div class="col-sm-2">
+            <!--左边店铺列表-->
+            <ul id="ztree" class="ztree"></ul>
+        </div>
+        <div class="col-sm-10">
+            <table class="table table-bordered table-hover table-pointer">
+                <thead>
+                <tr>
+                    <th class="checkbox-select-all">
+                        <label>
+                            <input class="flat-grey js-checkbox-all" type="checkbox">
+                        </label>
+                    </th>
+                    <th>序号</th>
+                    <th>会员卡类</th>
+                    <th>会员等级</th>
+                    <th>积分值</th>
+                    <th>生日(倍数)</th>
+                    <!--<th>优惠方式</th>-->
+                    <th>创建人</th>
+                    <th>创建日期</th>
+                    <th>修改人</th>
+                    <th>修改日期</th>
+                    <th>备注</th>
+
+                </tr>
+                </thead>
+
+                {notempty name='list'}
+                <tbody>
+                {volist name='list' id='vo'}
+                <tr data-id="{$vo['id']}">
+                    <td>
+                        <label>
+                            <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}">
+                        </label>
+                    </td>
+                    <td>{$i}</td>
+                    <td>[{$vo.type_number}]{$vo.type_name}</td>
+                    <td>[{$vo.number}]{$vo.name}</td>
+                    <td>{$vo.point_rate}</td>
+                    <td>{$vo.birthday_times}</td>
+                    <td>{$vo.admin_add_name}</td>
+                    <td>{$vo.create_time}</td>
+                    <td>{$vo.admin_edit_name}</td>
+                    <td>{$vo.update_time}</td>
+                    <td>{$vo.remark}</td>
+
+                </tr>
+                {/volist}
+                </tbody>
+                {else/}
+                <tbody>
+                <tr class="odd">
+                    <td colspan="4" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                </tr>
+                </tbody>
+                {/notempty}
+            </table>
+        </div>
+    </div>
+    <div class="box-footer clearfix text-center">
+        {$list->render()}
+    </div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+
+</div>
+
+
+<script>
+    $(function () {
+       var treeObj=makeZTree({data:{$typeList|json_encode}});
+
+        //加载页面后,选中制定节点
+        var node = treeObj.getNodeByTId("{:input('tid')}");
+        treeObj.cancelSelectedNode();//先取消所有的选中状态
+        treeObj.selectNode(node,true);//将指定ID的节点选中
+    })
+    //新增
+    $('#add').on('click', function (e) {
+        e.preventDefault();
+
+        ajax({
+            url: $(this).attr('url'), success: function (data) {
+                $('#myModal').empty().append(data).modal('show');
+            },
+        })
+
+    });
+
+    //双击编辑
+    $('table.table-pointer tr').on('dblclick', function (e) {
+        e.preventDefault();
+        if (e.target.nodeName != 'TD') {
+            return false;
+        }
+
+        if ($('#edit').length === 0) {
+            alert('您无权修改');
+            return false;
+        }
+        var id = $(this).attr('data-id');
+
+        ajax({
+            url: $('#edit').attr('url'), data: {id: id}, success: function (data) {
+                $('#myModal').empty().append(data).modal('show');
+            },
+        })
+
+    });
+
+    //保存
+    $('#myModal').on('click', '#saveInfo', function () {
+        var $form = $('#myModal form');
+
+        var postData = $form.serialize();
+
+        var url = $(this).attr('data-url');
+
+        ajax({
+            method: "POST", url: url, data: postData, success: function (data) {
+                obalertp(data);
+            },
+        })
+
+        return false;
+    });
+</script>

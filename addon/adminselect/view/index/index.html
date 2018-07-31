@@ -1,0 +1,40 @@
+<!--<link rel="stylesheet" href="__STATIC__/addon/region/region_style.css">-->
+<div>
+    <select id="shop_{$addons_data.name}" class="form-control addon-form-admin-select"></select>
+    <select  id="group_{$addons_data.name}" class="form-control addon-form-admin-select"></select>
+    <select name="admin_{$addons_data.name}" id="admin_{$addons_data.name}" class="form-control addon-form-admin-select"></select>
+</div>
+
+<script type="text/javascript">
+
+$(function(){
+    
+    var shop_id = "{$addons_data['shop']}";
+    var group_id = "{$addons_data['group']}";
+    var admin_id = "{$addons_data['admin']}";
+    
+    var get_options_url = '{:addons_url("AdminSelect://Index/getOptions")}';
+
+    function shopList (select_id = 0) {
+        $.get(get_options_url, {type: 'shop', select_id: select_id}, function(result){ $("#shop_{$addons_data.name}").html(result.data); });
+    }
+    
+    function changeShop(shop_id = 0,select_id = 0)
+    {
+        $.get(get_options_url, {type: 'group', upid: shop_id, select_id: select_id}, function(result){ $("#group_{$addons_data.name}").html(result.data); });
+    }
+
+    function changeGroup(group_id = 0, select_id = 0)
+    {
+        $.get(get_options_url, {type: 'admin', upid: group_id, select_id: select_id}, function(result){ $("#admin_{$addons_data.name}").html(result.data); });
+    }
+
+    shopList(shop_id);
+    changeShop(shop_id,group_id);
+    changeGroup(group_id, admin_id);
+
+
+    $("#shop_{$addons_data.name}").change(function(){ changeShop($("#shop_{$addons_data.name}").val());});
+    $("#group_{$addons_data.name}").change(function(){ changeGroup($("#group_{$addons_data.name}").val());});
+});
+</script>

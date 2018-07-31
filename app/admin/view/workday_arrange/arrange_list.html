@@ -1,0 +1,313 @@
+<link rel="stylesheet" href="__STATIC__/admin/js/simple_calendar/simple_calendar.css">
+<!--<script src="__STATIC__/admin/js/simple_calendar.js"></script>-->
+
+
+<div class="box">
+    <div class="box-header ">
+        <a id="jump" style="display: none;" href="{:url()}?sid=">跳转</a>
+        <ob_link><a class="btn" url="{:url('arrangeAdd')}" id="add" data-toggle="modal" data-target="#myModal">新 增</a></ob_link>
+        <ob_link><a class="btn" url="{:url('arrangeEdit')}" id="edit" style="display: none;" >编 辑</a></ob_link>
+
+        <!--<ob_link><a class="btn export" url="{:url('exportAdminList')}"><i class="fa fa-download"></i> 导 出</a></ob_link>-->
+        <!--<ob_link><a class="btn ladda-button" id="fastSetBtn"  url="{:url('fastset')}" >批量设置</a></ob_link>-->
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">删 除</a></ob_link>
+
+        <div class="box-tools ">
+            <div class="form-inline search-form">
+            <div class="input-group ">
+                <input name="search_data" class="pull-right search-input" value="{:input('search_data')}"
+                       placeholder="支持名字|编号|手机" type="text">
+                <div class="input-group-btn">
+                    <button type="button" id="search" url="{:url('arrangelist')}" class="btn btn-default"><i
+                            class="fa fa-search"></i></button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <br/>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-2">
+            <!--左边岗位列表-->
+            <ul id="ztree" class="ztree"></ul>
+        </div>
+
+        <!--右边-->
+        <div class="col-xs-10">
+            <div>
+            <div id="container">
+                <div class="box-body table-responsive">
+                    <table class="table table-bordered table-hover table-pointer">
+                        <thead>
+                        <tr>
+                            <th class="checkbox-select-all">
+                                <label>
+                                    <input class="flat-grey js-checkbox-all" type="checkbox">
+                                </label>
+                            </th>
+                            <th>序号</th>
+                            <!--<th>头像</th>-->
+                            <th>编号</th>
+                            <th>岗位</th>
+                            <th>姓名</th>
+
+                            <th colspan="2">A组班次</th>
+                            <th colspan="2">B组班次</th>
+                            <th colspan="2">C组班次</th>
+                            <th>状态</th>
+
+
+                        </tr>
+                        </thead>
+
+                        {notempty name='list'}
+                        <tbody>
+                        {volist name='list' id='vo'}
+                        <tr  data-id="{$vo['id']}" data-admin_id="{$vo['admin_id']}">
+                            <td>
+                                <label>
+                                    {if condition=" ($vo.id == $Think.const.SYS_ADMINISTRATOR_ID) "}
+                                    <input class="flat-grey" type="checkbox" disabled />
+                                    {else /}
+                                    <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}"/>
+                                    {/if}
+                                </label>
+                            </td>
+                            <td>{$i}</td>
+                            <!--<td><img style="max-height: 1px" src="{$vo.portrait_id|default='0'|get_picture_url}"-->
+                                     <!--alt="头像"></td>-->
+                            <td>{$vo.number|default='0'}</td>
+                            <td>{$vo.group_name|default=''}</td>
+                            <td>{$vo.username}</td>
+
+                            <td>
+                                <p>上班时间{$vo.a_on} </p>
+                                <p>迟到设置{$vo.a_late}分钟</p>
+                            </td>
+                            <td>
+                                <p>下班时间{$vo.a_off}</p>
+
+                            </td>
+                            <td>
+                               <p> 上班时间{$vo.b_on}</p>
+                                <p>迟到设置{$vo.a_late}分钟</p>
+                            </td>
+                            <td>
+                                <p>下班时间{$vo.b_off}</p>
+
+                            </td>
+                            <td>
+                                <p>上班时间{$vo.c_on}</p>
+                                <p>迟到设置{$vo.b_late}分钟</p>
+                            </td>
+                            <td>
+                                <p>下班时间{$vo.c_off}</p>
+                            </td>
+                            <td>
+
+                            <ob_link>
+                                <a class="ajax-get" href="{:url('setStatus', array('ids' => $vo['id'],'admin_id'=>$vo['admin_id'], 'status' => (int)!$vo['status']))}">{$vo.status_text}</a>
+                            </ob_link>
+
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                        {else/}
+                        <tbody>
+                        <tr class="odd">
+                            <td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                        </tr>
+                        </tbody>
+                        {/notempty}
+                    </table>
+                </div>
+            </div>
+            <div class="box-footer clearfix text-center">
+                {$list->render()}
+            </div>
+            </div>
+
+
+
+            <div id="view-container" class="box2">
+
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+<!-- 增加修改Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" >
+</div>
+
+
+
+<script>
+  $(function() {
+      loadScript("__STATIC__/admin/js/simple_calendar/simple_calendar.js");
+
+      //快捷设置modal框
+    $('#fastSetBtn').on('click', function(e) {
+      $('#fastSetModal').modal('show').find('form')[0].reset();
+      e.preventDefault();
+    });
+
+    //新增
+    $('#add').on('click', function(e) {
+      e.preventDefault();
+      $.get($(this).attr('url')+"?sid={:input('sid')}", function(data) {
+        $('#myModal').empty().append(data).modal('show');
+      });
+
+    });
+
+
+
+    //双击编辑
+    $('table.table-pointer tr').on('dblclick', function(e) {
+      e.preventDefault();
+      if (e.target.nodeName != 'TD') {
+        return false;
+      }
+
+      if ($('#edit').length === 0) {
+          obalert('您无权修改');
+        return false;
+      }
+      var id = $(this).attr('data-id');
+      var admin_id = $(this).attr('data-admin_id');
+
+      if (admin_id > 0) {
+        $.get($('#edit').attr('url'), {id:id,admin_id: admin_id}, function(data) {
+
+          $('#myModal').empty().append(data).modal('show');
+        });
+      }
+      else {
+        obalert("请先添加该员工的班次");
+      }
+    });
+
+
+
+    //
+    // //拼接days
+    // function makeDays(type) {
+    //   var $form = $('#myModal form');
+    //   var days="";
+    //   $('#'+type+'-calendar .sc-selected').each(function(i,e) {
+    //     days+=$(this).attr("data-day")+",";
+    //   })
+    //   $form.find(":hidden[name='"+type+"_days']").val(days.substring(0,days.length-1));
+    // }
+
+
+    //保存
+    $('#myModal').on('click', '#saveInfo', function() {
+      var $form = $('#myModal form');
+      // //判断日期是否一致
+      // var $year = $form.find('.sc-select-year');
+      // var $month = $form.find('.sc-select-month');
+      //
+      // if ($year[0].value != $year[1].value || $year[1].value != $year[2].value) {
+      //   obalert({msg: 'ABC三组年份不一样'});
+      //   return false;
+      // }
+      // if ($month[0].value != $month[1].value || $month[1].value != $month[2].value) {
+      //   obalert({msg: 'ABC三组年份不一样'});
+      //   return false;
+      // }
+      //
+      // //拼接天数
+      // $form.find('input:hidden[name$=\'days\']').each(function() {
+      //   makeDays($(this).attr('name').substring(0, 1));
+      // });
+      $('select[name=\'admin_id\']').prop('disabled', false);
+      var postData = $form.serialize();
+      if ($form.find('#editId').val() > 0) {
+        $('select[name=\'admin_id\']').prop('disabled', true);
+      }
+
+      console.log(postData);
+      var url = $(this).attr('data-url');
+
+      $.post(url, postData, function(data) {
+        obalertp(data);
+        if (data.code == 1) {
+          $form[0].reset();
+          $('#myModal').modal('hide').empty();
+        }
+
+      }, 'json');
+
+      return false;
+    });
+
+
+
+
+
+    //生成树
+    treeObj = makeZTree({data: {$shopTree|json_encode}});
+
+    //加载页面后,选中制定节点
+    var node = treeObj.getNodeByTId('{:input(\'tid\')}');
+    treeObj.cancelSelectedNode();//先取消所有的选中状态
+    treeObj.selectNode(node, true);//将指定ID的节点选中
+
+    $('#createCode').on('click', function() {
+      var $this = $(this);
+      $.get('{:url(\'createCode\')}', function(data) {
+        $this.parent().prev('input').val(data);
+      });
+    });
+
+
+  });
+
+
+  //批量设置
+  function beforeSubmit () {
+    var ids= "";
+    $("table :checked").each(function() {
+      if(!isNaN(parseInt($(this).val())) ){
+        ids+= $(this).val()+',';
+      }
+    })
+    ids = ids.substring(0,ids.length-1);
+    if($.trim(ids)!=""){
+      $("#fastSetForm").find("[name='ids']").val(ids);
+         return true
+    }else{
+      obalert({'code':0,'msg':"请选择员工"})
+      return false
+    }
+  }
+
+
+
+
+
+</script>

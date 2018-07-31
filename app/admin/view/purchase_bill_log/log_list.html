@@ -1,0 +1,419 @@
+<div class="box">
+    <form>
+        <input type="hidden" name="bill_id" value="{:input('bill_id')}">
+        <!--<input type="hidden" name="shop_ids" value="">-->
+        <!--<input type="hidden" name="shop_names" value="">-->
+        <div class="box-header">
+            <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+            <!--<ob_link><a class="btn" url="{:url('')}" id="search" >查 询</a></ob_link>-->
+            <!--<ob_link><a class="btn" url="{:url('billAdd')}" id="add" data-toggle="modal" data-target="#myModal">新 增</a></ob_link>-->
+            <ob_link><a class="btn"  id="saveInfo" data-url="{:url('logEdit')}"{if condition="$billInfo.status==1" }disabled{/if}>保 存</a></ob_link>
+            <ob_link><a class="btn"  id="check" data-url="{:url('checking')}" data-bill_id="{$billInfo.id|default=''}" {if condition="$billInfo.status!==0" }disabled{/if}>审 核</a></ob_link>
+            <ob_link><a class="btn"  id="uncheck" data-url="{:url('unchecking')}" {neq name="billInfo.status" value="1" }disabled{/neq}>反 审 核</a></ob_link>
+            <ob_link><a class="btn" id="choose" data-url="{:url('GoodsChoose')}" {if condition="$billInfo.status==1" }disabled{/if}>选择商品</a></ob_link>
+            <ob_link><a class="btn" id="edit" url="{:url('billEdit')}" style="display: none;">编 辑</a></ob_link>
+            <ob_link><a class="btn" id="del" url="{:url('logDel')}" >删 除</a></ob_link>
+            <ob_link><a class="btn export" url="{:url('exportLogList')}?'bill_id'={$billInfo.id|default=''}"  {if condition="$billInfo.status!==1" }disabled{/if}>导 出</a></ob_link>
+
+            <div class="box-tools form-block">
+                <div class="form-inline search-form">
+                    <div class="form-group">
+                        <label class="control-label" style="width:60px">供应商</label>
+                        <select class="form-control" name="supplier_id" style="width: 200px;" {eq name="billInfo.status" value="1" }disabled{/eq}>
+                            {notempty name="supplierList" }
+                            {volist name="supplierList" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                            {/notempty}
+                        </select>
+
+                        <label class="control-label"  style="width:60px">制单人员</label>
+                        <input type="text" class="form-control " disabled value="{$billInfo.admin_add_name|default=''}" style="width: 200px">
+                        <label class="control-label"  style="width:60px">制单日期</label>
+                        <input type="text" class="form-control " disabled value="{$billInfo.create_time|default=''}" style="width: 200px">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label class="control-label" style="width:60px">采购机构</label>
+                        <select id="" class="form-control" name="shop_id"  style="width: 200px;"   {eq name="billInfo.status" value="1" }disabled{/eq}>
+                        {notempty name="typeList"}
+                        {volist name="shopList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                        </select>
+                        <label class="control-label"  style="width:60px">审核人员</label>
+                        <input type="text" class="form-control " disabled value="{$billInfo.admin_check_name|default=''}" style="width: 200px">
+                        <label class="control-label"  style="width:60px">审核日期</label>
+                        <input type="text" class="form-control " disabled value="{$billInfo.check_time|default=''}" style="width: 200px">
+                    </div>
+                    <br>
+                    <div>
+                        <label class="control-label" style="width:60px">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注</label>
+                        <input type="text" class="form-control" name="bill_remark" value="{$billInfo.bill_remark|default=''}" style="width: 200px" {eq name="billInfo.status" value="1" }disabled{/eq} >
+                    </div>
+                </div>
+            </div>
+
+            {eq name="billInfo.status" value="1"}
+            <div class="checked-box" >
+                <img src="__STATIC__/admin/img/checked.png" alt="">
+            </div>
+            {/eq}
+        </div>
+        <div class="box-body table-responsive">
+            <table class="table table-bordered table-hover" >
+                <thead>
+
+                <tr>
+                    <th class="checkbox-select-all">
+                        <label>
+                            <input class="flat-grey js-checkbox-all" type="checkbox">
+                        </label>
+                    </th>
+                    <th>序号</th>
+                    <th>条码</th>
+                    <th>商品名称</th>
+                    <th>单位</th>
+                    <th>规格</th>
+                    <th>数量</th>
+                    <!--<th>进价</th>-->
+                    <!--<th>金额</th>-->
+                    <ob_price rule="cost_price">
+                        <th>进价</th>
+                        <th>金额</th></ob_price>
+                    <th>售价</th>
+                    <th>售价金额</th>
+                    <th>备注</th>
+
+                </tr>
+                </thead>
+
+                {eq name="billInfo.status" value="1"}
+
+                {notempty name='list'}
+                <tbody>
+                {volist name='list' id='vo'}
+                <tr data-id="{$vo['id']}">
+                    <td>
+                        <label>
+                            <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}" disabled>
+                        </label>
+                    </td>
+                    <td>{$i}</td>
+                    <td>{$vo.barcode}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.unit}</td>
+                    <td>{$vo.specification}</td>
+                    <td>{$vo.num}</td>
+                    <ob_price rule="cost_price">
+                        <td>{$vo.cost_price}</td>
+                        <td>{$vo.num*$vo.cost_price}</td></ob_price>
+                    <!--<td>{$vo.cost_price}</td>-->
+                    <!--<td>{$vo.num*$vo.cost_price}</td>-->
+                    <td>{$vo.retail_price}</td>
+                    <td>{$vo.num*$vo.retail_price}</td>
+                    <td>{$vo.remark}</td>
+                </tr>
+                {/volist}
+
+                </tbody>
+                {/notempty}
+                {else/}
+                <tbody>
+                <tr v-for="(item,index) in list">
+                    <td>
+                        <label>
+                            <input class="flat-grey" type="checkbox" name="ids" :value="item.id" :data-index="index">
+                            <input  type="hidden" name="id[]" :value="item.id">
+                            <input  type="hidden" name="goods_id[]" :value="item.goods_id">
+                            <input  type="hidden" name="barcode_id[]" :value="item.barcode_id">
+                        </label>
+                    </td>
+                    <td>{{index+1}}</td>
+                    <td><input type="text" class="form-control" name="barcode[]" :data-gid = "item.goods_id" v-model="item.barcode" readonly></td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.unit}}</td>
+                    <td>{{item.specification}}</td>
+                    <td>
+                        <input type="number" class="form-control" name="num[]" v-model="item.num">
+                    </td>
+
+                    <ob_price rule="cost_price"> <td>
+                        <input type="number" class="form-control" name="cost_price[]" v-model="item.cost_price">
+                    </td>
+                    <td>{{item.num*item.cost_price}}</td>
+                    </ob_price>
+                    <td>
+                        {{item.retail_price}}
+                        <input type="hidden" class="form-control" name="retail_price[]" v-model="item.retail_price">
+                    </td>
+                    <td>{{item.num*item.retail_price}}</td>
+                    <td>
+                        <input type="text" class="form-control" name="remark[]" v-model="item.remark">
+                    </td>
+
+
+                </tr>
+                </tbody>
+                {/eq}
+            </table>
+
+        </div>
+    </form>
+</div>
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+
+</div>
+<link rel="stylesheet" href="__STATIC__/admin/js/multiple_select/multiple_select.css">
+<script type="text/javascript" src="__STATIC__/admin/js/multiple_select/multiple_select.js"></script>
+
+
+<script>
+    //region 采购向导生成数据
+    ob.setValue("supplier_id","{$Request.param.supplier_id}");
+    ob.setValue("shop_id","{$Request.param.shop_id}");
+    //endregion
+    // ob.setValue("shop_id","{:input('shop_id')}");
+    // ob.setValue("status","{:input('status')}");
+    // ob.setValue("create_time","{:input('create_time')}");
+    //region 未审核可编辑 {neq name="billInfo.status" value="1"}
+
+    var list = {$list|json_encode}
+    ;var vm = new Vue({
+        el: '.box-body', data: {
+            list: list,
+        },
+        mounted:function(){
+            $('[name="supplier_id"]').prop("disabled", this.list.length>0);
+            $('[name="shop_id"]').prop("disabled", this.list.length>0);
+
+
+
+        },
+        updated: function () {
+
+            $("table [type='checkbox'], [type='radio']").iCheck({
+                checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+            });
+            iCheckAll();
+            $('[name="supplier_id"]').prop("disabled", this.list.length>0);
+            $('[name="shop_id"]').prop("disabled", this.list.length>0);
+
+
+        }, methods: {},
+    });
+
+    //endregion {/neq}
+
+    $(function () {
+
+
+        //检查条形码存在
+        $(".table").on("blur","[name='barcode[]']",function(){
+            var that = this;
+            var gid = $(this).attr("data-gid");
+            var barcode = $(this).val();
+            ajax({
+                url:"{:url('PurchaseInLog/existBarcode')}",
+                data:{gid:gid,barcode:barcode},
+                success:function(data){
+                    if (data&&data.code==0) {
+                        obalert(data);
+                        $(that).css("border-color",'red');
+                    }
+                    else {
+                        $(that).css("border-color",'#d2d6de');
+                    }
+                },
+
+            })
+
+        })
+
+
+        //添加商品
+        $("#choose").on("click", function () {
+            if ("{$billInfo.status}" == 1) {
+                toast.error("已审核过的单据不能再次修改");
+                return false;
+            }
+            if (!$('[name="supplier_id"]').val()|0) {
+                toast.error("请先选择供应商");
+                return false;
+            }
+            var that = this;
+            var url = $(that).attr('data-url')+'?supplier_id='+$('[name="supplier_id"]').val()+'&shop_id='+$('[name="shop_id"]').val();
+            var ids = '';
+            for (var i = 0; i < list.length; i++) {
+                if (i == 0) {
+                    ids += list[i]["barcode"];
+                }
+                else {
+                    ids += ',' + list[i]["barcode"];
+                }
+
+            }
+            if (ids) {
+                url += "&barcodes=" + ids;
+            }
+
+            //iframe层-父子操作
+            var goodslayer = layer.open({
+                btn: ['确定'], type: 2, area: ['900px', '500px'], fixed: true, //不固定
+                maxmin: true, content: url, yes: function (index, layero) {
+                    // var ids= [];
+                    var iframeWin = window[layero.find('iframe')[0]['name']];//获取子窗口
+
+                    for (var i = 0; i < iframeWin.items.length; i++) {
+                        var item = iframeWin.items[i];
+
+                        var bool = false;
+                        for (var j = 0; j < list.length; j++) {
+                            var goods = list[j];
+                            if (goods["barcode"] == item["barcode"]) {
+                                bool = true;
+                            }
+                        }
+                        if (!bool) {
+                            list.push(item);
+                        }
+
+                    }
+                    // Array.prototype.push.apply(info.groupGoods,iframeWin.items);
+                    layer.close(index);
+
+                },
+            })
+        })
+
+        //删除
+        $('#del').on('click', function (e) {
+            e.preventDefault();
+            // layer.open()
+            var that = this;
+            var $checked = $('.table input[type="checkbox"]:checked:not(.js-checkbox-all)');
+
+            if ($checked.length != 0) {
+                layer.confirm('此操作将已保存的记录同时删除，确定要执行吗？', function (index) {
+                    var params = {ids: '', bill_id: "{:input('bill_id')}"};
+                    var indexs = [];
+                    $checked.each(function (i, e) {
+                        if (!!$(this).val()) {
+                            params.ids += $(this).val() + ',';
+                        }
+                        indexs.push($(this).attr("data-index"));
+                    });
+
+                    params.ids = params.ids.substr(0, params.ids.length - 1);
+                    if (!!params.ids&&params.bill_id) {
+                        $.get($(that).attr('url'), params, function (data) {
+                            obalertp(data);
+                            if (data.code == 1) {
+                                for (var i = 0; i < indexs.length; i++) {
+                                    list.splice(indexs[i] - i, 1);
+                                }
+                                $('.table input[type="checkbox"]:checked').iCheck("uncheck");
+                            }
+
+                            layer.close(index);
+                        });
+
+                    }
+                    else {
+                        for (var i = 0; i < indexs.length; i++) {
+                            list.splice(indexs[i] - i, 1);
+                        }
+                        $('.table input[type="checkbox"]:checked').iCheck("uncheck");
+                    }
+                    layer.close(index);
+                }, function (index) {
+                    layer.close(index);
+                });
+            }
+            else {
+                toast.warning('请选择批量操作数据');
+            }
+            return false;
+        });
+
+        //保存
+        $('.box').on('click', '#saveInfo', function () {
+            if ($(this).attr('disabled')) {
+                return false;
+            }
+            $('[name="supplier_id"]').prop("disabled", false);
+            $('[name="shop_id"]').prop("disabled", false);
+            var $form = $('.box form');
+            var isEmpty = false;
+            $form.find("table").find("[type='number']").each(function (i, e) {
+                if (!~~$.trim($(this).val()) ) {
+                    isEmpty = true;
+                }
+            })
+
+            if (isEmpty) {
+                if (!confirm("尚且有为0的价格，确定要执行吗？")) {
+                    return false;
+                }
+            }
+
+            var postData = $form.serialize();
+
+            var url = $(this).attr('data-url');
+
+            $.post(url, postData, function (data) {
+                if (eval(data.data)) {
+                    //询问框
+                    layer.confirm(data.msg+',是否直接审核？', {
+                        btn: ['审核','取消'] //按钮
+                    }, function(){
+                        $("#check").attr('data-bill_id',data.data).trigger('click')
+                    }, function(){
+                        obalertp(data);
+                    });
+                }else{
+                    obalertp(data);
+                }
+
+            }, 'json');
+
+            return false;
+        });
+
+        //审核
+        $("#check").on('click', function () {
+            if ($(this).attr('disabled')) {
+                return false;
+            }
+            if (confirm("确定要审核吗？")) {
+                var bill_id =  $(this).attr('data-bill_id');
+                var url = $(this).attr('data-url');
+                $.post(url, {bill_id: bill_id}, function (data) {
+                    obalertp(data);
+                }, 'json');
+            }
+        })
+
+
+        //反审核
+        $("#uncheck").on('click', function () {
+            if ($(this).attr('disabled')) {
+                return false;
+            }
+            if (confirm("确定要反审核吗？")) {
+                var url = $(this).attr('data-url');
+                $.post(url, {bill_id: "{:input('bill_id')}"}, function (data) {
+                    obalertp(data);
+                }, 'json');
+            }
+        })
+
+
+    })
+
+
+</script>

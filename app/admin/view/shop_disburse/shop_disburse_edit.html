@@ -1,0 +1,56 @@
+<form action="{:url()}" method="post" class="form_single">
+    <div class="box">
+      <div class="box-body">
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>门店</label>
+                    <span class="">（选择支出门店）</span>
+                    <select name="shop_id" class="form-control">
+                        {volist name='shop_list' id='vo'}
+                        <option value="{$vo['id']}" {notempty name="info['shop_id']"}{if condition="$info['shop_id'] eq $vo['id']"} selected="selected" {/if}{/notempty} >{$vo['name']}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>支出类型</label>
+                    <span class="">（选择支出类型）</span>
+                    <select name="disburse_type_id" class="form-control">
+                        {volist name='disburse_list' id='vo'}
+                        <option value="{$vo['id']}" {notempty name="info['disburse_type_id']"}{if condition="$info['disburse_type_id'] eq $vo['id']"} selected="selected" {/if}{/notempty} >{$vo['name']}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>金额</label>
+                    <span>（填写支出金额）</span>
+                    <input class="form-control" name="amount" placeholder="请输入支出金额" value="{$info['amount']|default=''}" type="number">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>描述</label>
+                    <span>（支出描述）</span>
+                    <textarea class="form-control" name="describe" rows="3" placeholder="请输入店铺支出描述">{$info['describe']|default=''}</textarea>
+                </div>
+            </div>
+
+        </div>
+      </div>
+      <div class="box-footer">
+          
+        <input type="hidden" name="id" value="{$info['id']|default='0'}"/>
+        
+        {include file="layout/edit_btn_group"/}
+        
+      </div>
+    </div>
+</form>

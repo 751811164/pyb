@@ -1,0 +1,95 @@
+
+
+
+<style type="text/css">
+
+    .amap-sug-result {
+        z-index: 1099;
+    }
+
+</style>
+
+<div id="mapContainer"></div>
+<div id="tip">
+    <!--<input type="text" id="keyword" name="keyword" value="请输入关键字：(选定后搜索)" onfocus='this.value=""' />-->
+</div>
+<script type="text/javascript">
+  $(function () {
+
+    $.getScript("https://webapi.amap.com/maps?v=1.4.2&key=da4faa65f00cbdbafdb95f47ae23d3d9",function(){  //加载test.js,成功后，并执行回调函数
+
+      // var windowsArr = [];
+      // var marker = [];
+      var map = new AMap.Map('mapContainer', {
+        resizeEnable: true,
+        center: [ "{$info.longitude|default='114.94092'}", "{$info.latitude|default='30.154341'}"],//地图中心点(黄石)
+        zoom: 13,//地图显示的缩放级别
+        keyboardEnable: false,
+      });
+
+      AMap.plugin('AMap.Geocoder', function() {
+        var geocoder = new AMap.Geocoder({
+          city: '',//城市，默认：“全国”
+        });
+        var marker = new AMap.Marker({
+          map: map,
+          bubble: true,
+        });
+
+        map.on('click', function(e) {
+          marker.setPosition(e.lnglat);
+          ob.setValue('latitude',e.lnglat.lat);
+          ob.setValue('longitude',e.lnglat.lng);
+
+          geocoder.getAddress(e.lnglat, function(status, result) {
+            if (status == 'complete') {
+              var data = result.regeocode.addressComponent;
+              var details = data.province + data.city + data.district + data.township + data.street + data.streetNumber;
+              $('#keyword').val(details);
+              console.log(details);
+              //console.log(result.regeocode.formattedAddress)
+              // input.value = result.regeocode.formattedAddress
+              // message.innerHTML = ''
+            }
+            else {
+              // message.innerHTML = '无法获取地址'
+            }
+          });
+        });
+      });
+
+      AMap.plugin(['AMap.Autocomplete', 'AMap.PlaceSearch'], function() {
+        var autoOptions = {
+          city: '黄石', //城市，默认全国
+          input: 'keyword',//使用联想输入的input的id
+        };
+        autocomplete = new AMap.Autocomplete(autoOptions);
+        var placeSearch = new AMap.PlaceSearch({
+          city: '黄石',
+          map: map,
+        });
+        AMap.event.addListener(autocomplete, 'select', function(e) {
+
+          //TODO 针对选中的poi实现自己的功能
+          placeSearch.setCity(e.poi.adcode);
+          placeSearch.search(e.poi.name);
+        });
+
+        //点击事件
+        AMap.event.addListener(placeSearch, 'markerClick', function(e) {
+            debugger
+          var data = e.data;
+          var details = data.pname + data.cityname + data.adname + data.address;
+          $('#keyword').val(details);
+          console.log(details);
+          //console.log(e.data.location);//当前marker的经纬度信息
+          // e.data.location.lng + ',' + e.data.location.lat;
+          //console.log( e.data.address);//获取当前marker的具体地址信息
+          //document.getElementById("input").value =  e.data.address;
+        });
+
+      });
+  })
+
+  });
+</script>

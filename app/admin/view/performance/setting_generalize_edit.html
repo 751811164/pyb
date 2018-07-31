@@ -1,0 +1,106 @@
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">底薪规则</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <input type="hidden" name="id" value="{$info.id|default=''}">
+                <input type="hidden" name="group_id" value="{$Think.get.gid}">
+                <input type="hidden" name="tb" value="{$Think.get.tb}">
+                <div class="row">
+
+                    <div class="col-sm-12">
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">推广期限:</label>
+                            <div class="col-sm-9 form-inline">
+                                <input type="text" class="form-control date" readonly name="start_time" value="{$info.start_time|default=''}">
+                                至<input type="text" class="form-control date" readonly name="end_time" value="{$info.end_time|default=''}">
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">推荐线下注册会员:</label>
+                            <div class="col-sm-3">
+                                <div class="input-group input-group">
+                                    <input type="number" class="form-control" name="sign_offline" value="{$info.sign_offline|default=''}">
+                                    <span class="input-group-addon">元/个</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">推荐微信注册会员:</label>
+                            <div class="col-sm-3">
+                                <div class="input-group input-group">
+                                    <input type="number" class="form-control" name="sign_wechat" value="{$info.sign_wechat|default=''}">
+                                    <span class="input-group-addon">元/个</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">推荐关注微信商城:</label>
+                            <div class="col-sm-3">
+                                <div class="input-group input-group">
+                                    <input type="number" class="form-control" name="subscribe_wemall" value="{$info.subscribe_wemall|default=''}">
+                                    <span class="input-group-addon">元/个</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">推荐APP注册会员:</label>
+                            <div class="col-sm-3">
+                                <div class="input-group input-group">
+                                    <input type="number" class="form-control" name="sign_app" value="{$info.sign_app|default=''}">
+                                    <span class="input-group-addon">元/个</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('settingEdit')}{else/}{:url('settingAdd')}{/notempty}">保存
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+  $(function() {
+
+
+    //region 初始化
+
+    //同时绑定多个时间控件
+    lay('.date').each(function() {
+      laydate.render({
+        min: 0, //当天
+        elem: this,
+        type: 'datetime',
+        trigger: 'click',
+      });
+    });
+
+
+  });
+
+
+</script>

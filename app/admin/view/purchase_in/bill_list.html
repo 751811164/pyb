@@ -1,0 +1,201 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+        <ob_link><a class="btn" url="{:url('')}" id="search">查 询</a></ob_link>
+        <!--<ob_link><a class="btn" url="{:url('billAdd')}" id="add" data-toggle="modal" data-target="#myModal">新 增</a></ob_link>-->
+        <ob_link><a class="btn" href="{:url('PurchaseInLog/loglist')}">新 增</a></ob_link>
+        <!--<ob_link><a class="btn" url="{:url('billEdit')}" id="edit" style="display: none;" >编 辑</a></ob_link>-->
+        <ob_link><a class="btn" data-url="{:url('billDel')}" id="del">删 除</a></ob_link>
+        <ob_link><a class="btn export" url="{:url('exportBillList')}">导 出</a></ob_link>
+
+        <div class="box-tools form-block">
+            <div class="form-inline search-form">
+                <div class="form-group">
+                    <label class="control-label" style="width: 60px;">日&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;期</label>
+                    <input type="text" name="start_time" class="form-control date" readonly value="{:input('start_time')}" style="width: 200px;">
+                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                    <input type="text" name="end_time" class="form-control date" readonly value="{:input('end_time')}" style="width: 200px;">
+                    <label class="control-label"><input type="radio" name="create_time" value="today" style="width: 200px;">今天</label>
+                    <label class="control-label"><input type="radio" name="create_time" value="yesterday">昨天</label>
+                    <label class="control-label"><input type="radio" name="create_time" value="week">本周</label>
+                    <label class="control-label"><input type="radio" name="create_time" value="last week">上周</label>
+                    <label class="control-label"><input type="radio" name="create_time" value="month">本月</label>
+                    <label class="control-label"><input type="radio" name="create_time" value="last month">上月</label>
+                    <label class="control-label"><input type="radio" name="create_time" value="season">本季</label>
+                    <label class="control-label"><input type="radio" name="create_time" value="last season">上季</label>
+                    <label class="control-label"><input type="radio" name="create_time" value="year">全年</label>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label style="width: 60px;">制单机构</label>
+                    <select name="shop_id" class="form-control" style="width: 200px;">
+                        <option value>全部</option>
+                        {notempty name="shopList" }
+                        {volist name="shopList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+                    <label class="control-label">单据编号</label>
+                    <input type="text" name="search_data" class="form-control" value="{:input('search_data')}" style="width: 200px;">
+
+                    <label class="control-label">审核状态:</label>
+                    <label class="control-label"><input type="radio" name="status" value>全部</label>
+                    <label class="control-label"><input type="radio" name="status" value="0">未审核</label>
+                    <label class="control-label"><input type="radio" name="status" value="1">已审核</label>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label style="width: 60px;">供&nbsp;&nbsp;应 &nbsp;商</label>
+                    <select name="supplier_id" class="form-control" style="width: 200px;">
+                        <option value>全部</option>
+                        {notempty name="supplierList" }
+                        {volist name="supplierList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+                    <!--<label class="control-label">使用状态:</label>-->
+                    <!--<label class="control-label"><input type="radio" name="use_status" value>全部</label>-->
+                    <!--<label class="control-label"><input type="radio" name="use_status" value="0">未使用</label>-->
+                    <!--<label class="control-label"><input type="radio" name="use_status" value="1">已使用</label>-->
+                    <!--<label class="control-label"><input type="radio" name="use_status" value="2">部分使用</label>-->
+                    <!--<label class="control-label"><input type="radio" name="use_status" value="-1">终止</label>-->
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="box-body table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th class="checkbox-select-all">
+                    <label>
+                        <input class="flat-grey js-checkbox-all" type="checkbox">
+                    </label>
+                </th>
+                <th>序号</th>
+                <th>单据编号</th>
+                <th>审核状态</th>
+
+                <th>机构名称</th>
+                <th>供应商</th>
+                <th>单据金额</th>
+                <th>操作员</th>
+                <th>操作日期</th>
+                <th>审核人</th>
+                <th>备注</th>
+            </tr>
+            </thead>
+
+            {notempty name='list'}
+            <tbody>
+            {volist name='list' id='vo'}
+            <tr data-id="{$vo['id']}">
+                <td>
+                    <label>
+                        <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}">
+                    </label>
+                </td>
+                <td>{$i}</td>
+                <td><a href="{:url('PurchaseInLog/loglist',array('in_id'=>$vo.id))}">{$vo.sn}</a></td>
+                <td>
+                    <ob_link>{$vo.status_text}</ob_link>
+                </td>
+
+                <td>{$vo.shop_name}</td>
+                <td>{$vo.supplier_name}</td>
+                <td>{$vo.amount}</td>
+                <td>{$vo.admin_add_name}</td>
+                <td>{$vo.create_time}</td>
+                <td>{$vo.admin_check_name}</td>
+                <td>{$vo.in_remark}</td>
+            </tr>
+            {/volist}
+            </tbody>
+            {else/}
+            <tbody>
+            <tr class="odd">
+                <td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+            </tr>
+            </tbody>
+            {/notempty}
+        </table>
+
+    </div>
+    <div class="box-footer clearfix text-center">
+        {$list->render()}
+    </div>
+</div>
+
+
+
+
+<script>
+    ob.setValue("shop_id", "{:input('shop_id')}");
+    ob.setValue("supplier_id", "{:input('supplier_id')}");
+    ob.setValue("status", "{:input('status')}");
+    ob.setValue("use_status", "{:input('use_status')}");
+    ob.setValue("create_time", "{:input('create_time')}");
+
+    $(function () {
+
+        $("[name='create_time']").on('ifClicked', function () {
+            $("[name='start_time'],[name='end_time']").val('');
+        })
+        //删除
+        $('#del').on('click', function (e) {
+            e.preventDefault();
+            // layer.open()
+            var that = this;
+            var $checked = $('.table input[type="checkbox"]:checked:not(.js-checkbox-all)');
+
+            if ($checked.length != 0) {
+                layer.confirm('只能的删除<span class="text-red">未审核</span>的订单，确定要执行吗？', function (index) {
+                    var params = {ids: ''}
+                    $checked.each(function (i, e) {
+                        if (!!$(this).val()) {
+                            params.ids += $(this).val() + ',';
+                        }
+                    });
+                    params.ids = params.ids.substr(0, params.ids.length - 1);
+                    if (!!params.ids) {
+                        ajax({
+                            url: $(that).attr('data-url'), data: params, success: function (data) {
+                                obalertp(data);
+                                layer.close(index);
+                            },
+                        })
+
+                    }
+                }, function (index) {
+                    layer.close(index);
+                });
+            }
+            else {
+                toast.warning('请选择批量操作数据');
+            }
+            return false;
+        });
+
+        //保存
+        $('#myModal').on('click', '#saveInfo', function () {
+            var $form = $('#myModal form');
+
+            var postData = $form.serialize();
+
+            var url = $(this).attr('data-url');
+
+            ajax({
+                url: url, data: postData, success: function (data) {
+                    obalertp(data);
+                },
+            })
+
+
+            return false;
+        });
+    });
+
+</script>

@@ -1,0 +1,206 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="__STATIC__/ext/adminlte/plugins/iCheck/all.css">
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="__STATIC__/ext/adminlte/plugins/iCheck/icheck.min.js"></script>
+
+    <title>查询商品</title>
+</head>
+<body>
+
+<div class="col-sm-6">
+    <form class="search-form">
+        <div class="col-lg-6">
+            <div class="input-group">
+                <input type="text" class="form-control search-input" name="search_data" value="{$Think.get.search_data}" placeholder="商品名" >
+                <div class="input-group-btn">
+                    <button type="button" id="search" class="btn btn-info" url="{:url()}">搜索</button>
+                </div>
+            </div><!-- /.input-group -->
+        </div>
+    </form>
+</div>
+
+<div class="col-sm-12">
+    <div class="box-body table-responsive">
+        <table class="table table-bordered table-hover table-pointer">
+            <thead>
+            <tr>
+                <th class="checkbox-select-all">
+                    <label>
+                        <input class="flat-grey js-checkbox-all" type="checkbox">
+                    </label>
+                </th>
+                <th>序号</th>
+                <th>商品条码</th>
+                <th>商品名称</th>
+                <th>单位</th>
+                <th>规格</th>
+
+            </tr>
+            </thead>
+
+            {notempty name='list'}
+            <tbody>
+            {volist name='list' id='vo' key="i" }
+            <tr>
+                <td>
+                    <label>
+                        <input class="flat-grey" type="checkbox" value="{$vo.id}" data-id="{$vo.id}" data-name="{$vo.name}">
+                    </label>
+                </td>
+                <td>{$i}</td>
+                <td>{$vo.barcode1}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.specification}</td>
+                <td>{$vo.full_specification}</td>
+
+            </tr>
+            {/volist}
+            </tbody>
+
+
+            {else/}
+            <tbody>
+            <tr class="odd">
+                <td colspan="6" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+            </tr>
+            </tbody>
+            {/notempty}
+        </table>
+    </div>
+    <div class="box-footer clearfix text-center">
+        {$list->render()}
+    </div>
+</div>
+
+<script>
+
+  function getParentdata(list) {
+    window.list = list || [];
+
+  }
+
+  // list=[];
+  //   var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+  //   console.log(index);
+  // debugger;
+
+  $(function() {
+
+    //启动icheck
+    $("[type='checkbox']").iCheck({
+      checkboxClass: 'icheckbox_minimal-blue',
+      radioClass: 'iradio_minimal-blue',
+      increaseArea: '20%', // optional
+    });
+
+    var $checkboxAll = $(".js-checkbox-all"), $checkbox = $("tbody").find("[type='checkbox']").not("[disabled]"), length = $checkbox.length, i = 0;
+
+    //全选checkbox
+    $checkboxAll.on("ifClicked", function(event) {
+      if (event.target.checked) {
+        $checkbox.iCheck('uncheck');
+        i = 0;
+      }
+      else {
+        $checkbox.iCheck('check');
+        i = length;
+      }
+    });
+
+    $checkbox.on('ifClicked', function(event) {
+
+      event.target.checked ? i-- : i++;
+      if (i == length) {
+        $checkboxAll.iCheck('check');
+      }
+      else {
+        $checkboxAll.iCheck('uncheck');
+      }
+    });
+
+    $("[type='checkbox']").on('ifChanged', function(event) {
+
+      $("tbody").find("[type='checkbox']").each(function() {
+        var data = this.dataset;
+        if (data.id) {
+
+          var inside = false;
+          for (var i = 0; i < list.length; i++) {
+            if (data['id'] == list[i]['id']) {
+              inside = true;
+              break;
+            }
+          }
+
+          if ($(this).prop("checked")) {
+            if (!inside) {
+              list.push(data);
+            }
+          }
+          else {
+
+            if (inside) {
+              list.splice(i, 1);
+            }
+
+          }
+
+        }
+
+      });
+
+      console.log(list);
+
+      ;
+    });
+
+
+    //搜索功能
+    $("#search").click(function(){
+
+      window.location.href = searchFormUrl(this);
+    });
+
+    //回车搜索
+    $(".search-input").keyup(function(e){
+      if(e.keyCode === 13){
+        $("#search").click();
+        return false;
+      }
+    });
+
+
+  });
+
+
+  /**
+   * 搜索表单url
+   */
+  var searchFormUrl = function (obj) {
+    var url = $(obj).attr('url');
+    var query  = $('.search-form').find('input').serialize();
+    var str  = $('.search-form').find('select').serialize();
+    query+='&'+str.replace(/=-\d*/g,'=');
+
+    query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+    query = query.replace(/^&/g,'');
+    if( url.indexOf('?')>0 ){
+      url += '&' + query;
+    }else{
+      url += '?' + query;
+    }
+
+    return url;
+  };
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+        <ob_link><a class="btn" url="{:url('taskAdd')}" id="add" data-toggle="modal" data-target="#myModal">新 增</a></ob_link>
+        <ob_link><a class="btn" url="{:url('taskedit')}" id="edit" style="display: none">编辑</a></ob_link>
+        <ob_link><a class="btn" url="{:url('taskAdd')}" id="changeStatusBtn">停止</a></ob_link>
+        <span class="light_box"> <i class="fa fa-circle"></i>
+            <span class="light_tip" id="id_light_tip">
+            </span>
+        </span>
+
+    </div>
+
+    <div class="box-body table-responsive">
+        <table class="table table-bordered table-hover table-pointer">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>任务名称</th>
+                <th>类型</th>
+                <th>时间间隔</th>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th>上次执行时间</th>
+                <th>下次执行时间</th>
+                <th>执行任务</th>
+                <th>状态</th>
+                <th>操作</th>
+
+            </tr>
+            </thead>
+
+            {notempty name='data.list'}
+            <tbody>
+            {volist name='data.list' id='vo'}
+            <tr data-index="{$i}">
+                <td>{$i}</td>
+                <td>{$vo.name}</td>
+                <td>
+                    {if condition='$vo.type==1'}
+                    执行一次
+                    {else/}
+                    循环执行
+                    {/if}
+                </td>
+                <td>{$vo.interval}</td>
+                <td>{$vo.begin_time}</td>
+                <td>{$vo.end_time}</td>
+                <td>{$vo.last_time}</td>
+                <td>{$vo.next_time}</td>
+                <td>{$vo.action}</td>
+                <td>
+                    <ob_link><a class="ajax-get" href="{:url('changeTaskStatus', array('index' => $i, 'status' => (int)!$vo['status']))}">
+                        {if condition='$vo.status==1'}
+                        启用
+                        {elseif condition='$vo.status==0'}
+                        停用
+                        {/if}
+                    </a></ob_link>
+                </td>
+                <td class="col-md-2 text-center">
+
+                    <ob_link><a class="btn confirm ajax-get" href="{:url('removeTask', array('index' => $i))}"><i class="fa fa-trash-o"></i> 删 除</a></ob_link>
+                </td>
+
+            </tr>
+            {/volist}
+            </tbody>
+            {/notempty}
+        </table>
+
+    </div>
+
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+
+</div>
+
+<script>
+    function changeStatus (code) {
+        var obj = {
+            1001: {btn_url: "{:url('start')}", btn_text: "开启", status_text: "停止", addClass: "text-red", removeClass: "text-green"},
+            1000: {btn_url: "{:url('stop')}", btn_text: "停止", status_text: "开启", addClass: "text-green", removeClass: "text-red"},
+        };
+        $("#changeStatusBtn").attr('url', obj[code].btn_url).text(obj[code].btn_text);
+        $("#id_light_tip").text(obj[code].status_text + "【{$data.status.message}】");
+        $(".light_box").children('i').removeClass(obj[code].removeClass).addClass(obj[code].addClass);
+    }
+
+    $(function () {
+
+        changeStatus("{$data.status.code}");
+        $("#changeStatusBtn").on("click", function () {
+            $.get($(this).attr('url'), function (data) {
+                if (data instanceof Object) {
+                    $.get("{:url('status')}", function (data) {
+                        toast.success("操作成功");
+                        setTimeout(function(){ $.pjax({
+                            url: '{:url()}',
+                            container: '.content'
+                        })},300)
+
+                    })
+                }
+                else {
+                    toast.error("操作失败,请联系管理人员");
+                }
+
+            })
+        })
+
+
+
+    //新增
+    $('#add').on('click', function (e) {
+        e.preventDefault();
+
+        ajax({
+            url: $(this).attr('url'), success: function (data) {
+                $('#myModal').empty().append(data).modal('show');
+            },
+        })
+
+    });
+
+    //双击编辑
+    $('table.table-pointer tr').on('dblclick', function (e) {
+        e.preventDefault();
+        if (e.target.nodeName != 'TD') {
+            return false;
+        }
+
+        if ($('#edit').length === 0) {
+            alert('您无权修改');
+            return false;
+        }
+        var index = $(this).attr('data-index');
+
+        ajax({
+            url: $('#edit').attr('url'), data: {index: index}, success: function (data) {
+                $('#myModal').empty().append(data).modal('show');
+            },
+        })
+
+    });
+
+    //保存
+    $('#myModal').on('click', '#saveInfo', function () {
+        var $form = $('#myModal form');
+        if ($("[name='type']").val() == 2) {
+            $("[name='interval']").val($("[name='task-time']").val() +" "+ $("[name='task-time-unit']").val());
+        }
+        var postData = $form.serialize();
+
+        var url = $(this).attr('data-url');
+
+        ajax({
+            method: "POST", url: url, data: postData, success: function (data) {
+                obalertp(data);
+            },
+        })
+
+        return false;
+    });
+    })
+</script>

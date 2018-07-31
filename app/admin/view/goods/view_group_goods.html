@@ -1,0 +1,73 @@
+
+
+
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">内含信息</div>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+
+            <th>类型</th>
+            <th>分类</th>
+            <th>条形码</th>
+            <th>名称</th>
+            <th>单位</th>
+            <th>规格</th>
+            <th>组合数量</th>
+            <!--<th>进货价</th>-->
+            <!--<th>零售价</th>-->
+
+            <ob_price rule="cost_price"><th>进货价</th></ob_price>
+            <ob_price rule="retail_price"><th>零售价</th></ob_price>
+            <ob_price rule="wholesale_price"><th>批发价</th></ob_price>
+            <ob_price rule="delivery_price"><th>配送价</th></ob_price>
+            <ob_price rule="member_price"><th>会员价1</th></ob_price>
+
+
+            <th>创建人</th>
+            <th>创建日期</th>
+
+
+        </tr>
+        </thead>
+
+        {notempty name='list'}
+        <tbody>
+        {volist name='list' id='vo'}
+        <tr data-id="{$vo.id}">
+
+            <td>{$vo.type_name}</td>
+            <td>{$vo.category_name}</td>
+            <td>{$vo.barcode1}</td>
+            <td>{$vo.name}</td>
+            <td>{$vo.unit}</td>
+            <td>{$vo.specification}</td>
+            <td>{$vo.num}</td>
+
+            <ob_price rule="cost_price"><td>{$vo.cost_price}</td></ob_price>
+            <ob_price rule="retail_price"><td>{$vo.retail_price}</td></ob_price>
+            <ob_price rule="wholesale_price"><td>{$vo.wholesale_price}</td></ob_price>
+            <ob_price rule="delivery_price"><td>{$vo.delivery_price}</td></ob_price>
+            <ob_price rule="member_price"><td>{$vo.member_price1}</td></ob_price>
+
+            <!--<td>{$vo.cost_price}</td>-->
+            <!--<td>{$vo.retail_price}</td>-->
+            <!--<td>{$vo.gross_rate}</td>-->
+            <td>{$vo.username}</td>
+            <td>{$vo.create_time}</td>
+
+
+        </tr>
+        {/volist}
+        </tbody>
+        {else/}
+        <tbody>
+        <tr class="odd">
+            <td colspan="14" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+        </tr>
+        </tbody>
+        {/notempty}
+    </table>
+</div>

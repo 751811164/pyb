@@ -1,0 +1,232 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+        <ob_link><a class="btn" url="{:url('plusLogAdd')}" id="add" data-toggle="modal" data-target="#myModal">新 增</a></ob_link>
+        <!--<ob_link><a class="btn" url="{:url('plusLogEdit')}" id="edit" style="display: none;" >编 辑</a></ob_link>-->
+        <ob_link><a class="btn" data-url="{:url('checking')}" id="check">审 核</a></ob_link>
+        <ob_link><a class="btn" data-url="{:url('logDel')}" id="del">删 除</a></ob_link>
+        <!--<ob_link><a class="btn export" url="{:url('exportLogList')}">导 出</a></ob_link>-->
+
+
+
+        <div class="box-tools">
+            <div class="form-inline search-form">
+
+                <label class="control-label" >日期</label>
+                <input type="text" name="start_time" class="form-control date date-sm" readonly value="{:input('start_time')}" >
+                <label class="control-label">至</label>
+                <input type="text" name="end_time" class="form-control date date-sm" readonly value="{:input('end_time')}" >
+
+                <div class="input-group ">
+                    <input name="search_data" class="pull-right search-input" value="{:input('search_data')}" placeholder="会员名称" type="text">
+                    <div class="input-group-btn">
+                        <button type="button" id="search" url="{:url('')}" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br/>
+    </div>
+    <div class="box-body table-responsive">
+        <table class="table table-bordered table-hover ">
+            <thead>
+            <tr>
+                <th class="checkbox-select-all">
+                    <label>
+                        <input class="flat-grey js-checkbox-all" type="checkbox">
+                    </label>
+                </th>
+                <th>序号</th>
+                <th>会员编号</th>
+                <th>会员名</th>
+                <th>奖励积分</th>
+                <th>创建人</th>
+                <th>创建日期</th>
+                <!--<th>审核人</th>-->
+                <!--<th>审核日期</th>-->
+                <th>状态</th>
+
+            </tr>
+            </thead>
+
+            {notempty name='list'}
+            <tbody>
+            {volist name='list' id='vo'}
+            <tr  data-id="{$vo['id']}">
+                <td>
+                    <label>
+                        <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}">
+                    </label>
+                </td>
+                <td>{$i}</td>
+                <td>{$vo.number}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.point_num}</td>
+
+                <td>{$vo.admin_add_name}</td>
+                <td>{$vo.create_time}</td>
+                <td>
+                    {if condition="$vo.status==1"}
+                    {$vo.check_status_text}
+                    {else/}
+                    <ob_link><a class="ajax-get" href="{:url('setCheckStatus', array('ids' => $vo['id'], 'check_status' => (int)!$vo['check_status']))}">{$vo.check_status_text}</a> </ob_link>
+                    {/if}
+                </td>
+
+
+            </tr>
+            {/volist}
+            </tbody>
+            {else/}
+            <tbody>
+            <tr class="odd">
+                <td colspan="4" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+            </tr>
+            </tbody>
+            {/notempty}
+        </table>
+
+    </div>
+    <div class="box-footer clearfix text-center">
+        {$list->render()}
+    </div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
+
+</div>
+
+
+<script>
+    //新增
+    $('#add').on('click', function(e) {
+        e.preventDefault();
+
+        ajax({
+            url:$(this).attr('url'),
+            success:function (data) {
+                $('#myModal').empty().append(data).modal('show');
+            }
+        })
+
+
+    });
+
+
+    // //双击编辑
+    // $('table.table-pointer tr').on('dblclick', function(e) {
+    //     e.preventDefault();
+    //     if (e.target.nodeName != 'TD') {
+    //         return false;
+    //     }
+    //
+    //     if ($('#edit').length === 0) {
+    //         alert('您无权修改');
+    //         return false;
+    //     }
+    //     var id = $(this).attr('data-id');
+    //
+    //     ajax({
+    //         url:$('#edit').attr('url'),
+    //         data:{id:id},
+    //         success:function (data) {
+    //             $('#myModal').empty().append(data).modal('show');
+    //         }
+    //     })
+    // });
+
+    //保存
+    $('#myModal').on('click', '#saveInfo', function () {
+        var $form = $('#myModal form');
+
+        var postData = $form.serialize();
+
+        var url = $(this).attr('data-url');
+
+        ajax({
+            method:"POST",
+            url:url,
+            data:postData,
+            success:function (data) {
+                obalertp(data);
+            }
+        })
+
+        return false;
+    });
+
+
+    //审核
+    $("#check").on('click', function () {
+        if ($(this).attr('disabled')) {
+            return false;
+        }
+var $checkbox = $(".flat-grey[name='ids']:checked");
+        if($checkbox.length==0){
+            toast.warning('请选择待审核的积分');
+            return false
+        }
+        var ids='';
+        var url = $(this).attr('data-url');
+        $checkbox.each(function(){
+            ids+=$(this).val()+',';
+        })
+
+        //询问框
+        layer.confirm('确定要审核吗？', {
+            btn: ['确定', '取消'], //按钮
+        }, function () {
+            ajax({
+                url: url,method:"POST", data: {ids: ids}, success: function (data) {
+                    obalertp(data);
+                }
+            })
+
+        }, function () {
+
+        });
+
+    })
+
+    //删除
+    $('#del').on('click', function (e) {
+        e.preventDefault();
+        // layer.open()
+        var that = this;
+        var $checked = $(".flat-grey[name='ids']:checked");
+
+        if ($checked.length != 0) {
+            layer.confirm('只能删除<span class="text-red">未审核</span>的积分记录，确定要执行吗？', function (index) {
+                var params = {ids: ''}
+                $checked.each(function (i, e) {
+                    if (!!$(this).val()) {
+                        params.ids += $(this).val() + ',';
+                    }
+                });
+                params.ids = params.ids.substr(0, params.ids.length - 1);
+                if (!!params.ids) {
+                    ajax({
+                        url: $(that).attr('data-url'), data: params, success: function (data) {
+                            obalertp(data);
+                            layer.close(index);
+                        },
+                    })
+
+                }
+            }, function (index) {
+                layer.close(index);
+            });
+        }
+        else {
+            toast.warning('请选择批量操作数据');
+        }
+        return false;
+    })
+
+
+
+
+
+</script>

@@ -1,0 +1,110 @@
+<div class="modal-dialog" role="document" style="width: 540px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">卡类管理</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="row">
+                    <input type="hidden" name="id" value="{$info.id|default=''}">
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">编号</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" value="{$info.number|default=''}" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">卡类名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="name" value="{$info.name|default=''}">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-12">
+                        <div class="form-group text-center">
+
+                            <label class="col-xs-4 control-label" style="text-align: center">
+                                <input type="checkbox" name="is_point" value="1">
+                                是否积分
+                            </label>
+
+                            <label class="col-xs-4 control-label" style="text-align: center">
+                                <input type="checkbox" name="is_postsave" value="1">
+                                是否储值
+                            </label>
+
+                            <label class="col-xs-4 control-label" style="text-align: center">
+                                <input type="checkbox" name="is_count" value="1">
+                                是否记数
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">创建人</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" value="{$info.admin_add_name|default=''}" disabled>
+                            </div>
+
+                            <label class="col-sm-2 control-label">日期</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" value="{$info.create_time|default=''}" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">修改人</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" value="{$info.admin_edit_name|default=''}" disabled>
+                            </div>
+
+                            <label class="col-sm-2 control-label">日期</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" value="{$info.update_time|default=''}" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('typeEdit')}{else/}{:url('typeAdd')}{/notempty}">保存</button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+        ob.setValue('is_point', '{$info.is_point|default=""}');
+        ob.setValue('is_postsave', '{$info.is_postsave|default=""}');
+        ob.setValue('is_count', '{$info.is_count|default=""}');
+
+        //启动icheck
+        $("[type='radio'],[type='checkbox']").iCheck({
+            checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+        });
+
+    })
+
+
+</script>

@@ -1,0 +1,74 @@
+
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">商品调价管理</h4>
+        </div>
+        <div class="modal-body">
+            <form  class="form-horizontal">
+                <div class="row">
+                    <input type="hidden" name="id" value="{$info.id|default=''}">
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">制单机构</label>
+                            <div class="col-sm-8">
+                                <select name="shop_id" class="form-control">
+                                    {notempty name="shopList" }
+                                    {volist name="shopList" id="vo"}
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">备注</label>
+                            <div class="col-sm-8">
+                                <textarea class="form-control" name="remark"></textarea>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('billEdit')}{else/}{:url('billAdd')}{/notempty}">保存</button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        //启动icheck
+        $("[type='radio'],[type='checkbox']").iCheck({
+            checkboxClass: 'icheckbox_minimal-blue',
+            radioClass: 'iradio_minimal-blue',
+            increaseArea: '20%' // optional
+        });
+
+        var checkList = "{$checkList|default=''}";
+        checkList=$.trim(checkList)? checkList.split(","):[];
+
+        for (var i = 0; i < checkList.length; i++) {
+            $(":checkbox[value="+checkList[i]+"]").iCheck("check");
+
+        }
+
+
+    })
+
+
+</script>

@@ -1,0 +1,366 @@
+<div class="box">
+    <div class="box-header ">
+        <a id="jump" style="display: none;" href="{:url()}?sid=">跳转</a>
+        <ob_link><a class="btn" url="{:url('adminAdd')}" id="add" >新 增</a></ob_link>
+        <ob_link><a class="btn" url="{:url('adminEdit')}" id="edit" style="display: none;" >编 辑</a></ob_link>
+
+        <!--<ob_link><a class="btn export" url="{:url('exportAdminList')}"><i class="fa fa-download"></i> 导 出</a></ob_link>-->
+        <ob_link><a class="btn ladda-button" id="fastSetBtn"  url="{:url('fastset')}" >批量设置</a></ob_link>
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">删 除</a></ob_link>
+
+        <div class="box-tools ">
+            <div class="form-inline search-form">
+            <div class="input-group ">
+                <input name="search_data" class="pull-right search-input" value="{:input('search_data')}"
+                       placeholder="支持名字|编号|手机" type="text">
+                <div class="input-group-btn">
+                    <button type="button" id="search" url="{:url('adminlist')}" class="btn btn-default"><i
+                            class="fa fa-search"></i></button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <br/>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-2">
+            <!--左边店铺列表-->
+            <ul id="ztree" class="ztree"></ul>
+        </div>
+
+        <!--右边-->
+        <div class="col-xs-10">
+            <div id="container">
+                <div class="box-body table-responsive">
+                    <table class="table table-bordered table-hover table-pointer">
+                        <thead>
+                        <tr>
+                            <th class="checkbox-select-all">
+                                <label>
+                                    <input class="flat-grey js-checkbox-all" type="checkbox">
+                                </label>
+                            </th>
+                            <th>序号</th>
+                            <th>头像</th>
+                            <th>编号</th>
+                            <th>岗位</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>生日</th>
+                            <th>绑定手机</th>
+                            <th>地址</th>
+                            <th>PC收银</th>
+                            <th>手机收银</th>
+                            <th>是否盘点</th>
+
+                            <th>工作状态</th>
+                        </tr>
+                        </thead>
+
+                        {notempty name='list'}
+                        <tbody>
+                        {volist name='list' id='vo'}
+                        <tr  data-id="{$vo['id']}" >
+                            <td>
+                                <label>
+                                    {if condition=" ($vo.id == $Think.const.SYS_ADMINISTRATOR_ID) "}
+                                    <input class="flat-grey" type="checkbox" disabled />
+                                    {else /}
+                                    <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}"/>
+                                    {/if}
+                                </label>
+                            </td>
+                            <td>{$i}</td>
+                            <td><img class="head-ico" src="{$vo.portrait_id|default='0'|get_picture_url=###,'small'}"
+                                     alt="头像"></td>
+                            <td>{$vo.number|default='0'}</td>
+                            <td>[{$vo.group_number|default=''}]{$vo.group_name|default=''}</td>
+                            <td>{$vo.username}</td>
+                            <td>{$vo.gender_text|default='未知'}</td>
+                            <td>{$vo.birthday}</td>
+                            <td>{$vo.mobile}</td>
+                            <td>{$vo.address}</td>
+                            <td>{if condition="$vo.id == $Think.const.SYS_ADMINISTRATOR_ID "}-{else/}
+                                <ob_link><a class="ajax-get" href="{:url('setPermissionStatus', array('ids' => $vo['id'], 'pc_cashier' => (int)!$vo['pc_cashier']))}">{$vo.pc_cashier_text}</a> </ob_link>
+                                {/if}
+                            </td>
+                            <td>{if condition="$vo.id == $Think.const.SYS_ADMINISTRATOR_ID "}-{else/}
+                                <ob_link><a class="ajax-get" href="{:url('setPermissionStatus', array('ids' => $vo['id'], 'mob_cashier' => (int)!$vo['mob_cashier']))}">{$vo.mob_cashier_text}</a> </ob_link>
+                                {/if}
+                            </td>
+                            <td>{if condition="$vo.id == $Think.const.SYS_ADMINISTRATOR_ID "}-{else/}
+                                <ob_link><a class="ajax-get" href="{:url('setPermissionStatus', array('ids' => $vo['id'], 'take_stock' => (int)!$vo['take_stock']))}">{$vo.take_stock_text}</a> </ob_link>
+                                {/if}
+                            </td>
+                            <td>
+                                {if condition="$vo.id == $Think.const.SYS_ADMINISTRATOR_ID "}-{else/}
+                                <ob_link><a class="ajax-get" href="{:url('setStatus', array('ids' => $vo['id'], 'status' => (int)!$vo['status']))}">{$vo.status_text}</a> </ob_link>
+                                {/if}
+
+
+
+                            </td>
+                            <!--<td class="col-md-3 text-center">-->
+                            <!--<ob_link><a href="{:url('adminEdit', array('id' => $vo['id']))}" class="btn"><i class="fa fa-edit"></i> 编 辑</a></ob_link>-->
+                            <!--&nbsp;-->
+                            <!--<ob_link><a class="btn"  href="{:url('adminAuth', array('id' => $vo['id']))}"><i class="fa fa-user-plus"></i> 授 权</a></ob_link>-->
+                            <!--&nbsp;-->
+                            <!--<ob_link><a class="btn confirm ajax-get"  href="{:url('adminDel', array('id' => $vo['id']))}"><i class="fa fa-trash-o"></i> 删 除</a></ob_link>-->
+                            <!--</td>-->
+                        </tr>
+                        {/volist}
+                        </tbody>
+                        {else/}
+                        <tbody>
+                        <tr class="odd">
+                            <td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                        </tr>
+                        </tbody>
+                        {/notempty}
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="box-footer clearfix text-center">
+        {$list->render()}
+    </div>
+
+</div>
+
+<!-- 增加修改Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" >
+</div>
+
+
+
+<!-- 批量模态框（Modal） -->
+<div class="modal fade" id="fastSetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    批量修改
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="fastSetForm" class="fastSetForm " action="{:url('fastSet')}">
+                    <input type="hidden" name="ids">
+                    <div class="col-sm-6">
+                    <div class="form-group">
+                        <span>入职时间</span>
+                        <div class="input-group ">
+                            <div class="input-group-addon">
+                               <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" name="entry_time" class="form-control date pull-right" readonly  value="{$info['birthday']|default=''|format_strtime=###,'Y-m-d'}">
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-sm-6">
+                    <div class="form-group">
+                        <span >岗位</span>
+                        <select class="form-control" name="group_id">
+                            {notempty name='info.groupList'}
+                            {volist name="info.groupList" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                            {/notempty}
+                        </select>
+                    </div>
+                    </div>
+                    <div class="col-sm-6">
+                    <div class="form-group">
+                        <span >工作状态</span>
+                        <select class="form-control" name="status">
+
+                            <option value="{$Think.DATA_NORMAL}">在职</option>
+                            <option value="{$Think.DATA_DISABLE}">离职</option>
+
+                        </select>
+                    </div>
+                    </div>
+
+
+                    <div class="col-sm-6">
+                    <div class="form-group">
+                        <span >是否PC端收银</span>
+                        <select class="form-control" name="pc_cashier">
+                            <option value="{$Think.DATA_YES}">开启</option>
+                            <option value="{$Think.DATA_NO}">停用</option>
+                        </select>
+                    </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                    <div class="form-group">
+                        <span >是否手机端端收银</span>
+                        <select class="form-control" name="mob_cashier">
+                            <option value="{$Think.DATA_YES}">开启</option>
+                            <option value="{$Think.DATA_NO}">停用</option>
+                        </select>
+                    </div>
+                    </div>
+                    <div class="col-sm-6">
+                    <div class="form-group">
+                        <span >是否允许盘点功能</span>
+                        <select class="form-control" name="take_stock">
+                            <option value="{$Think.DATA_YES}">开启</option>
+                            <option value="{$Think.DATA_NO}">停用</option>
+                        </select>
+                    </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+
+                <button  type="submit" class="btn ladda-button ajax-post" data-style="slide-up" data-fn="beforeSubmit" target-form="fastSetForm">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<script>
+
+  $(function() {
+
+
+    //快捷设置modal框
+    $('#fastSetBtn').on('click', function(e) {
+      $('#fastSetModal').modal('show').find('form')[0].reset();
+      e.preventDefault();
+    });
+
+    //新增
+    $('#add').on('click', function(e) {
+      e.preventDefault();
+      $.get($(this).attr('url'), function(data) {
+
+        $('#myModal').empty().append(data).modal('show');
+      });
+
+    });
+
+    //双击编辑
+    $("table.table-pointer tr").on("dblclick",function(e){
+      e.preventDefault();
+      if(e.target.nodeName!='TD'){
+        return false
+      }
+
+      if($('#edit').length===0){
+        alert("您无权修改");
+        return false;
+      }
+      var id = $(this).attr("data-id");
+    if(id>0){
+      $.get($('#edit').attr("url"),{id:id},function(data){
+
+        $("#myModal").empty().append(data).modal("show");
+      })
+
+}
+
+
+    })
+
+    //保存
+    $("#myModal").on("click","#saveInfo",function(){
+      var form = $("#myModal form")[0];
+      var postData = $(form).serialize();
+       $("#myTabContent :checkbox:not(.all)").not(":checked").each(function(i,e) {
+       var name=  $(this).attr("name");
+    if(name){
+      if(name.indexOf('[]')==-1){
+        postData+="&"+name+"=0";
+      }else{
+        postData+="&"+name+"=";
+      }
+    }
+      })
+
+
+
+
+      var url =$(this).attr("data-url");
+
+      $.post(url, postData, function (data) {
+        obalertp(data);
+        if(data.code == 1){
+          form.reset();
+          $("#myModal").modal("hide").empty();
+        }
+
+        $('.verify').val('')
+        $('.captcha_change').click()
+
+      }, 'json')
+
+      return false
+    })
+
+
+    $('.nav>li>a[href]').on('show.bs.tab', function(e) {
+      //阻止切换tab
+      // e.preventDefault();
+    });
+
+
+
+
+
+
+    //生成树
+    treeObj = makeZTree({data: {$shopTree|json_encode}});
+
+    //加载页面后,选中制定节点
+    var node = treeObj.getNodeByTId('{:input(\'tid\')}');
+    treeObj.cancelSelectedNode();//先取消所有的选中状态
+    treeObj.selectNode(node, true);//将指定ID的节点选中
+
+    // $('#createCode').on('click', function() {
+    //   var $this = $(this);
+    //   $.get('{:url(\'createCode\')}', function(data) {
+    //     $this.parent().prev('input').val(data);
+    //   });
+    // });
+
+
+
+  });
+
+
+  //批量设置
+  function beforeSubmit () {
+    var ids= "";
+    $("table :checked").each(function() {
+      if(!isNaN(parseInt($(this).val())) ){
+        ids+= $(this).val()+',';
+      }
+    })
+    ids = ids.substring(0,ids.length-1);
+    if($.trim(ids)!=""){
+      $("#fastSetForm").find("[name='ids']").val(ids);
+         return true
+    }else{
+      obalert({'code':0,'msg':"请选择员工"})
+      return false
+    }
+  }
+
+
+
+</script>

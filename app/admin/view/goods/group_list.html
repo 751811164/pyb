@@ -1,0 +1,333 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?cid=">跳转</a>
+        <ob_link><a class="btn" url="{:url('groupGoodsAdd')}" id="add">新 增</a></ob_link>
+        <ob_link><a class="btn" url="{:url('groupGoodsEdit')}" id="edit" style="display: none;">编 辑</a></ob_link>
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('groupSetStatus')}">删 除</a></ob_link>
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DISABLE}" href="{:url('groupSetStatus')}">停 售</a></ob_link>
+        <ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_NORMAL}" href="{:url('groupSetStatus')}">在 售</a></ob_link>
+        <!--<ob_link><a class="btn ladda-button batch-edit" data-target="batchSingleEdit" url="{:url('batchSingleEdit')}" >批量修改</a></ob_link>-->
+        <!--<ob_link><a class="btn ladda-button batch-edit" data-target="batchPackEdit" url="{:url('batchPackEdit')}" >多包装批量修改</a></ob_link>-->
+        <!--<ob_link><a class="btn batch_btn confirm ajax-post" value="{$Think.DATA_DELETE}" href="{:url('setStatus')}">导 出</a></ob_link>-->
+        <div class="box-tools ">
+            <div class="form-inline search-form"  style="max-width: none">
+
+                <div class="form-group">
+                    <select  name="status" class="form-control">
+                        <option value>全部</option>
+                        <option value="0">停售</option>
+                        <option value="1">在售</option>
+                    </select>
+                </div>
+
+                <div class="input-group ">
+                    <input name="search_data" class="form-control pull-right search-input" value="{:input('search_data')}" placeholder="商品名/条码" type="text">
+                    <div class="input-group-btn">
+                        <button type="button" id="search" url="{:url('')}" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="box-body table-responsive">
+
+            <!--左边店铺列表-->
+            <!--<div class="col-xs-2">-->
+            <!--<ul id="ztree" class="ztree"></ul>-->
+            <!--</div>-->
+            <!--右边-->
+            <div style="max-height: 350px">
+                <table class="table table-bordered table-hover table-pointer" >
+                    <thead>
+                    <tr>
+                        <th class="checkbox-select-all">
+                            <label>
+                                <input class="flat-grey js-checkbox-all" type="checkbox">
+                            </label>
+                        </th>
+                        <!--<th>类型</th>-->
+                        <!--<th>分类</th>-->
+                        <th>条形码</th>
+                        <th>名称</th>
+                        <th>单位</th>
+                        <th>规格</th>
+                        <!--<th>进货价</th>-->
+                        <!--<th>零售价</th>-->
+                        <!--<th>会员价1</th>-->
+
+                        <ob_price rule="cost_price"><th>进货价</th></ob_price>
+                        <ob_price rule="retail_price"><th>零售价</th></ob_price>
+                        <ob_price rule="wholesale_price"><th>批发价</th></ob_price>
+                        <ob_price rule="delivery_price"><th>配送价</th></ob_price>
+                        <ob_price rule="member_price"><th>会员价1</th></ob_price>
+
+
+
+                        <th>创建人</th>
+                        <th>创建日期</th>
+                        <th class="status-th">状态</th>
+
+                    </tr>
+                    </thead>
+
+                    {notempty name='list'}
+                    <tbody>
+                    {volist name='list' id='vo'}
+                    <tr data-id="{$vo.id}">
+                        <td>
+                            <label>
+                                <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}">
+                            </label>
+                        </td>
+                        <!--<td>{$vo.type_name|default=''}</td>-->
+                        <!--<td>{$vo.category_name|default=''}</td>-->
+                        <td>{$vo.barcode1}</td>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.unit}</td>
+                        <td>{$vo.specification}</td>
+
+                        <ob_price rule="cost_price"><td>{$vo.cost_price}</td></ob_price>
+                        <ob_price rule="retail_price"><td>{$vo.retail_price}</td></ob_price>
+                        <ob_price rule="wholesale_price"><td>{$vo.wholesale_price}</td></ob_price>
+                        <ob_price rule="delivery_price"><td>{$vo.delivery_price}</td></ob_price>
+                        <ob_price rule="member_price"><td>{$vo.member_price1}</td></ob_price>
+
+
+                        <!--<td>{$vo.gross_rate}</td>-->
+                        <td>{$vo.username}</td>
+                        <td>{$vo.create_time}</td>
+                        <td>
+                            <ob_link><a class="ajax-get" href="{:url('groupSetStatus', array('ids' => $vo['id'], 'status' => (int)!$vo['status']))}">{$vo.status_text}</a></ob_link>
+                        </td>
+
+                    </tr>
+                    {/volist}
+                    </tbody>
+                    {else/}
+                    <tbody>
+                    <tr class="odd">
+                        <td colspan="14" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                    </tr>
+                    </tbody>
+                    {/notempty}
+                </table>
+            </div>
+            <!--右边-->
+            <div id="view-container" >
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"></div>
+
+<!-- 单个批量模态框（Modal） -->
+<div class="modal fade" id="batchSingleEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" ></div><!-- /.modal -->
+
+</div>
+
+<!--<script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>-->
+
+<script>
+
+    //定义setTimeout执行方法
+    var time = null;
+
+    // ob.setValue('status','{$Think.get.status}');
+    var currentId=0;
+
+    $(function(){
+        treeObj=makeZTree({data:{$categoryList|json_encode}});
+
+        //加载页面后,选中制定节点
+        var node = treeObj.getNodeByTId("{:input('tid')}");
+        treeObj.cancelSelectedNode();//先取消所有的选中状态
+        treeObj.selectNode(node,true);//将指定ID的节点选中
+
+        //新增
+        $('#add').on('click', function (e) {
+            e.preventDefault();
+            $.get($(this).attr('url'), function (data) {
+                $('#myModal').html(data)
+                $('#myModal').modal('show')
+                // $('#myModal').empty().append(data).modal('show');
+            });
+
+        });
+
+
+
+        // //单击查看单品
+        $('table.table-pointer tr').on('click', function(e) {
+
+            // 取消上次延时未执行的方法
+            clearTimeout(time);
+            //执行延时
+            time = setTimeout(function(e){
+                //do function在此处写单击事件要执行的代码
+                e.preventDefault();
+                if (e.target.nodeName != 'TD') {
+                    return false;
+                }
+                $('#view-container').empty();
+                var id = $(e.currentTarget).attr('data-id');
+                if (id > 0) {
+                    $.get("{:url('viewGroupGoods')}", {id,id}, function(data) {
+
+                        $('#view-container').empty().append(data).show();
+
+                    });
+                }
+            },300,e);
+        });
+
+        //双击编辑
+        $('table.table-pointer tr').on('dblclick', function(e) {
+            clearTimeout(time);
+            e.preventDefault();
+            if (e.target.nodeName != 'TD') {
+                return false;
+            }
+
+            if ($('#edit').length === 0) {
+                alert('您无权修改');
+                return false;
+            }
+            var id = $(this).attr('data-id');
+
+            $.get($('#edit').attr('url'), {id:id,condition:"eq"}, function(data) {
+
+                $('#myModal').empty().append(data).modal('show');
+            });
+        });
+
+
+
+
+        //批量设置modal框
+        $(".batch-edit").on('click', function(e) {
+
+            var ids= "";
+            $("table :checked").each(function() {
+                if(!isNaN(parseInt($(this).val())) ){
+                    ids+= $(this).val()+',';
+                }
+            })
+            ids = ids.substring(0,ids.length-1);
+
+            if($.trim(ids)==""){
+
+                obalert({'code':0,'msg':"请选择商品"})
+                return false
+            }
+
+            var target = this;
+            $.get($(this).attr('url'), function (data) {
+                $("#"+$(target).attr('data-target')).empty().append(data).modal('show');
+            });
+
+            e.preventDefault();
+        });
+
+        $('.modal').on('hidden.bs.modal', function () {
+            location.reload(true);
+        })
+
+    })
+
+
+    //region 底部
+
+    //新增
+    $(".box").on('click',"#addInfo", function (e) {
+
+        e.preventDefault();
+        $.get($(this).attr('data-url'), function (data) {
+            $('#myModal').empty().append(data);
+        });
+
+    });
+
+//复制新增
+    $(".box").on('click',"#copyInfo", function (e) {
+         e.preventDefault();
+        // $.get($(this).attr('data-url'), function (data) {
+        //     $('#myModal').empty().append(data);
+        // });
+        $("form [data-clear]").val("");
+        $(".barcode").each(function(){
+            $(this).find(".clearfix:not(:first)").remove();
+        })
+    });
+
+    //上一个
+    $(".box").on('click',"#prevInfo", function (e) {
+        e.preventDefault();
+
+        if ($('#edit').length === 0) {
+            alert('您无权修改');
+            return false;
+        }
+        $(this).prop("disabled",true);
+
+        $.get($(this).attr('data-url'), {id:currentId,condition:'lt'}, function(data) {
+            console.log(typeof (data));
+            if (typeof (data)=="object") {
+                obalert(data)
+            }
+            else {
+                 $('#myModal').empty().append(data).modal('show');
+            }
+            $(this).prop("disabled",false);
+        });
+
+    });
+
+    //下一个
+    $(".box").on('click',"#nextInfo", function (e) {
+        e.preventDefault();
+        $(this).prop("disabled",true);
+        if ($('#edit').length === 0) {
+            alert('您无权修改');
+            return false;
+        }
+
+        $.get($(this).attr('data-url'), {id:currentId,condition:'gt' }, function(data) {
+            console.log(typeof (data));
+            if (typeof (data)=="object") {
+                obalert(data)
+            }
+            else {
+                $('#myModal').empty().append(data).modal('show');
+            }
+            $(this).prop("disabled",false);
+        });
+
+    });
+
+    //保存
+    $(".box").on("click","#saveInfo",function(){
+        var that = this;
+        $(this).prop("disabled",true);
+        var data =$("form").serialize();
+        $.post($(this).attr('data-url'),data,function (data) {
+            currentId = data.data;
+            obalertp(data);
+            $(that).prop("disabled",false);
+        })
+    })
+    //endregion
+
+
+
+
+</script>

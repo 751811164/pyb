@@ -1,0 +1,192 @@
+<div class="modal-dialog" role="document" style="width: 768px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">添加班次</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="row">
+                    <input type="hidden" id="editId" name="id" value="{$info.id|default=''}">
+                    <!--<input type="hidden" name="year">-->
+                    <!--<input type="hidden" name="month">-->
+                    <!--<input type="hidden" name="a_days">-->
+                    <!--<input type="hidden" name="b_days">-->
+                    <!--<input type="hidden" name="c_days">-->
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-inline">
+                            <div id="adminselect">
+                                {empty name='info.admin_id'}
+                                {assign name='shop_id' value="$Think.get.sid|default='0'" /}
+                                {else/}
+                                {assign name='shop_id' value="$info.shop_id|default='0'" /}
+                                {/empty}
+
+                                {assign name='group_id' value="$info.group_id|default='0'"/}
+                                {assign name='admin_id' value="$info.admin_id|default='0'"/}
+                                {:hook('AdminSelect', ['name' => 'id', 'shop' => $shop_id,'group'=>$group_id,'admin'=>$admin_id ])}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <ul id="myTab" class="nav nav-tabs">
+                    <li class="active"><a href="#a-arrange" data-toggle="tab">A组班次</a></li>
+                    <li><a href="#b-arrange" data-toggle="tab">B组班次</a></li>
+                    <li><a href="#c-arrange" data-toggle="tab">C组班次</a></li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+
+                    <div class="tab-pane fade in active" id="a-arrange">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">上班时间</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control time-item" name="a_on" value="{$info.a_on|default=''}">
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">下班时间</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control time-item" name="a_off" value="{$info.a_off|default=''}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">延迟设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="number" class="form-control " name="a_late" value="{$info.a_late|default='60'}" placeholder="分钟">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span class="text-danger">注:在该延迟时间内打卡为有效时间，否则视为缺勤</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!--end tab-->
+
+                    <div class="tab-pane fade" id="b-arrange">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">上班时间</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control time-item" name="b_on" value="{$info.b_on|default=''}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">下班时间</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control time-item" name="b_off" value="{$info.b_off|default=''}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">延迟设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="number" class="form-control " name="b_late" value="{$info.b_late|default='60'}">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span class="text-danger">注:在该延迟时间内打卡为有效时间，否则视为缺勤</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!--end tab-->
+
+                    <div class="tab-pane fade" id="c-arrange">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">上班时间</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control time-item" name="c_on" value="{$info.c_on|default=''}">
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">下班时间</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control time-item" name="c_off" value="{$info.c_off|default=''}">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">延迟设置</label>
+                                    <div class="col-sm-2">
+                                        <input type="number" class="form-control " name="c_late" value="{$info.c_late|default='60'}">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span class="text-danger">注:在该延迟时间内打卡为有效时间，否则视为缺勤</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end tab-->
+
+
+                </div>
+
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('arrangeEdit')}{else/}{:url('arrangeAdd')}{/notempty}">保存</button>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+
+        //同时绑定多个时间控件
+        lay('.time-item').each(function () {
+            laydate.render({
+                elem: this, type: 'time', trigger: 'click',
+            });
+        });
+
+        var admin_id = "{$info.admin_id|default=-1}";
+        if (admin_id > -1) {
+            $("#adminselect select").prop("disabled", true);
+        }
+
+
+        //
+
+    })
+
+
+</script>

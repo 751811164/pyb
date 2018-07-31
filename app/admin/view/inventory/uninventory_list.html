@@ -1,0 +1,133 @@
+<div class="box">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+        <ob_link><a class="btn" url="{:url('')}" id="search">查 询</a></ob_link>
+        <ob_link><a class="btn" url="{:url('InventoryLog/unloglist')}" id="check" >复 盘</a></ob_link>
+
+
+        <div class="box-tools form-block">
+            <div class="form-inline search-form">
+                <div class="form-group">
+                    <label class="control-label" style="width: 60px;">查询日期</label>
+                    <input type="text" name="start_time" class="form-control date" readonly value="{:input('start_time')}" style="width: 200px;">
+                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                    <input type="text" name="end_time" class="form-control date" readonly value="{:input('end_time')}" style="width: 200px;">
+
+                </div>
+                <br>
+                <div class="form-group">
+                    <label style="width: 60px;">查询机构</label>
+                    <select name="shop_id" class="form-control" style="width: 200px;">
+                        <option value>选择机构</option>
+                        {notempty name="shopList" }
+                        {volist name="shopList" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+                    <!--<label class="control-label">单据编号</label>-->
+                    <!--<input type="text" name="search_data" class="form-control" value="{:input('search_data')}" style="width: 200px;">-->
+
+                    <!--<label class="control-label">审核状态:</label>-->
+                    <!--<label class="control-label"><input type="radio" name="status" value>全部</label>-->
+                    <!--<label class="control-label"><input type="radio" name="status" value="0">未审核</label>-->
+                    <!--<label class="control-label"><input type="radio" name="status" value="1">已审核</label>-->
+                </div>
+                <!--<br>-->
+
+            </div>
+        </div>
+
+    </div>
+    <div class="box-body table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead>
+
+            <tr>
+                <th class="checkbox-select-all">
+                    <label>
+                        <input class="flat-grey js-checkbox-all" type="checkbox">
+                    </label>
+                </th>
+                <th>序号</th>
+                <th>条码</th>
+                <th>商品名称</th>
+                <th>单位</th>
+                <th>规格</th>
+                <th>库存数量</th>
+                <th>售价</th>
+
+
+            </tr>
+            </thead>
+
+
+            {notempty name='list'}
+            <tbody>
+            {volist name='list' id='vo'}
+            <tr data-id="{$vo['id']}">
+                <td>
+                    <label>
+                        <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}" >
+                    </label>
+                </td>
+                <td>{$i}</td>
+                <td>{$vo.barcode}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.unit}</td>
+                <td>{$vo.specification}</td>
+                <td>{$vo.stock_actual}</td>
+                <ob_price rule="retail_price">
+                    <td>{$vo.retail_price}</td>
+                </ob_price>
+
+            </tr>
+            {/volist}
+
+            </tbody>
+            {/notempty}
+
+        </table>
+
+    </div>
+</div>
+
+
+<script>
+    ob.setValue("shop_id", "{:input('shop_id')}");
+    ob.setValue("status", "{:input('status')}");
+    ob.setValue("create_time", "{:input('create_time')}");
+
+    $(function () {
+        $("[name='create_time']").on('ifClicked', function () {
+            $("[name='start_time'],[name='end_time']").val('');
+        })
+
+    });
+
+    $('#check').on('click',function () {
+        var ids='';
+        var $checkbox =$('tbody :checked');
+        if ($checkbox.length<=0) {
+            toast.warning('请选择待盘点商品');
+            return false;
+        }
+       var shop_id= $("[name='shop_id']").val();
+        if (!shop_id) {
+            toast.warning('请选择机构');
+            return false;
+        }
+
+
+        $checkbox.each(function(){
+            ids+= $(this).val()+',';
+        })
+
+        ids =ids.substring(0, ids.length-1)
+        $.pjax({
+            url: '{:url("inventoryLog/unlogList")}?ids='+ids+"&shop_id="+shop_id,
+            container: '.content'
+        });
+    })
+
+</script>

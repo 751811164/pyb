@@ -1,0 +1,46 @@
+<form action="{:url()}" method="post" class="form_single">
+    <div class="box">
+      <div class="box-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>名称</label>
+              <span>（商品分类名称）</span>
+              <input class="form-control" name="name" placeholder="请输入商品分类名称" value="{$info['name']|default=''}" type="text">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>上级菜单</label>
+              <span>（所属的上级菜单）</span>
+              <select name="pid" class="form-control">
+                <option value="0">顶级菜单</option>
+                {volist name='category_select' id='vo'}
+                <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
+              </select>
+            </div>
+          </div>
+            
+
+          </div>
+        </div>
+        
+      <div class="box-footer">
+          
+        <input type="hidden" name="id" value="{$info['id']|default='0'}"/>
+        
+        {include file="layout/edit_btn_group"/}
+        
+      </div>
+        
+      </div>
+
+</form>
+<script type="text/javascript">
+
+
+  ob.setValue("pid", {$info.pid|default=0});
+
+</script>

@@ -1,0 +1,193 @@
+<div class="box">
+    <div class="box-body">
+        <div class="container">
+            <form class="form-horizontal" action="{:url('')}?step=2" method="post">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">生成采购订单机构</label>
+                    <div class="col-sm-10">
+
+                        {if condition="(isset($adminInfo)) && $adminInfo.purchase_all==0" }
+                        <input type="hidden" name="shop_id" value="{$adminInfo.shop_id}">
+                        <select class="form-control" name="shop_id" disabled>
+                            {notempty name="shopList"}
+                            {volist name="shopList" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                            {/notempty}
+                        </select>
+                        {else/}
+                        <select class="form-control" name="shop_id" >
+                            {notempty name="shopList"}
+                            {volist name="shopList" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                            {/notempty}
+                        </select>
+                        {/if}
+
+
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">库存统计范围</label>
+                    <div class="col-sm-10">
+
+                        {if condition="(isset($adminInfo)) && $adminInfo.purchase_all==0" }
+                        <input type="hidden" name="shop_ids[]" value="{$adminInfo.shop_id}">
+                        <select class="form-control"  name="shop_ids[]" disabled>
+                            {notempty name="shopList"}
+                            {volist name="shopList" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                            {/notempty}
+                        </select>
+                        {else/}
+                        <select id="shopSelect" class="" name="shop_ids[]" multiple>
+                            {notempty name="typeList"}
+                            {volist name="typeList" id="vo"}
+                            <optgroup label="{$vo.name}">
+                                {volist name="shopList" id="v"}
+                                {eq name="vo.id" value="$v.type_id"}
+                                <option value="{$v.id}">{$v.name}</option>
+                                {/eq}
+                                {/volist}
+                            </optgroup>
+                            {/volist}
+                            {/notempty}
+                        </select>
+                        {/if}
+
+
+
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">供应商</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" name="supplier_id">
+                            {notempty name="supplierList" }
+                            {volist name="supplierList" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                            {/notempty}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">类别</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" name="category_id">
+                            {notempty name="categoryList" }
+                            {volist name="categoryList" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                            {/notempty}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">品牌</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" name="brand_id">
+                            <option value>--全部--</option>
+                            {notempty name="brandList" }
+                            {volist name="brandList" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                            {/notempty}
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">采购默认值</label>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <input type="radio" name="purchase_type" checked value="0">
+                                按库存上线指标采购 <span class="text-danger">(备注:采购数量=上限库存-实际库存)</span>
+                            </div>
+                            <div class="col-xs-12" hidden>
+                                <input type="radio" name="purchase_type" value="1">
+                                按门店时间段销量采购 <input type="text" class="date"  name="start_time" disabled> 至 <input type="text" class="date" name="end_time" disabled>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">下一步</button>
+                    </div>
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+
+<link rel="stylesheet" href="__STATIC__/admin/js/multiple_select/multiple_select.css">
+<script type="text/javascript" src="__STATIC__/admin/js/multiple_select/multiple_select.js"></script>
+<script>
+
+    $(function () {
+        //region {if condition="(!isset($adminInfo)) || $adminInfo.purchase_all==1" }
+
+        $('#shopSelect').multipleSelect({
+            width: '100%',
+        })
+        //{else/}
+
+        ob.setValue("shop_id","{$adminInfo.shop_id}");
+        ob.setValue("shop_ids[]","{$adminInfo.shop_id}");
+
+        //endregion  {/if}
+
+        $(":radio[name='purchase_type']").on("ifChecked", function (e) {
+
+            if (parseInt(e.currentTarget.value)) {
+                $(".date").prop("disabled", false);
+            }
+            else {
+                $(".date").prop("disabled", true);
+            }
+
+        })
+
+        ////获取关联品牌
+        // $("[name='category_id']").on("change",function(){
+        //
+        //     var category_id=$(this).val();
+        //     ajax({
+        //         url:"{:url('brand/brandListByCategory')}",
+        //         data:{category_id:category_id},
+        //         success:function(data){
+        //             if (data instanceof Array) {
+        //            var options=" <option value>--全部--</option>";
+        //                 for (var i = 0; i < data.length; i++) {
+        //                     options+=" <option value='"+data[i]["id"]+"'>"+data[i]["name"]+"</option>";
+        //                 }
+        //                 $("[name='brand_id']").html(options);
+        //             }
+        //         }
+        //     })
+        // })
+
+    })
+
+
+</script>

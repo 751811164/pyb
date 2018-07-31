@@ -1,0 +1,604 @@
+<div class="modal-dialog" role="document" style="width: 900px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">会员档案</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal" action="{:url('memberAdd')}">
+                <input type="hidden" id="editId" name="id" value="{$info.id|default=''}">
+                <input type="hidden" name="member_id" value="{$info.id|default=''}">
+                <ul id="myTab" class="nav nav-tabs">
+                    <li class="active"><a href="#parentInfo" data-toggle="tab">会员档案</a></li>
+                    <li><a href="#childrenInfo" data-toggle="tab">宝宝档案</a></li>
+                    <li><a href="#storageInfo" data-toggle="tab">寄存详情</a></li>
+                    <li><a href="#ticketInfo" data-toggle="tab">卡券详情</a></li>
+
+                </ul>
+                <div id="myTabContent" class="tab-content">
+
+                    <div class="tab-pane fade in active" id="parentInfo">
+                        <!--基本信息-->
+
+                        <div class="row">
+
+
+                            <div class="col-sm-4">
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">卡类</label>
+                                    <div class="col-sm-8">
+                                        <select id="cardType" class="form-control">
+                                            <option value>请选择</option>
+                                            {notempty name='typeList'}
+                                            {volist name='typeList' id='vo'}
+                                            <option value="{$vo.id}">[{$vo.id}]{$vo.name}</option>
+                                            {/volist}
+                                            {/notempty}
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">卡号</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" value="{$info.number|default=''}" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">姓名</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="name" value="{$info.name|default=''}">
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">手机号</label>
+                                    <div class="col-sm-8">
+                                        <input type="number" class="form-control" name="mobile" value="{$info['mobile']|default=''}" oninput="if(value.length>11)value=value.slice(0,11)">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">座机</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="phone" value="{$info['phone']|default=''}">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">等级</label>
+                                    <div class="col-sm-8">
+                                        <select name="card_id" class="form-control">
+                                            <option value>请选择</option>
+                                            {notempty name='cardList'}
+                                            {volist name='cardList' id='vo'}
+                                            <option value="{$vo.id}" data-type_id="{$vo.type_id}" hidden>[{$vo.id}]{$vo.name}</option>
+                                            {/volist}
+                                            {/notempty}
+                                        </select>
+                                    </div>
+                                </div>
+
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">性别</label>
+                                        <div class="col-sm-8">
+                                            <select name="gender" class="form-control">
+                                                <option value="-1">未知</option>
+                                                <option value="0">女</option>
+                                                <option value="1">男</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">日历</label>
+                                        <div class="col-sm-8">
+                                            <select name="calendar" class="form-control">
+                                                <option value="1">公历</option>
+                                                <option value="0">农历</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+                                <div class="form-group">
+                                        <label class="col-sm-4 control-label">生日</label>
+                                        <div class="col-sm-8">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input type="text" name="birthday" class="form-control pull-right date" readonly value="{$info['birthday']|default=''|format_strtime=###,'Y-m-d'}">
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">微信</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" name="wechat" value="{$info.wechat|default=''}">
+                                        </div>
+                                    </div>
+
+
+
+
+                            </div>
+
+
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>头像</label>
+                                    <span class="">（请上传单张封面图片）</span>
+                                    <br/>
+                                    {assign name="portrait_id" value="$info.portrait_id|default='0'" /}
+                                    {:hook('File', ['name' => 'portrait_id', 'value' => $portrait_id, 'type'=>'img'])}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">密码</label>
+                                    <div class="col-sm-8">
+                                        <input type="password" class="form-control" name="password">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                            <div class="form-group">
+                                    <label class="col-sm-4 control-label">重复密码</label>
+                                    <div class="col-sm-8">
+                                        <input type="password" class="form-control" name="password_confirm">
+                                    </div>
+                                </div>
+                                </div>
+                            <!--<div class="col-sm-12 ">-->
+                                <!--<div class="clearfix segment-line"></div>-->
+                            <!--</div>-->
+                            <div class="col-sm-4">
+
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">会员状态</label>
+                                <div class="col-sm-8">
+                                    <select name="status" class="form-control">
+                                        <option value="1">正常</option>
+                                        <option value="0">停用</option>
+                                    </select>
+                                </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-sm-12 ">
+                                <div class="clearfix segment-line"></div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">消费次数</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" value="{$info.consume_count|default='0'}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">累计消费</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" value="{$info.consume_amount|default='0'}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">剩余积分</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" value="{$info.point|default='0'}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">次卡数</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" value="{$info.card_count|default='0'}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">储值余额</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" value="{$info.amount|default='0'}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">应返金币</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" value="{$info.return_coin|default='0'}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">可用金币</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" value="{$info.usable_coin|default='0'}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 ">
+                                <div class="clearfix segment-line"></div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">发卡机构</label>
+                                    <div class="col-sm-8" >
+                                        <select name="shop_id" class="form-control">
+                                            <option value>请选择</option>
+                                            {notempty name='shopList'}
+                                            {volist name='shopList' id='vo'}
+                                            <option value="{$vo.id}">{$vo.name}</option>
+                                            {/volist}
+                                            {/notempty}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">导购</label>
+                                    <div class="col-sm-8" >
+                                        <select name="guide_id" class="form-control">
+                                            <option value>请选择</option>
+                                            {notempty name='adminList'}
+                                            {volist name='adminList' id='vo'}
+                                            <option value="{$vo.id}" data-shop_id="{$vo.shop_id}" hidden>{$vo.username}</option>
+                                            {/volist}
+                                            {/notempty}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">推荐人</label>
+                                    <div class="col-sm-8" >
+                                        {empty name='info.id'}
+                                        <select name="referrer_id" class="form-control">
+                                            <option value>请选择</option>
+                                            {notempty name='adminList'}
+                                            {volist name='adminList' id='vo'}
+                                            <option value="{$vo.id}" data-shop_id="{$vo.shop_id}" hidden>{$vo.username}</option>
+                                            {/volist}
+                                            {/notempty}
+                                        </select>
+                                        {else/}
+                                        <input type="text" class="form-control" value="{$info.referrer_name|default=''}" disabled>
+                                        {/empty}
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">发卡人员</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" value="{$info.admin_add_name|default=''}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">发卡日期</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control"  value="{$info.create_time|default=''}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">修改人员</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" name="wechat" value="{$info.admin_edit_name|default=''}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">修改日期</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" name="wechat" value="{$info.update_time|default=''}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="tab-pane fade" id="childrenInfo">
+                        <h3>宝宝档案</h3>
+
+                        <div id="childrenPanel" class="panel panel-default">
+                            <div  class="panel-heading">宝宝档案<a href="javascript:;" class="btn btn-xs btn-info" @click="childAdd">添加</a></div>
+                            <div class="panel-body">
+
+
+                                <div class="well well-sm" v-for="(item,index) in children">
+                                    <input type="hidden" name="@id[]" :value="item.id">
+                                    <div style="overflow: hidden">
+                                        <button type="button" class="close" @click="childDel" :data-id = "item.id" :data-index="index"  aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    </div>
+                                    <div class=" form-group form-group-sm" >
+                                        <label class="col-xs-2 control-label">姓名</label>
+                                        <div class="col-xs-4">
+                                            <input type="text" class="form-control"  name="@name[]" :value="item.name||''">
+                                        </div>
+
+                                        <label class="col-xs-2 control-label">性别</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control" name="@gender[]" :value="item.gender||-1">
+                                                <option value="-1">未知</option>
+                                                <option value="0">女</option>
+                                                <option value="1">男</option>
+                                            </select>
+                                        </div>
+                                        <label class="col-xs-2 control-label">日历</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control" name="@calendar[]" :value="item.calendar||1">
+                                                <option value="0">农历</option>
+                                                <option value="1">公历</option>
+                                            </select>
+                                        </div>
+
+                                        <label class="col-sm-2 control-label">生日</label>
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input type="text" name="@birthday[]" class="form-control pull-right date" readonly :value="item.birthday||''">
+                                            </div>
+
+                                        </div>
+
+                                        <label class="col-xs-2 control-label">身高</label>
+                                        <div class="col-xs-4">
+                                            <input type="text" class="form-control"  name="@height[]" :value="item.height||''">
+                                        </div>
+
+                                        <label class="col-xs-2 control-label">体重</label>
+                                        <div class="col-xs-4">
+                                            <input type="text" class="form-control" name="@weight[]" :value="item.weight||''">
+                                        </div>
+
+                                        <label class="col-xs-2 control-label">首单奶粉</label>
+                                        <div class="col-xs-4">
+                                            <input type="text" class="form-control" name="@first_milk[]" :value="item.first_milk||''">
+                                        </div>
+
+                                        <label class="col-xs-2 control-label">首单尿不湿</label>
+                                        <div class="col-xs-4">
+                                            <input type="text" class="form-control" name="@first_diaper[]" :value="item.first_diaper||''">
+                                        </div>
+
+                                        <label class="col-xs-2 control-label">过敏</label>
+                                        <div class="col-xs-10">
+                                            <input type="text" class="form-control" name="@allergy[]" :value="item.allergy||''">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="tab-pane fade" id="storageInfo">
+                        <h3>寄存</h3>
+
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+
+                                <th>序号</th>
+                                <th>寄存流水号</th>
+                                <th>商品名称</th>
+                                <th>寄存数量</th>
+                                <th>已取</th>
+                                <th>剩余</th>
+                                <th>寄存时间</th>
+                                <th>寄存门店</th>
+
+                            </tr>
+                            </thead>
+
+                            {notempty name='storageList'}
+                            <tbody>
+                            {volist name='storageList' id='vo'}
+                            <tr>
+
+                                <td>{$i}</td>
+                                <td>{$vo.sn}</td>
+                                <td>{$vo.goods_name}</td>
+                                <td>{$vo.storage_num}</td>
+                                <td>{$vo.take_num}</td>
+                                <td>{$vo.storage_num-$vo.take_num}</td>
+                                <td>{$vo.create_time}</td>
+                                <td>{$vo.shop_name}</td>
+
+
+                            </tr>
+                            {/volist}
+                            </tbody>
+                            {else/}
+                            <tbody>
+                            <tr class="odd">
+                                <td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td>
+                            </tr>
+                            </tbody>
+                            {/notempty}
+                        </table>
+
+
+
+                    </div>
+                    <div class="tab-pane fade" id="ticketInfo">
+                        <h3>卡券</h3>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveInfo" class="btn skin-blue-light" data-url="{notempty name='$info.id'}{:url('memberEdit')}{else/}{:url('memberAdd')}{/notempty}">保存</button>
+            <!--<button type="button" class="btn skin-red">下一步</button>-->
+            <!--<button type="button" class="btn btn-default" hidden data-dismiss="modal">关闭</button>-->
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+    var children={$children|json_encode};
+    var vm = new Vue({
+        el:"#childrenPanel",
+        data:{
+            children:children,
+        },
+        methods:{
+            childAdd:function(e){
+
+                this.children.push({});
+            },
+            childDel:function(e){
+                var that = this;
+                var target=  e.currentTarget;
+                var idx = target.getAttribute("data-index");
+                var id = target.getAttribute("data-id");
+                if (id) {
+                    layer.confirm('此操作将已保存的记录同时删除，确定要执行吗？', function (index) {
+                        ajax({
+                            url:"{:url('childDel')}",
+                            data:{id:id},
+                            success:function (data) {
+                                obalertp(data);
+                                that.children.splice(idx,1);
+                            }
+                        })
+                        layer.close(index);
+
+                    }, function (index) {
+                        layer.close(index);
+                    });
+                }
+                else {
+                    this.children.splice(idx,1);
+                }
+
+            }
+        }
+
+    })
+    $(function () {
+
+        ob.setValue("#cardType", {$info.type_id|default=''});
+        ob.setValue("shop_id", {$info.shop_id|default=''});
+        ob.setValue("status", {$info.status|default=''});
+        // ob.setValue("guide_id", {$info.guide_id|default=''});
+
+        if ("{$info.card_id|default=''}") {
+            //选中卡
+            $("[name='card_id']").val("{$info.card_id|default=''}").find("[data-type_id={$info.type_id|default=''}]").show();
+        }
+        if ("{$info.guide_id|default=''}") {
+            //选中导购
+            $("[name='guide_id']").val("{$info.guide_id|default=''}").find("[data-shop_id={$info.shop_id|default=''}]").show();
+        }
+
+        //卡类型切换
+        $("#cardType").on('change',function(){
+            var type_id = $(this).val();
+            var $options= $("[name='card_id']").children();
+            $options.hide().each(function(){
+                if ($(this).attr('data-type_id')==type_id) {
+                    $(this).show();
+                }
+            }).eq(0).show().prop('selected',true);
+        })
+        //发卡机构切换
+        $("[name='shop_id']").on('change',function(){
+            var shop_id = $(this).val();
+            var $referrer= $("[name='referrer_id']").children();
+            var $guide= $("[name='guide_id']").children();
+
+            $referrer.hide().each(function(){
+                if ($(this).attr('data-shop_id')==shop_id) {
+                    $(this).show();
+                }
+            }).eq(0).show().prop('selected',true);
+
+            $guide.hide().each(function(){
+                if ($(this).attr('data-shop_id')==shop_id) {
+                    $(this).show();
+                }
+            }).eq(0).show().prop('selected',true);
+
+        })
+
+
+        //启动icheck
+        $(".tab-pane [type='checkbox']").iCheck({
+            checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+        });
+
+        //同时绑定多个时间控件
+        lay('.date').each(function () {
+            laydate.render({
+                elem: this, type: 'date', trigger: 'click',
+            })
+        })
+
+    })
+
+
+</script>

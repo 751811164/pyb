@@ -1,0 +1,108 @@
+<div class="box">
+    <div class="box-header">
+
+    </div>
+    <div class="box-body table-responsive">
+        <div class="col-sm-6">
+        <div id="treeview">
+        </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
+
+</div>
+<style>
+    .list-group-item.node-treeview{
+        font-size: 16px;
+    }
+    .treeview span.icon{
+        margin-right:15px !important; ;
+    }
+</style>
+<link rel="stylesheet" href="__STATIC__/admin/js/treeview/zx.css">
+<script src="__STATIC__/admin/js/treeview/bootstrap-treeview.js"></script>
+<script>
+$(function () {
+    var data = {$list|json_encode};
+
+  var handle=  setInterval(function () {
+      if ($.fn.treeview) {
+          var $treeview = $('#treeview').treeview({
+              data: data,
+              showIcon: false,
+              showCheckbox: false,
+              showTags: true,
+              expandIcon: 'glyphicon glyphicon-menu-right',
+              collapseIcon: 'glyphicon glyphicon-menu-down',
+          });
+          clearInterval(handle);
+      }
+      // console.log(11);
+},100)
+
+
+})
+
+
+    function add (id,pid,level) {
+
+           if (level>="{$Think.config.logic_config.category_level}") {
+
+            toast.warning("最多只能添加二级分类");
+            return false;
+        }
+        $.get($(this.event.currentTarget).attr('url'),{pid:id}, function(data) {
+
+            $('#myModal').empty().append(data).modal('show');
+        });
+
+
+
+    }
+
+    function edit (id,pid,level) {
+        $.get($(this.event.currentTarget).attr('url'),{id:id}, function(data) {
+
+            $('#myModal').empty().append(data).modal('show');
+        });
+    }
+
+    function del (id,pid,level) {
+        layer.confirm('确定要删除吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+
+            // layer.msg('的确很重要', {icon: 1});
+        }, function(){
+            // layer.msg('也可以这样', {
+            //     time: 20000, //20s后自动关闭
+            //     btn: ['明白了', '知道了']
+            // });
+        });
+    }
+
+
+    //保存
+    $('#myModal').on('click', '#saveInfo', function () {
+        var $form = $('#myModal form');
+
+        var postData = $form.serialize();
+
+        var url = $(this).attr('data-url');
+
+        $.post(url, postData, function (data) {
+            obalertp(data);
+
+        }, 'json');
+
+        return false;
+    });
+
+
+</script>

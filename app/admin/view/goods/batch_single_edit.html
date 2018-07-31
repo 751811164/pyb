@@ -1,0 +1,343 @@
+<div class="modal-dialog"  style="width: 768px;">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+                    aria-hidden="true">×
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+                批量修改
+            </h4>
+        </div>
+        <div class="modal-body">
+            <form  class="multiEditForm form-horizontal" action="{:url('batchSingleEdit')}">
+                <input type="hidden" name="ids">
+
+
+                <div class="row">
+                    <div class="col-xs-12">
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="goods_type">商品类型</label>
+                            <div class="col-xs-4">
+                                <select name="goods_type" class="form-control">
+                                    {notempty name="typeList"}
+                                    {volist name="typeList" id="vo"}
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="category_id">分类</label>
+                            <div class="col-xs-10">
+                                <select name="category_id" class="form-control">
+                                    {notempty name="categoryList" }
+                                    {volist name="categoryList" id="vo"}
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="brand_id">品牌</label>
+                            <div class="col-xs-4">
+                                <select name="brand_id" class="form-control">
+                                    {notempty name="brandList" }
+                                    {volist name="brandList" id="vo"}
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+                            </div>
+
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="status">商品状态</label>
+                            <div class="col-xs-4">
+                                <select name="status" class="form-control">
+                                    <option value="1">在售</option>
+                                    <option value="0">停售</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="single_unit">单位</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" name="single_unit" >
+
+                            </div>
+
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="expiry_day">有效期(天)</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" name="expiry_day" >
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="single_specification">规格</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" name="single_specification" >
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="origin">产地</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" name="origin">
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="supplier_id">供应商</label>
+                            <div class="col-xs-10">
+                                <select class="form-control" name="supplier_id" >
+                                    {notempty name="supplierList" }
+                                    {volist name="supplierList" id="vo"}
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">
+                                <input type="checkbox" data-name="is_discount">
+                                前台打折
+                            </label>
+                            <div class="col-xs-10">
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_discount" value="1" checked>启用
+                                </label>
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_discount" value="0">不启用
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label" >
+                                <input type="checkbox" data-name="is_bargain">
+                                前台议价
+                            </label>
+                            <div class="col-xs-10">
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_bargain" value="1" checked>启用
+                                </label>
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_bargain" value="0">不启用
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label" >
+                                <input type="checkbox" data-name="is_presentation">
+                                前台赠送
+                            </label>
+                            <div class="col-xs-10">
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_presentation" value="1" checked>启用
+                                </label>
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_presentation" value="0">不启用
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label" >
+                                <input type="checkbox" data-name="is_stored">
+                                项目储值
+                            </label>
+                            <div class="col-xs-10">
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_stored" value="1" checked>启用
+                                </label>
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_stored" value="0">不启用
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label" >
+                                <input type="checkbox" data-name="is_point">
+                                商品积分
+                            </label>
+                            <div class="col-xs-10">
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_point" value="1" checked>启用
+                                </label>
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_point" value="0">不启用
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label" >
+                                <input type="checkbox" data-name="is_control_stock">
+                                管理库存
+                            </label>
+                            <div class="col-xs-10">
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_control_stock" value="1" checked>启用
+                                </label>
+                                <label class="col-xs-2 control-label">
+                                    <input type="radio" name="is_control_stock"  value="0">不启用
+                                </label>
+                            </div>
+                        </div>
+
+
+
+
+
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="pack_unit">整箱单位</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" name="pack_unit" >
+                            </div>
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="pack_num">内装数</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" name="pack_num" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label"><input type="checkbox" data-name="pack_specification">规格</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" name="pack_specification" >
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+        <div class="modal-footer">
+
+            <button  type="submit" class="btn ladda-button ajax-post" data-style="slide-up" data-fn="beforeMultiSingleSubmit" target-form="multiEditForm">提交</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+
+<script>
+
+    var vm = new Vue({
+        el:".modal-body",
+        data:{
+            info:[],
+
+        },
+        mounted:function(){
+
+        },
+        methods:{
+            // generateCode:function
+            // appendCode
+            // removeCode
+
+
+        },
+        computed :{
+            //单品毛利
+            single_rate:function(){
+                var cost =parseInt( this.info.cost_price);
+                var retail= parseInt( this.info.retail_price);
+                if (!cost||!retail|| cost<=0||retail<=0) {
+                    return ""
+                }
+                var result =((retail-cost) / retail *100).toFixed(2);
+                return result<0?0:result ;
+            },
+
+        }
+    })
+
+    //启动icheck
+    $(".modal-dialog [type='checkbox'],.modal-dialog [type='radio']").iCheck({
+        checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+    });
+
+
+    $("form :checkbox").each(function(){
+        var $input = $("[name='"+$(this).attr("data-name")+"']");
+
+        if ($input[0].type=="radio") {
+            $input.iCheck('disable');
+        }
+        else {
+
+            $input.prop("disabled",true);
+        }
+
+    })
+
+
+    //check 控制
+    $("form :checkbox").on("ifChanged",function(e){
+        var target = e.target;
+        var $input = $("[name='"+$(target).attr("data-name")+"']");
+
+        if (target.checked) {
+            if ($input[0].type=="radio") {
+                $("[name='"+$(target).attr("data-name")+"']").iCheck('enable');
+            }
+            else {
+
+                $("[name='"+$(target).attr("data-name")+"']").prop("disabled",false);
+            }
+
+        }
+        else {
+            if ($input[0].type=="radio") {
+                $("[name='"+$(target).attr("data-name")+"']").iCheck('disable');
+            }
+            else {
+                $("[name='"+$(target).attr("data-name")+"']").prop("disabled",true);
+
+            }
+        }
+    })
+
+    //单个批量设置
+    function beforeMultiSingleSubmit () {
+        var ids= "";
+        $("table :checked").each(function() {
+            if(!isNaN(parseInt($(this).val())) ){
+                ids+= $(this).val()+',';
+            }
+        })
+        ids = ids.substring(0,ids.length-1);
+        if($.trim(ids)!=""){
+            $(".multiEditForm").find("[name='ids']").val(ids);
+
+            return true
+        }else{
+            obalert({'code':0,'msg':"请选择商品"})
+            return false
+        }
+    }
+
+</script>

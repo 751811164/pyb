@@ -1,0 +1,497 @@
+<div class="box">
+    <form>
+        <input type="hidden" name="bill_id" value="{:input('bill_id')}">
+        <input type="hidden" name="shop_ids" value="">
+        <input type="hidden" name="shop_names" value="">
+    <div class="box-header">
+        <a id="jump" style="display: none;" href="{:url()}?gid=">跳转</a>
+        <!--<ob_link><a class="btn" url="{:url('')}" id="search" >查 询</a></ob_link>-->
+        <!--<ob_link><a class="btn" url="{:url('billAdd')}" id="add" data-toggle="modal" data-target="#myModal">新 增</a></ob_link>-->
+        <ob_link><a class="btn" data-url="{:url('logEdit')}" id="saveInfo" {if condition="$billInfo.status==1" }disabled{/if}>保 存</a></ob_link>
+        <ob_link><a class="btn" data-url="{:url('checking')}" id="check" {if condition="$billInfo.status!==0" }disabled{/if}>审 核</a></ob_link>
+        <ob_link><a class="btn" data-url="{:url('GoodsChoose')}" id="choose" {if condition="$billInfo.status==1" }disabled{/if}>选择商品</a></ob_link>
+        <ob_link><a class="btn" url="{:url('billEdit')}" id="edit" style="display: none;" >编 辑</a></ob_link>
+        <ob_link><a class="btn" url="{:url('logDel')}" id="del">删 除</a></ob_link>
+        <!--<ob_link><a class="btn export" url="{:url('exportBill')}">导 出</a></ob_link>-->
+
+        <div class="box-tools form-block" >
+            <div class="form-inline search-form">
+                <div class="form-group">
+                    <label class="control-label">调价区域</label><input type="text" class="form-control holder"  {eq name="billInfo.status" value="1"}disabled{/eq}>
+                    <select id="shopSelect" hidden multiple  {eq name="billInfo.status" value="1"}disabled{/eq}>
+                    {notempty name="typeList"}
+                    {volist name="typeList" id="vo"}
+                        <optgroup label="{$vo.name}">
+                        {volist name="shopList" id="v"}
+                        {eq name="vo.id" value="$v.type_id"}
+                        <option value="{$v.id}">{$v.name}</option>
+                        {/eq}
+                        {/volist}
+                        </optgroup>
+                    {/volist}
+                    {/notempty}
+                </select>
+                    <label class="control-label">制单人员</label><input  type="text" class="form-control " disabled value="{$billInfo.admin_add_name|default=''}"  style="min-width: 200px">
+                    <label class="control-label">制单日期</label><input  type="text" class="form-control "  disabled value="{$billInfo.create_time|default=''}"  style="min-width: 200px">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label class="control-label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注</label><input type="text" class="form-control" name="bill_remark"  value="{$billInfo.bill_remark|default=''}"  style="min-width: 200px" {eq name="billInfo.status" value="1"}disabled{/eq} >
+                    <label class="control-label">审核人员</label><input  type="text" class="form-control " disabled value="{$billInfo.admin_check_name|default=''}"   style="min-width: 200px">
+                    <label class="control-label">审核日期</label><input  type="text" class="form-control " disabled value="{$billInfo.check_time|default=''}"  style="min-width: 200px">
+                </div>
+            </div>
+        </div>
+        
+       {eq name="billInfo.status" value="1"}
+        <div class="checked-box" >
+            <img src="__STATIC__/admin/img/checked.png" alt="">
+        </div>
+        {/eq}
+    </div>
+    <div class="box-body table-responsive">
+        <table class="table table-bordered table-hover" style="min-width: 3000px;">
+            <thead>
+            <!--<tr>-->
+                <!--{assign name="num" value="0" /}-->
+                <!--<th colspan="6"></th>-->
+                <!--<th colspan="{$num+8+count($memberGradeList)*2}">单品</th>-->
+                <!--<th colspan="{$num+6+count($memberGradeList)*2}">多包装</th>-->
+            <!--</tr>-->
+            <tr>
+                <th class="checkbox-select-all">
+                    <label>
+                        <input class="flat-grey js-checkbox-all" type="checkbox">
+                    </label>
+                </th>
+                <th>序号</th>
+                <th>条码</th>
+                <th>商品名称</th>
+                <th>单位</th>
+                <th>规格</th>
+
+                <ob_price rule="cost_price"><th>原进价</th></ob_price>
+                <ob_price rule="cost_price"><th>现进价</th></ob_price>
+                <ob_price rule="retail_price"><th>原售价</th></ob_price>
+                <ob_price rule="retail_price"><th>现售价</th></ob_price>
+                <ob_price rule="wholesale_price"><th>原批发价</th></ob_price>
+                <ob_price rule="wholesale_price"><th>现批发价</th></ob_price>
+                <ob_price rule="delivery_price"><th>原配送价</th></ob_price>
+                <ob_price rule="delivery_price"><th>现配送价</th></ob_price>
+                <ob_price rule="member_price">
+                {volist name='memberGradeList' id="v"}
+                <th>
+                    原{$v.name}
+                </th>
+                <th>现{$v.name}</th>
+                {/volist}
+                </ob_price>
+
+                <!--多包装-->
+                <ob_price rule="retail_price"><th>原售价(多)</th></ob_price>
+                <ob_price rule="retail_price"><th>现售价(多)</th></ob_price>
+                <ob_price rule="wholesale_price"><th>原批发价(多)</th></ob_price>
+                <ob_price rule="wholesale_price"><th>现批发价(多)</th></ob_price>
+                <ob_price rule="delivery_price"><th>原配送价(多)</th></ob_price>
+                <ob_price rule="delivery_price"><th>现配送价(多)</th></ob_price>
+                <ob_price rule="member_price">
+                {volist name='memberGradeList' id="v"}
+                <th>
+
+                    原{$v.name}(多)
+                </th>
+                <th>现{$v.name}(多)</th>
+                {/volist}
+                </ob_price>
+            </tr>
+            </thead>
+
+            {eq name="billInfo.status" value="1"}
+
+            {notempty name='list'}
+            <tbody>
+            {volist name='list' id='vo'}
+            <tr  data-id="{$vo['id']}">
+                <td>
+                    <label>
+                        <input class="flat-grey" type="checkbox" name="ids" value="{$vo.id}" disabled>
+                    </label>
+                </td>
+                <td>{$i}</td>
+                <td>{$vo.barcode1}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.unit}</td>
+                <td>{$vo.specification}</td>
+                <ob_price rule="cost_price"><td>{$vo.single_cost_price}</td></ob_price>
+                <ob_price rule="cost_price"><td>{$vo.alert_single_cost_price}</td></ob_price>
+                <ob_price rule="retail_price"><td>{$vo.single_retail_price}</td></ob_price>
+                <ob_price rule="retail_price"><td>{$vo.alert_single_retail_price}</td></ob_price>
+                <ob_price rule="wholesale_price"><td>{$vo.single_wholesale_price}</td></ob_price>
+                <ob_price rule="wholesale_price"><td>{$vo.alert_single_wholesale_price}</td></ob_price>
+                <ob_price rule="delivery_price"><td>{$vo.single_delivery_price}</td></ob_price>
+                <ob_price rule="delivery_price"><td>{$vo.alert_single_delivery_price}</td></ob_price>
+                <ob_price rule="member_price">
+                {volist name='memberGradeList' id="v"}
+                <td>
+                    {volist name='vo.single_member_price' id="sp"}
+                    {eq name="v.id" value="$sp.grade_id"}{$sp.price}{/eq}
+                    {/volist}
+
+                </td>
+                <td>
+                    {volist name='vo.alert_single_member_price' id="sp"}
+                    {eq name="v.id" value="$sp.grade_id"}{$sp.price}{/eq}
+                    {/volist}
+                </td>
+                {/volist}
+                </ob_price>
+                <!--多包装-->
+
+                 <ob_price rule="retail_price"><td>{$vo.pack_retail_price}</td></ob_price>
+                 <ob_price rule="retail_price"><td>{$vo.alert_pack_retail_price}</td></ob_price>
+                 <ob_price rule="wholesale_price"><td>{$vo.pack_wholesale_price}</td></ob_price>
+                 <ob_price rule="wholesale_price"><td>{$vo.alert_pack_wholesale_price}</td></ob_price>
+                 <ob_price rule="delivery_price"><td>{$vo.pack_delivery_price}</td></ob_price>
+                 <ob_price rule="delivery_price"><td>{$vo.alert_pack_delivery_price}</td></ob_price>
+                <ob_price rule="member_price">
+                {volist name='memberGradeList' id="v"}
+                <td>
+                    {volist name='vo.pack_member_price' id="sp"}
+                    {eq name="v.id" value="$sp.grade_id"}{$sp.price}{/eq}
+                    {/volist}
+                </td>
+                <td>
+                    {volist name='vo.alert_pack_member_price' id="sp"}
+                    {eq name="v.id" value="$sp.grade_id"}{$sp.price}{/eq}
+                    {/volist}
+                </td>
+                {/volist}
+                </ob_price>
+            </tr>
+            {/volist}
+
+            </tbody>
+            {/notempty}
+            {else/}
+            <tbody>
+            <tr v-for="(item,index) in list">
+            <td>
+                <label>
+                    <input class="flat-grey" type="checkbox" name="ids" :value="item.id"  :data-index="index">
+                    <input class="flat-grey" type="hidden" name="id[]" :value="item.id">
+                    <input class="flat-grey" type="hidden" name="goods_id[]" :value="item.goods_id">
+
+
+                </label>
+            </td>
+            <td>{{index+1}}</td>
+            <td>{{item.barcode1}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.unit}}</td>
+            <td>{{item.specification}}</td>
+
+                <input type="hidden" class="form-control" name="single_cost_price[]" :value="item.single_cost_price">
+                <input type="hidden" class="form-control" name="single_retail_price[]" :value="item.single_retail_price">
+                <input type="hidden" class="form-control" name="single_wholesale_price[]"  :value="item.single_wholesale_price">
+                <input type="hidden" class="form-control" name="single_delivery_price[]"  :value="item.single_delivery_price">
+
+
+                <input type="hidden" class="form-control" name="pack_retail_price[]"  :value="item.pack_retail_price">
+                <input type="hidden" class="form-control" name="pack_wholesale_price[]"  :value="item.pack_wholesale_price">
+                <input type="hidden" class="form-control" name="pack_delivery_price[]"  :value="item.pack_delivery_price">
+
+                <ob_price rule="cost_price"> <td>{{item.single_cost_price}}</td>
+                    <td><input type="text" class="form-control" name="alert_single_cost_price[]" :value="item.alert_single_cost_price||item.single_cost_price"></td>
+                </ob_price>
+
+                <ob_price rule="retail_price"><td>{{item.single_retail_price}}</td>
+                    <td><input type="text" class="form-control" name="alert_single_retail_price[]" :value="item.alert_single_retail_price||item.single_retail_price"></td>
+                </ob_price>
+
+                <ob_price rule="wholesale_price"><td>{{item.single_wholesale_price}}</td>
+                    <td><input type="text" class="form-control" name="alert_single_wholesale_price[]"   :value="item.alert_single_wholesale_price||item.single_wholesale_price"></td>
+                </ob_price>
+
+                <ob_price rule="delivery_price"><td>{{item.single_delivery_price}}</td>
+                    <td><input type="text" class="form-control" name="alert_single_delivery_price[]" :value="item.alert_single_delivery_price||item.single_delivery_price"></td>
+                </ob_price>
+
+
+                <template v-for="(grade,i) in item.single_member_price">
+                    <td style="display: none;">
+                        <input type="hidden" class="form-control " name="single_member_grade_id[][]" :value="grade.grade_id">
+                        <input type="hidden" class="form-control " name="single_member_price[][]" :value="grade.price">
+                    </td>
+                <ob_price rule="member_price" p="1">
+                    <td >{{grade.price}} </td>
+                    <td>
+                        <input type="hidden" class="form-control " name="alert_single_member_grade_id[][]" :value="grade.grade_id">
+                        <input type="text" class="form-control " name="alert_single_member_price[][]" :value="item.alert_single_member_price?item.alert_single_member_price[i].price:grade.price">
+
+                    </td>
+                </ob_price>
+                </template>
+
+
+
+                <ob_price rule="retail_price">
+                <td>{{item.pack_retail_price}}</td>
+                <td>
+                    <input type="text" class="form-control" name="alert_pack_retail_price[]"  :value="item.alert_pack_retail_price||item.pack_retail_price">
+                </td>
+                </ob_price>
+
+
+                <ob_price rule="wholesale_price">
+                <td>{{item.pack_wholesale_price}}</td>
+                <td>
+                    <input type="text" class="form-control" name="alert_pack_wholesale_price[]"  :value="item.alert_pack_wholesale_price||item.pack_wholesale_price">
+                </td>
+                </ob_price>
+
+                <ob_price rule="delivery_price">
+                <td>{{item.pack_delivery_price}}</td>
+                <td>
+                    <input type="text" class="form-control" name="alert_pack_delivery_price[]" :value="item.alert_pack_delivery_price||item.pack_delivery_price">
+                </td>
+                </ob_price>
+
+
+
+                <template v-for="(grade,i) in item.pack_member_price">
+                    <td style="display: none;">
+                    <input type="hidden" class="form-control " name="pack_member_grade_id[][]" :value="grade.grade_id">
+                    <input type="hidden" class="form-control " name="pack_member_price[][]" :value="grade.price">
+                    </td>
+                    <ob_price rule="member_price">
+                    <td >{{grade.price}}</td>
+                    <td>
+
+                        <input type="hidden" class="form-control " name="alert_pack_member_grade_id[][]" :value="grade.grade_id">
+                        <input type="text" class="form-control " name="alert_pack_member_price[][]" :value="item.alert_pack_member_price?item.alert_pack_member_price[i].price:grade.price">
+                    </td>
+                </ob_price>
+                </template>
+
+            </tr>
+            </tbody>
+            {/eq}
+        </table>
+
+    </div>
+    </form>
+</div>
+
+
+
+<template id="demo">
+</template>
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
+
+</div>
+<link rel="stylesheet" href="__STATIC__/admin/js/multiple_select/multiple_select.css">
+<script type="text/javascript" src="__STATIC__/admin/js/multiple_select/multiple_select.js"></script>
+
+
+<script>
+    // ob.setValue("shop_id","{:input('shop_id')}");
+    // ob.setValue("status","{:input('status')}");
+    // ob.setValue("create_time","{:input('create_time')}");
+    //region 未审核可编辑 {neq name="billInfo.status" value="1"}
+
+    var list ={$list|json_encode};
+    var vm = new Vue({
+        el:'.box-body',
+        data:{
+            list:list
+        },
+        updated:function(){
+            $("table [type='checkbox'], [type='radio']").iCheck({
+                checkboxClass: 'icheckbox_minimal-blue', radioClass: 'iradio_minimal-blue', increaseArea: '20%', // optional
+            });
+            iCheckAll();
+    },
+        methods:{
+
+        }
+    });
+
+    //endregion {/neq}
+
+
+
+
+
+
+    $(function () {
+
+        $('#shopSelect').multipleSelect({
+            width: '100%'
+        });
+        $('#shopSelect').multipleSelect('setSelects', [{$billInfo.shop_ids|default=''}]);
+        $(".holder").hide();
+
+
+        //添加商品
+        $("#choose").on("click",function () {
+            if ("{$billInfo.status}"==1) {
+                toast.error("已审核过的单据不能再次修改");
+                return false;
+            }
+            var that = this;
+            var url =  $(that).attr('data-url');
+            var ids='';
+            for (var i = 0; i < list.length; i++) {
+                if (i==0) {
+                    ids+=list[i]["goods_id"];
+                }
+                else {
+                    ids+=','+list[i]["goods_id"];
+                }
+
+            }
+            if(ids) {
+                url+="?ids="+ids;
+            }
+
+            //iframe层-父子操作
+            var goodslayer = layer.open({
+                btn: ['确定'],
+                type: 2,
+                area: ['900px', '500px'],
+                fixed: true, //不固定
+                maxmin: true,
+                content: url,
+                yes: function (index, layero) {
+                    // var ids= [];
+                    var iframeWin = window[layero.find('iframe')[0]['name']];//获取子窗口
+
+                    for (var i = 0; i < iframeWin.items.length; i++) {
+                        var item = iframeWin.items[i];
+
+                        var bool =false;
+                        for (var j = 0; j < list.length; j++) {
+                            var goods = list[j];
+                            if (goods["goods_id"] ==item["goods_id"]) {
+                                bool=true;
+                            }
+                        }
+                        if (!bool) {
+                            item.single_member_price = JSON.parse(item.single_member_price)
+                            item.pack_member_price = JSON.parse(item.pack_member_price)
+                            list.push(item);
+
+                        }
+
+                    }
+                    // Array.prototype.push.apply(info.groupGoods,iframeWin.items);
+                    layer.close(index);
+
+                }
+            })
+        })
+
+        //删除
+        $('#del').on('click', function (e) {
+            e.preventDefault();
+            // layer.open()
+            var that = this;
+            var $checked = $('.table input[type="checkbox"]:checked:not(.js-checkbox-all)');
+
+            if ($checked.length != 0) {
+                layer.confirm('此操作将已保存的记录同时删除，确定要执行吗？', function (index) {
+                    var params ={ids:'',bill_id:"{:input('bill_id')}"};var indexs=[];
+                    $checked.each(function(i,e){
+                        if (!!$(this).val()) {
+                            params.ids += $(this).val() + ',';
+                        }
+
+                        indexs.push($(this).attr("data-index"));
+                    });
+                    params.ids=params.ids.substr(0,params.ids.length-1);
+                    if (!!params.ids) {
+                        $.get($(that).attr('url'),params, function (data) {
+                            obalertp(data);
+                            if (data.code == 1) {
+                                for (var i = 0; i < indexs.length; i++) {
+                                    list.splice(indexs[i]-i,1) ;
+                                }
+                                $('.table input[type="checkbox"]:checked').iCheck("uncheck");
+                            }
+
+                            layer.close(index);
+                        });
+
+                    }
+                    else {
+                        for (var i = 0; i < indexs.length; i++) {
+                            list.splice(indexs[i] - i, 1);
+                        }
+                        $('.table input[type="checkbox"]:checked').iCheck("uncheck");
+                    } layer.close(index);
+                }, function (index) {
+                    layer.close(index);
+                });
+            }
+            else {
+                toast.warning('请选择批量操作数据');
+            }
+            return false;
+        });
+
+        //保存
+        $('.box').on('click', '#saveInfo', function () {
+            if ($(this).attr('disabled')) {
+                return false;
+            }
+            var $form = $('.box form');
+            var isEmpty=false;
+            $form.find("table").find(":text").each(function(i,e){
+                if (!~~$.trim( $(this).val()) ) {
+                    isEmpty=true;
+                }
+            })
+
+            if (isEmpty) {
+                if (!confirm("尚且有为0的价格，确定要执行吗？")) {
+                    return false;
+                }
+            }
+
+            var selectText= $('#shopSelect').multipleSelect('getSelects', 'text');
+            var selectVal= $('#shopSelect').multipleSelect('getSelects');
+            $("[name='shop_ids']").val(selectVal);
+            $("[name='shop_names']").val(selectText);
+
+            var postData = $form.serialize();
+
+            var url = $(this).attr('data-url');
+
+            $.post(url, postData, function (data) {
+                obalert(data);
+
+            }, 'json');
+
+            return false;
+        });
+        
+        //审核
+       $("#check").on('click',function () {
+           if ($(this).attr('disabled')) {
+               return false;
+           }
+         if(confirm("确定要审核吗？")){
+               var url = $(this).attr('data-url');
+               $.post(url, {bill_id:"{:input('bill_id')}"}, function (data) {
+                   obalert(data);
+               }, 'json');
+           }
+       }) 
+
+    })
+
+
+</script>
